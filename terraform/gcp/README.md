@@ -3,6 +3,7 @@ This is a WIP, Concourse is not yet integrated with Credhub nor UAA.
 Nothing is scalable for now.
 
 #Howto use:
+##Deploy
 Create a terraform.tfvars file with :
 ```
 # Used to prefix every object
@@ -34,3 +35,6 @@ export TF_VAR_gcp_key=$(cat gcp-key.json)
 ```
 
 Then simply run `terraform init && terraform apply`
+
+##SSH into the jumpbox
+The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`
