@@ -1,0 +1,39 @@
+### WIP
+- type: remove
+  path: /releases/name=postgres
+
+- type: remove
+  path: /instance_groups/name=db
+
+- type: replace
+  path: /instance_groups/name=web/jobs/name=atc/properties/postgresql
+  value:
+    ca_cert: ((postgres_ca))
+    host: ((postgres_address))
+    role:
+      name: atc
+      password: ((atc_db_password))
+
+# - type: replace
+#   path: /instance_groups/name=concourse/jobs/name=uaa/properties/uaadb
+#   value:
+#     address: ((postgres_address))
+#     port: 5432
+#     db_scheme: postgresql
+#     databases:
+#     - tag: uaa
+#       name: uaa
+#     roles:
+#     - tag: admin
+#       name: uaa
+#       password: ((uaa_db_password))
+
+# - type: replace
+#   path: /instance_groups/name=concourse/jobs/name=credhub/properties/credhub/data_storage
+#   value:
+#     type: postgres
+#     host: ((postgres_address))
+#     port: 5432
+#     username: credhub
+#     password: ((credhub_db_password))
+#     tls_ca: ((postgres_ca))

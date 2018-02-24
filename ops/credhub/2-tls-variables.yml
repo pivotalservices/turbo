@@ -1,0 +1,51 @@
+- type: replace
+  path: /variables/name=credhub-tls?
+  value:
+    name: credhub-tls
+    type: certificate
+    options:
+      ca: credhub-ca
+      common_name: ((credhub_dns))
+      alternative_names:
+      - 127.0.0.1
+
+- type: replace
+  path: /variables/name=database-tls?
+  value:
+    name: database-tls
+    type: certificate
+    options: 
+      ca: credhub-ca
+      common_name: 127.0.0.1
+      alternative_names:
+      - 127.0.0.1
+
+- type: replace
+  path: /variables/name=uaa-tls?
+  value:
+    name: uaa-tls
+    type: certificate
+    options:
+      ca: credhub-ca
+      common_name: ((uaa_dns))
+      alternative_names:
+      - ((uaa_dns))
+
+- type: replace
+  path: /instance_groups/name=credhub/jobs/name=credhub/properties/credhub/authentication/uaa/url
+  value: https://((uaa_dns))
+
+- type: replace
+  path: /instance_groups/name=credhub/jobs/name=uaa/properties/uaa/url
+  value: https://((uaa_dns))
+
+- type: replace
+  path: /instance_groups/name=credhub/jobs/name=credhub/properties/credhub/authentication/uaa/ca_certs
+  value:
+    - |
+      ((lb_ca))
+
+- type: replace
+  path: /instance_groups/name=credhub/jobs/name=credhub/properties/credhub/authentication/uaa/verification_key
+  value: |
+    ((lb_public_key))

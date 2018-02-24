@@ -1,0 +1,3 @@
+- type: replace
+  path: /instance_groups/name=credhub/vm_extensions?
+  value: [credhub]
