@@ -42,8 +42,8 @@ resource "google_compute_instance" "jumpbox" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${var.ssh_user}/automation/bosh-delete-all.sh",
-      "/home/${var.ssh_user}/automation/bosh-delete-all.sh",
+      "chmod +x /home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-delete-all.sh",
+      "/home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-delete-all.sh",
     ]
 
     when = "destroy"

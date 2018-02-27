@@ -1,0 +1,13 @@
+- type: replace
+  path: /instance_groups/name=web/jobs/name=atc/properties/credhub?
+  value:
+    path_prefix: /concourse
+    url: ((credhub_url))
+    tls:
+      #ca_cert: ((credhub_ca_cert))
+      insecure_skip_verify: true
+      # Bug 3.9.0
+    client_id: ((/uaa/concourse_credhub_client.username))
+    client_secret: ((/uaa/concourse_credhub_client.password))
+    #client_id: x
+    #client_secret: x

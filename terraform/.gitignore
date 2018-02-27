@@ -1,5 +1,6 @@
 **/*.tfstate
 **/*.tfstate.backup
+**/.terraform.tfstate.*
 **/local/
 **/.terraform
 **/terraform.tfvars
