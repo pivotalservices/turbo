@@ -1,13 +1,13 @@
 # Note
-This is a WIP, Concourse is not yet integrated with Credhub nor UAA.
+This is a WIP, Concourse is not yet integrated with Credhub nor UAA.  
 Nothing is scalable for now.
 
 # Howto use:
 ## Create a master DNS Zone
-You'll want to create a master dns zone if you don't have one in GCP.
-The domain deployed will be a subdomain of this master dns zone
-Example:
-master dns zone = `gcp.mydomain.com` (this resource has a name in GCP, use that as the value of `master_dns_zone_name`)
+You'll want to create a master dns zone if you don't have one in GCP.  
+The domain deployed will be a subdomain of this master dns zone  
+Example:  
+master dns zone = `gcp.mydomain.com` (this resource has a name in GCP, use that as the value of `master_dns_zone_name`)  
 subdomain that will be created = `myenv.gcp.mydomain.com` (the value of the variable `dns_domain_name`)
 
 ## Deploy
@@ -47,7 +47,7 @@ export TF_VAR_gcp_key=$(cat gcp-key.json)
 Then simply run `terraform init && terraform apply`
 
 ## SSH into the jumpbox
-The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`
+The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`  
 Assuming you're in the terraform forlder:
 ```
 export TERRAFORM_OUTPUT="$(terraform output \

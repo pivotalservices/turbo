@@ -1,13 +1,13 @@
 # Note
-This is a WIP, Concourse is not yet integrated UAA.
+This is a WIP, Concourse is not yet integrated UAA.  
 Nothing is scalable for now.
 
 # Howto use:
 ## Create a master DNS Zone
-You'll want to create a master dns zone if you don't have one in GCP.
-The domain deployed will be a subdomain of this master dns zone
-Example:
-master dns zone = `sub.master-dns-zone.com`
+You'll want to create a master dns zone if you don't have one in AWS.  
+The domain deployed will be a subdomain of this master dns zone.  
+Example:  
+master dns zone = `sub.master-dns-zone.com`  
 subdomain that will be created = `xxx.sub.master-dns-zone.com` (the value of the variable `dns_domain_name`)
 
 ## Deploy
@@ -44,7 +44,7 @@ export TF_VAR_aws_access_key=XXXXXXXXXXXX
 Then simply run `terraform init && terraform apply`
 
 ## SSH into the jumpbox
-The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`
+The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`  
 Assuming you're in the terraform forlder:
 ```
 export TERRAFORM_OUTPUT="$(terraform output \
