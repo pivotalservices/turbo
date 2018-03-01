@@ -1,5 +1,5 @@
 # Note
-This is a WIP, Concourse is not yet integrated with Credhub nor UAA.
+This is a WIP, Concourse is not yet integrated UAA.
 Nothing is scalable for now.
 
 # Howto use:
@@ -7,8 +7,8 @@ Nothing is scalable for now.
 You'll want to create a master dns zone if you don't have one in GCP.
 The domain deployed will be a subdomain of this master dns zone
 Example:
-master dns zone = `gcp.mydomain.com` (this resource has a name in GCP, use that as the value of `master_dns_zone_name`)
-subdomain that will be created = `myenv.gcp.mydomain.com` (the value of the variable `dns_domain_name`)
+master dns zone = `sub.master-dns-zone.com`
+subdomain that will be created = `xxx.sub.master-dns-zone.com` (the value of the variable `dns_domain_name`)
 
 ## Deploy
 Create a terraform.tfvars file with :
@@ -16,32 +16,29 @@ Create a terraform.tfvars file with :
 # Used to prefix every object
 env_name = "MyEnv"
 
-# Name of the GCP Project
-gcp_project_name = "GCP-Project-Name"
+# AWS Region
+aws_region = "eu-west-2"
 
-# GCP Region
-gcp_region = "GCP-Region"
-
-# GCP Zone in the region
-gcp_zone_1 = "GCP-Zone"
+# AWS AZ 1
+aws_az_1 = "eu-west-2a"
 
 # The master DNS Zone name (not the actual fqdn, but the name of the resource in GCP)
-master_dns_zone_name = "my-zone-name"
+master_dns_domain_name = "sub.master-dns-zone.com"
 
 # Will be created
-dns_domain_name = "xxx.master-dns-zone.com"
+dns_domain_name = "xxx.sub.master-dns-zone.com"
 
 # Must be a /24
 bootstrap_subnet = "10.0.0.0/24"
 
 # Can be 0.0.0.0/0 for full access or a list of IPs/subnets for restricted access
 source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"] 
-
 ```
 
-Also export your GCP key:
+Also export your AWS Secret and Access key:
 ```
-export TF_VAR_gcp_key=$(cat gcp-key.json)
+export TF_VAR_aws_secret_key=XXXXXXXXXXXX
+export TF_VAR_aws_access_key=XXXXXXXXXXXX
 ```
 
 Then simply run `terraform init && terraform apply`

@@ -1,0 +1,10 @@
+- type: replace
+  path: /instance_groups/name=credhub/jobs/name=credhub/properties/credhub/authentication/uaa/ca_certs
+  value:
+    - |
+      ((lb_ca))
+
+- type: replace
+  path: /instance_groups/name=credhub/jobs/name=credhub/properties/credhub/authentication/uaa/verification_key
+  value: |
+    ((lb_public_key))

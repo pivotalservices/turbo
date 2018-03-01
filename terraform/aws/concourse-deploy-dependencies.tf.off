@@ -1,0 +1,10 @@
+resource "null_resource" "concourse-deploy-iaas-dependencies" {
+  triggers {
+    jumpbox_id     = "${local.jumpbox_id}"
+    dependencies_1 = "${null_resource.concourse_scripts.id}"
+  }
+
+  depends_on = [
+    "aws_elb.concourse-elb",
+  ]
+}

@@ -1,0 +1,179 @@
+### Credhub
+resource "aws_security_group" "credhub-elb" {
+  name        = "${var.env_name}-inbound-credhub"
+  description = "${var.env_name} Inbound credhub"
+  vpc_id      = "${aws_vpc.bootstrap.id}"
+
+  tags {
+    Name = "${var.env_name}-Inbound credhub"
+  }
+}
+
+resource "aws_security_group_rule" "credhub_https_in" {
+  security_group_id = "${aws_security_group.credhub-elb.id}"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+
+  cidr_blocks = [
+    "${var.source_admin_networks}",
+    "${aws_eip.bosh_natgw.public_ip}/32",
+    "${aws_eip.jumpbox.public_ip}/32",
+  ]
+}
+
+resource "aws_security_group_rule" "credhub_all_out" {
+  security_group_id = "${aws_security_group.credhub-elb.id}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_elb" "credhub-elb" {
+  name            = "credhub-elb"
+  subnets         = ["${aws_subnet.jumpbox.id}"]
+  security_groups = ["${aws_security_group.credhub-elb.id}"]
+  internal        = false
+
+  // The time in seconds that the connection is allowed to be idle
+  idle_timeout = 300
+
+  listener {
+    instance_port     = 8844
+    instance_protocol = "TCP"
+    lb_port           = 443
+    lb_protocol       = "TCP"
+  }
+
+  health_check {
+    # Should be 
+    # target = "HTTPS:8844/health"
+    target = "TCP:8844"
+
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
+}
+
+### UAA
+resource "aws_security_group" "uaa-elb" {
+  name        = "${var.env_name}-inbound-uaa"
+  description = "${var.env_name} Inbound uaa"
+  vpc_id      = "${aws_vpc.bootstrap.id}"
+
+  tags {
+    Name = "${var.env_name}-Inbound uaa"
+  }
+}
+
+resource "aws_security_group_rule" "uaa_https_in" {
+  security_group_id = "${aws_security_group.uaa-elb.id}"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+
+  cidr_blocks = [
+    "${var.source_admin_networks}",
+    "${aws_eip.bosh_natgw.public_ip}/32",
+    "${aws_eip.jumpbox.public_ip}/32",
+  ]
+}
+
+resource "aws_security_group_rule" "uaa_all_out" {
+  security_group_id = "${aws_security_group.uaa-elb.id}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_elb" "uaa-elb" {
+  name            = "uaa-elb"
+  subnets         = ["${aws_subnet.jumpbox.id}"]
+  security_groups = ["${aws_security_group.uaa-elb.id}"]
+  internal        = false
+
+  // The time in seconds that the connection is allowed to be idle
+  idle_timeout = 300
+
+  listener {
+    instance_port     = 8443
+    instance_protocol = "TCP"
+    lb_port           = 443
+    lb_protocol       = "TCP"
+  }
+
+  health_check {
+    target              = "HTTPS:8443/healthz"
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
+}
+
+### Concourse
+resource "aws_security_group" "concourse-elb" {
+  name        = "${var.env_name}-inbound-concourse"
+  description = "${var.env_name} Inbound concourse"
+  vpc_id      = "${aws_vpc.bootstrap.id}"
+
+  tags {
+    Name = "${var.env_name}-Inbound concourse"
+  }
+}
+
+resource "aws_security_group_rule" "concourse_https_in" {
+  security_group_id = "${aws_security_group.concourse-elb.id}"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+
+  cidr_blocks = [
+    "${var.source_admin_networks}",
+    "${aws_eip.bosh_natgw.public_ip}/32",
+    "${aws_eip.jumpbox.public_ip}/32",
+  ]
+}
+
+resource "aws_security_group_rule" "concourse_all_out" {
+  security_group_id = "${aws_security_group.concourse-elb.id}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_elb" "concourse-elb" {
+  name            = "concourse-elb"
+  subnets         = ["${aws_subnet.jumpbox.id}"]
+  security_groups = ["${aws_security_group.concourse-elb.id}"]
+  internal        = false
+
+  // The time in seconds that the connection is allowed to be idle
+  idle_timeout = 300
+
+  listener {
+    instance_port     = 443
+    instance_protocol = "TCP"
+    lb_port           = 443
+    lb_protocol       = "TCP"
+  }
+
+  health_check {
+    target              = "HTTPS:443/health"
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
+}

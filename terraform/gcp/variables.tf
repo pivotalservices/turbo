@@ -23,6 +23,11 @@ variable "gcp_zone_1" {
   description = "Zone used to deploy everything"
 }
 
+variable "master_dns_zone_name" {
+  type        = "string"
+  description = "Zone name to integrate the subdomain into"
+}
+
 variable "dns_domain_name" {
   type        = "string"
   description = "Domain Name for this bootstrap environment"
@@ -67,13 +72,4 @@ variable "use_external_postgres" {
   type        = "string"
   default     = "false"
   description = "whether you want to use an GCP provided postgresDB for Concourse and it's dependecies"
-}
-
-variable "flags" {
-  type = "map"
-
-  default = {
-    use_external_postgres = "false"
-    ha_concourse          = "false"
-  }
 }

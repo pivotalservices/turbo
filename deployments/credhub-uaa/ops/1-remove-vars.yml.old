@@ -1,8 +1,0 @@
-- type: remove
-  path: /variables/name=credhub-tls
-
-- type: remove
-  path: /variables/name=database-tls
-
-- type: remove
-  path: /variables/name=uaa-tls

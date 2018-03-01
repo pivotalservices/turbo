@@ -1,0 +1,65 @@
+---
+azs:
+- name: z1
+  cloud_properties: {zone: ((gcp_zone_1))}
+
+vm_types:
+- name: default
+  cloud_properties:
+    machine_type: n1-standard-4
+    root_disk_size_gb: 20
+    root_disk_type: pd-ssd
+- name: concourse
+  cloud_properties:
+    machine_type: n1-standard-4
+    root_disk_size_gb: 20
+    root_disk_type: pd-ssd
+- name: credhub
+  cloud_properties:
+    machine_type: n1-standard-1
+    root_disk_size_gb: 20
+    root_disk_type: pd-ssd
+
+disk_types:
+- name: default
+  disk_size: 3000
+- name: db
+  disk_size: 10240
+- name: 10GB
+  disk_size: 10240
+
+networks:
+- name: concourse
+  type: manual
+  subnets:
+  - range:   ((concourse_subnet_range))
+    gateway: ((concourse_subnet_gateway))
+    dns:     [8.8.8.8, 8.8.4.4]
+    static: ((concourse_network_static_ips))
+    azs:     [z1]
+    cloud_properties:
+      network_name: ((bootstrap_network_name))
+      subnetwork_name: ((concourse_subnet_name))
+      ephemeral_external_ip: false
+      tags: ((concourse_network_vm_tags))
+
+vm_extensions:
+- name: concourse-web
+  cloud_properties:
+    backend_service:
+      name: ((concourse_web_backend_group))
+- name: credhub
+  cloud_properties:
+    backend_service:
+      name: ((credhub_backend_group))
+- name: uaa
+  cloud_properties:
+    backend_service:
+      name: ((uaa_backend_group))
+
+compilation:
+  workers: 3
+  reuse_compilation_vms: true
+  az: z1
+  vm_type: default
+  network: concourse

@@ -32,7 +32,7 @@ resource "google_compute_instance" "jumpbox" {
     subnetwork = "${google_compute_subnetwork.jumpbox.name}"
 
     access_config {
-      nat_ip = "${google_compute_address.jumpbox.address}"
+      nat_ip = "${local.ssh_host}"
     }
   }
 
@@ -43,6 +43,7 @@ resource "google_compute_instance" "jumpbox" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-delete-all.sh",
+      "export TERRAFORM_ENV=\"${local.env_base64}\"",
       "/home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-delete-all.sh",
     ]
 
@@ -51,7 +52,7 @@ resource "google_compute_instance" "jumpbox" {
 
   connection {
     type        = "ssh"
-    host        = "${google_compute_address.jumpbox.address}"
+    host        = "${local.ssh_host}"
     user        = "${var.ssh_user}"
     private_key = "${tls_private_key.jumpbox_ssh_private_key.private_key_pem}"
   }

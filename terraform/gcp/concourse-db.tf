@@ -18,7 +18,7 @@ resource "google_sql_database_instance" "postgres" {
     }
   }
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 ### ATC DB
@@ -28,14 +28,14 @@ resource "google_sql_database" "atc" {
   charset   = "UTF8"
   collation = "en_US.UTF-8"
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 resource "random_string" "atc_db_password" {
   length  = 16
   special = true
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 resource "google_sql_user" "atc" {
@@ -44,7 +44,7 @@ resource "google_sql_user" "atc" {
   host     = ""
   password = "${random_string.atc_db_password.result}"
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 ### Credhub DB
@@ -54,14 +54,14 @@ resource "google_sql_database" "credhub" {
   charset   = "UTF8"
   collation = "en_US.UTF-8"
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 resource "random_string" "credhub_db_password" {
   length  = 16
   special = true
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 resource "google_sql_user" "credhub" {
@@ -70,7 +70,7 @@ resource "google_sql_user" "credhub" {
   host     = ""
   password = "${random_string.credhub_db_password.result}"
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 ### UAA DB
@@ -80,14 +80,14 @@ resource "google_sql_database" "uaa" {
   charset   = "UTF8"
   collation = "en_US.UTF-8"
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 resource "random_string" "uaa_db_password" {
   length  = 16
   special = true
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }
 
 resource "google_sql_user" "uaa" {
@@ -96,5 +96,5 @@ resource "google_sql_user" "uaa" {
   host     = ""
   password = "${random_string.uaa_db_password.result}"
 
-  count = "${var.flags.["use_external_postgres"] == "true" ? 1 : 0}"
+  count = "${local.flags["use_external_postgres"] == "true" ? 1 : 0}"
 }

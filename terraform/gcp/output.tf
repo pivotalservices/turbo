@@ -13,3 +13,11 @@ output "jumpbox_dns" {
 output "concourse_url" {
   value = "https://${replace(google_dns_record_set.concourse-lb.name,"/\\.$/","")}"
 }
+
+output "credhub_url" {
+  value = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
+}
+
+output "uaa_url" {
+  value = "https://${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
+}

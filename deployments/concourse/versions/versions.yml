@@ -1,3 +1,4 @@
+stemcell_version: '3468.25'
 concourse_version: '3.9.1'
 concourse_sha1: '235c704d50e62c9e089865dd43306659d5207690'
 garden_runc_version: '1.11.1'

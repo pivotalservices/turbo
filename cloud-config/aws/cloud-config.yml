@@ -1,0 +1,63 @@
+---
+azs:
+- name: z1
+  cloud_properties: {availability_zone: ((aws_az1))}
+
+vm_types:
+- name: default
+  cloud_properties:
+    instance_type: t2.xlarge
+
+- name: concourse
+  cloud_properties:
+    instance_type: t2.xlarge
+
+- name: credhub
+  cloud_properties:
+    instance_type: t2.medium
+
+
+disk_types:
+- name: default
+  cloud_properties:
+    type: gp2
+  disk_size: 3000
+- name: db
+  cloud_properties:
+    type: gp2
+  disk_size: 10240
+- name: 10GB
+  cloud_properties:
+    type: gp2
+  disk_size: 10240
+
+networks:
+- name: concourse
+  type: manual
+  subnets:
+  - range:   ((concourse_subnet_range))
+    gateway: ((concourse_subnet_gateway))
+    dns:     [169.254.169.253]
+    static: ((concourse_network_static_ips))
+    reserved: ((concourse_network_reserved_ips))
+    azs:     [z1]
+    cloud_properties:
+      subnet: ((concourse_subnet_id))
+
+vm_extensions:
+- name: concourse-web
+  cloud_properties:
+    elbs:
+    - ((concourse_web_backend_group))
+- name: credhub
+  cloud_properties:
+    elbs:
+    - ((credhub_backend_group))
+    - ((uaa_backend_group))
+
+compilation:
+  workers: 3
+  reuse_compilation_vms: true
+  az: z1
+  vm_type: default
+  network: concourse
