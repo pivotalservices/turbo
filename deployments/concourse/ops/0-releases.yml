@@ -1,0 +1,8 @@
+#Credhub
+- type: replace
+  path: /releases/name=concourse
+  value:
+    name: concourse
+    version: ((concourse_version))
+    url: https://storage.googleapis.com/bosh-release-jwi/concourse-((concourse_version)).tgz
+    sha1: ((concourse_sha1))
