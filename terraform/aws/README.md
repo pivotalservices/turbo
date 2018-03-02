@@ -43,25 +43,6 @@ export TF_VAR_aws_access_key=XXXXXXXXXXXX
 
 Then simply run `terraform init && terraform apply`
 
-## SSH into the jumpbox
-The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`  
-Assuming you're in the terraform forlder:
-```
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-chmod 600 local/ssh/*
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') -i local/ssh/jumpbox  -o "IdentitiesOnly=true"
-```
-
-## Retrieve the concourse admin password:
-```
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-export TERRAFORM_ENV_NAME=$(cat terraform.tfvars | grep env_name | cut -d "=" -f 2 | sed -e 's/\ //g' -e 's/"//g')
-chmod 600 local/ssh/*
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') -i local/ssh/jumpbox  -o "IdentitiesOnly=true" credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-concourse/ui_password
-```
-
 ## Destroy
 Simply run `terraform destroy`
 All deployments will be deleted and all your resources also (Verify that's really the case :) )
