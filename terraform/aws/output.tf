@@ -3,7 +3,7 @@ output "domain_name_servers" {
 }
 
 output "jumpbox_ip" {
-  value = "${aws_instance.jumpbox.public_ip}"
+  value = "${aws_eip.jumpbox.public_ip}"
 }
 
 output "jumpbox_dns" {
