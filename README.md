@@ -1,3 +1,12 @@
+# Introduction
+This tool will deploy:  
+* A jumpbox
+* A bosh director with credhub and uaa integrated
+* A credhub and uaa bosh deployment
+* Concourse integrated with credhub
+
+Only using `terraform`
+
 # Howto:
 ## GCP
 Follow documentation [here](terraform/gcp/README.md)
