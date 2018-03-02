@@ -47,6 +47,12 @@ locals {
     TF_CREDHUB_BACKEND_GROUP          = "${aws_elb.credhub-elb.name}"
     TF_UAA_BACKEND_GROUP              = "${aws_elb.uaa-elb.name}"
 
+    TF_BOSH_SUBNET_RANGE         = "${aws_subnet.bosh.cidr_block}"
+    TF_BOSH_SUBNET_GATEWAY       = "${cidrhost(aws_subnet.bosh.cidr_block,1)}"
+    TF_BOSH_NETWORK_STATIC_IPS   = "[${cidrhost(aws_subnet.bosh.cidr_block,7)}-${cidrhost(aws_subnet.bosh.cidr_block,10)}]"
+    TF_BOSH_NETWORK_RESERVED_IPS = "[${cidrhost(aws_subnet.bosh.cidr_block,0)}-${cidrhost(aws_subnet.bosh.cidr_block,6)}]"
+    TF_BOSH_SUBNET_ID            = "${aws_subnet.bosh.id}"
+
     # Credhub UAA
     TF_CREDHUB_DNS_ENTRY = "${aws_route53_record.credhub.name}.${var.dns_domain_name}"
     TF_UAA_DNS_ENTRY     = "${aws_route53_record.uaa.name}.${var.dns_domain_name}"

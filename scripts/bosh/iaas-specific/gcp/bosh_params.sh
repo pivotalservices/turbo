@@ -59,6 +59,13 @@ bosh_update_cloud_config() {
 		--var credhub_backend_group="$TF_CREDHUB_BACKEND_GROUP" \
 		--var uaa_backend_group="$TF_UAA_BACKEND_GROUP" \
 		--var concourse_network_static_ips="$TF_CONCOURSE_NETWORK_STATIC_IPS" \
+		--var concourse_network_reserved_ips="$TF_CONCOURSE_NETWORK_RESERVED_IPS" \
 		--var concourse_network_vm_tags="$TF_CONCOURSE_NETWORK_VM_TAGS" \
+		--var bosh_subnet_range="$TF_BOSH_SUBNET_RANGE" \
+		--var bosh_subnet_gateway="$TF_BOSH_SUBNET_GATEWAY" \
+		--var bosh_subnet_name="$TF_BOSH_SUBNET_NAME" \
+		--var bosh_network_static_ips="$TF_BOSH_NETWORK_STATIC_IPS" \
+		--var bosh_network_reserved_ips="$TF_BOSH_NETWORK_RESERVED_IPS" \
+		--var bosh_network_vm_tags="$TF_BOSH_NETWORK_VM_TAGS" \
 		-n || exit 1
 }

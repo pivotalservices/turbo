@@ -29,6 +29,20 @@ disk_types:
   disk_size: 10240
 
 networks:
+- name: bosh
+  type: manual
+  subnets:
+  - range:   ((bosh_subnet_range))
+    gateway: ((bosh_subnet_gateway))
+    dns:     [8.8.8.8, 8.8.4.4]
+    static: ((bosh_network_static_ips))
+    reserved: ((bosh_network_reserved_ips))
+    azs:     [z1]
+    cloud_properties:
+      network_name: ((bootstrap_network_name))
+      subnetwork_name: ((bosh_subnet_name))
+      ephemeral_external_ip: false
+      tags: ((bosh_network_vm_tags))
 - name: concourse
   type: manual
   subnets:
@@ -36,6 +50,7 @@ networks:
     gateway: ((concourse_subnet_gateway))
     dns:     [8.8.8.8, 8.8.4.4]
     static: ((concourse_network_static_ips))
+    reserved: ((concourse_network_reserved_ips))
     azs:     [z1]
     cloud_properties:
       network_name: ((bootstrap_network_name))
@@ -62,4 +77,4 @@ compilation:
   reuse_compilation_vms: true
   az: z1
   vm_type: default
-  network: concourse
+  network: bosh
