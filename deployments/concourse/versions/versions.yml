@@ -1,6 +1,6 @@
 stemcell_version: '3468.25'
-concourse_version: '3.9.1'
-concourse_sha1: '235c704d50e62c9e089865dd43306659d5207690'
+concourse_version: '3.9.1-jerome-dev4'
+concourse_sha1: 'df7126dc542bf79c0b12a1442ff33123f4b57e68'
 garden_runc_version: '1.11.1'
 garden_runc_sha1: 'd9a7901c0502d97c043b857496f0f414a5843e8d'
 postgres_version: '25'
