@@ -48,7 +48,9 @@ resource "google_compute_backend_service" "concourse_web_lb_https_backend_servic
   enable_cdn  = false
 
   backend {
-    group = "${google_compute_instance_group.concourse_web_lb.self_link}"
+    group                 = "${google_compute_instance_group.concourse_web_lb.self_link}"
+    balancing_mode        = "RATE"
+    max_rate_per_instance = "10000"
   }
 
   health_checks = ["${google_compute_https_health_check.concourse_web_https_hc.self_link}"]
@@ -60,8 +62,8 @@ resource "google_compute_https_health_check" "concourse_web_https_hc" {
   port                = 443
   request_path        = "/"
   check_interval_sec  = 5
-  timeout_sec         = 3
-  healthy_threshold   = 6
+  timeout_sec         = 4
+  healthy_threshold   = 3
   unhealthy_threshold = 3
 }
 
@@ -163,7 +165,9 @@ resource "google_compute_backend_service" "credhub_lb_https_backend_service" {
   enable_cdn  = false
 
   backend {
-    group = "${google_compute_instance_group.credhub_lb.self_link}"
+    group                 = "${google_compute_instance_group.credhub_lb.self_link}"
+    balancing_mode        = "RATE"
+    max_rate_per_instance = "10000"
   }
 
   health_checks = ["${google_compute_https_health_check.credhub_https_hc.self_link}"]
@@ -175,8 +179,8 @@ resource "google_compute_https_health_check" "credhub_https_hc" {
   port                = 8844
   request_path        = "/health"
   check_interval_sec  = 5
-  timeout_sec         = 3
-  healthy_threshold   = 6
+  timeout_sec         = 4
+  healthy_threshold   = 3
   unhealthy_threshold = 3
 }
 
@@ -189,7 +193,9 @@ resource "google_compute_backend_service" "uaa_lb_https_backend_service" {
   enable_cdn  = false
 
   backend {
-    group = "${google_compute_instance_group.credhub_lb.self_link}"
+    group                 = "${google_compute_instance_group.credhub_lb.self_link}"
+    balancing_mode        = "RATE"
+    max_rate_per_instance = "10000"
   }
 
   health_checks = ["${google_compute_https_health_check.uaa_https_hc.self_link}"]
@@ -201,7 +207,7 @@ resource "google_compute_https_health_check" "uaa_https_hc" {
   port                = 8443
   request_path        = "/healthz"
   check_interval_sec  = 5
-  timeout_sec         = 3
-  healthy_threshold   = 6
+  timeout_sec         = 4
+  healthy_threshold   = 3
   unhealthy_threshold = 3
 }

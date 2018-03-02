@@ -44,7 +44,7 @@ resource "google_compute_firewall" "concourse_web" {
   target_tags   = ["${var.env_name}-concourse-web"]
 }
 
-resource "google_compute_firewall" "uaa" {
+resource "google_compute_firewall" "credhub" {
   name    = "${var.env_name}-allow-credhub"
   network = "${google_compute_network.bootstrap.name}"
 
@@ -54,10 +54,10 @@ resource "google_compute_firewall" "uaa" {
   }
 
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
-  target_tags   = ["${var.env_name}-credhub"]
+  target_tags   = ["${var.env_name}-credhub-uaa"]
 }
 
-resource "google_compute_firewall" "credhub" {
+resource "google_compute_firewall" "uaa" {
   name    = "${var.env_name}-allow-uaa"
   network = "${google_compute_network.bootstrap.name}"
 
@@ -67,5 +67,5 @@ resource "google_compute_firewall" "credhub" {
   }
 
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
-  target_tags   = ["${var.env_name}-credhub"]
+  target_tags   = ["${var.env_name}-credhub-uaa"]
 }
