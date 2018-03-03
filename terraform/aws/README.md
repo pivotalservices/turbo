@@ -22,7 +22,7 @@ aws_region = "eu-west-2"
 # AWS AZ 1
 aws_az_1 = "eu-west-2a"
 
-# The master DNS Zone name (not the actual fqdn, but the name of the resource in GCP)
+# The master DNS Domain name (fqdn)
 master_dns_domain_name = "sub.master-dns-zone.com"
 
 # Will be created
