@@ -15,7 +15,7 @@ locals {
 }
 
 locals {
-  env = {
+  iaas_env = {
     TF_FLAGS = "${jsonencode(local.flags)}"
 
     AWS_SECRET_KEY   = "${var.aws_secret_key}"

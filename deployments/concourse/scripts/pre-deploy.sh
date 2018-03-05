@@ -32,14 +32,14 @@ do_deploy() {
 		-l "$DEPLOYMENT_HOME/versions/versions.yml" \
 		$DEPLOYMENT_OPS_FILES \
 		$DEPLOYMENT_OPS_FILES_ADD \
+		--var deployment_name="$DEPLOYMENT_NAME" \
 		--var web_ip="$TF_CONCOURSE_WEB_IP" \
 		--var external_url="$TF_CONCOURSE_EXTERNAL_URL" \
 		--var network_name=concourse \
-		--var web_vm_type=concourse \
-		--var db_vm_type=concourse \
+		--var web_vm_type="concourse-web-$TF_CONCOURSE_WEB_VM_TYPE" \
+		--var worker_vm_type="worker-$TF_CONCOURSE_WORKER_VM_TYPE" \
+		--var db_vm_type=concourse-db \
 		--var db_persistent_disk_type=db \
-		--var worker_vm_type=concourse \
-		--var deployment_name="$DEPLOYMENT_NAME" \
 		--var domain_name="$TF_DOMAIN_NAME" \
 		--var credhub_url="$TF_CREDHUB_URL" \
 		--var-file credhub_ca_cert=<(echo -n "$TF_CA_CERT") \

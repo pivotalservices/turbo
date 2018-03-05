@@ -49,3 +49,15 @@ variable "source_admin_networks" {
   default     = ["0.0.0.0/0"]
   description = "Admin networks whitelisted to ssh on the jumpbox"
 }
+
+variable "concourse_web_vm_type" {
+  type        = "string"
+  default     = "small"
+  description = "Size of concourse web vms: small, medium, large, xlarge, 2xlarge"
+}
+
+variable "concourse_worker_vm_type" {
+  type        = "string"
+  default     = "medium"
+  description = "Size of concourse web vms: medium, large, xlarge, 2xlarge, 4xlarge, 10xlarge, 16xlarge"
+}

@@ -15,7 +15,7 @@ locals {
 }
 
 locals {
-  env = {
+  iaas_env = {
     TF_FLAGS = "${jsonencode(local.flags)}"
 
     # Bosh

@@ -3,6 +3,18 @@ This is a WIP, Concourse is not yet integrated with Credhub nor UAA.
 Nothing is scalable for now.
 
 # Howto use:
+## Instance types
+| Terraform value | Concourse Web     | Concourse Worker  |
+| --------------- | :---------------: | :---------------: |
+| small           | **n1-standard-1** | -                 |  |
+| medium          | n1-standard-2     | **n1-standard-2** |
+| large           | n1-standard-4     | n1-standard-4     |
+| xlarge          | n1-standard-8     | n1-standard-8     |
+| 2xlarge         | n1-standard-16    | n1-standard-16    |
+| 4xlarge         | -                 | n1-standard-32    |
+| 10xlarge        | -                 | n1-standard-64    |
+| 16xlarge        | -                 | n1-standard-96    |
+
 ## Create a master DNS Zone
 You'll want to create a master dns zone if you don't have one in GCP.  
 The domain deployed will be a subdomain of this master dns zone  
@@ -37,6 +49,11 @@ bootstrap_subnet = "10.0.0.0/24"
 # Can be 0.0.0.0/0 for full access or a list of IPs/subnets for restricted access
 source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"] 
 
+# Optionnal (default is small)
+# concourse_web_vm_type = "small"
+
+# Optionnal (default is medium)
+# concourse_worker_vm_type = "medium"
 ```
 
 Also export your GCP key:
