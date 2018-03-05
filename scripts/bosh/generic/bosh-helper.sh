@@ -62,12 +62,14 @@ bosh_login() {
 	bosh_vars >"$BOSH_VAR_CACHE"
 
 	bosh int "$BOSH_VAR_CACHE" --path /default_ca/ca >"$BOSH_CA_CERT" || exit 1
+	export BOSH_CLIENT=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client)
+	export BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret)
+
 	bosh alias-env "$BOSH_ENV" \
 		--environment $(bosh int "$BOSH_VAR_CACHE" --path /bosh_target) \
 		--ca-cert "$BOSH_CA_CERT" || exit 1
 
-	printf '%s\n%s\n' $(bosh int "$BOSH_VAR_CACHE" --path /bosh_client) $(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret) |
-		bosh log-in -e "$BOSH_ENV" || exit 1
+	bosh log-in -e "$BOSH_ENV" || exit 1
 }
 
 bosh_credhub_login() {
