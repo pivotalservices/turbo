@@ -6,7 +6,7 @@ Nothing is scalable for now.
 ## Instance types
 | Terraform value | Concourse Web     | Concourse Worker  |
 | --------------- | :---------------: | :---------------: |
-| small           | **n1-standard-1** | -                 |  |
+| small           | **n1-standard-1** | -                 |
 | medium          | n1-standard-2     | **n1-standard-2** |
 | large           | n1-standard-4     | n1-standard-4     |
 | xlarge          | n1-standard-8     | n1-standard-8     |
@@ -21,6 +21,26 @@ The domain deployed will be a subdomain of this master dns zone
 Example:  
 master dns zone = `gcp.mydomain.com` (this resource has a name in GCP, use that as the value of `master_dns_zone_name`)  
 subdomain that will be created = `myenv.gcp.mydomain.com` (the value of the variable `dns_domain_name`)
+
+## Create a GCP Service account
+To use terraform, you'll need the GCP of a service account.  
+This service account can be created using :
+```
+gcloud auth login
+gcloud config set project <PROJECT_NAME>
+gcloud iam service-accounts create <SERVICE_ACCOUNT_NAME>
+gcloud iam service-accounts keys create gcp-key.json --iam-account=<SERVICE_ACCOUNT_NAME>@<PROJECT_NAME>.iam.gserviceaccount.com
+gcloud projects add-iam-policy-binding <PROJECT_NAME> --member='serviceAccount:<SERVICE_ACCOUNT_NAME>@<PROJECT_NAME>.iam.gserviceaccount.com' --role='roles/editor'
+```
+
+## Enable the GCP APIs
+Within Google Cloud Platform, enable the following:
+  * GCP Compute API [here](https://console.cloud.google.com/apis/api/compute_component)
+  * GCP Storage API [here](https://console.cloud.google.com/apis/api/storage_component)
+  * GCP SQL API [here](https://console.cloud.google.com/apis/api/sql_component)
+  * GCP DNS API [here](https://console.cloud.google.com/apis/api/dns)
+  * GCP Cloud Resource Manager API [here](https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview)
+  * GCP Storage Interopability [here](https://console.cloud.google.com/storage/settings)
 
 ## Deploy
 Create a terraform.tfvars file with :
@@ -40,7 +60,7 @@ gcp_zone_1 = "GCP-Zone"
 # The master DNS Zone name (not the actual fqdn, but the name of the resource in GCP)
 master_dns_zone_name = "my-zone-name"
 
-# Will be created
+# Subdomain of the master zone, which will be created. All entries for Concourse, credhub and UAA will be created in this subdomain.
 dns_domain_name = "xxx.master-dns-zone.com"
 
 # Must be a /24
