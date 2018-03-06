@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-set -xo pipefail
+if [ "x$TF_DEBUG" == "xtrue" ]; then
+	set -x
+fi
+set -o pipefail
 
 if [ "x$1" == "x" ]; then
 	echo "Missing deployment name"

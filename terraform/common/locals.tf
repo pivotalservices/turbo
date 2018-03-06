@@ -12,6 +12,8 @@ locals {
 
 locals {
   common_env = {
+    TF_DEBUG = "${var.debug}"
+
     TF_CONCOURSE_WEB_VM_TYPE     = "${var.concourse_web_vm_type}"
     TF_CONCOURSE_WEB_VM_COUNT    = "${var.concourse_web_vm_count}"
     TF_CONCOURSE_WORKER_VM_TYPE  = "${var.concourse_worker_vm_type}"

@@ -44,7 +44,7 @@ do_deploy() {
 		--var credhub_dns="$TF_CREDHUB_DNS_ENTRY" \
 		--var-file lb_ca=<(echo -n "$TF_CA_CERT") \
 		--var-file lb_public_key=<(echo -n "$TF_LB_PUB_KEY") \
-		--no-redact \
+		$(if [ "x$TF_DEBUG" == "xtrue" ]; then echo "--no-redact"; fi) \
 		-n
 
 	#--var-file credhub_ca_cert=<(echo -n "$TF_CA_CERT") \

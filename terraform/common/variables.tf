@@ -33,3 +33,9 @@ variable "credhub_uaa_vm_count" {
   default     = "1"
   description = "Number of credhub-uaa VMs to deploy"
 }
+
+variable "debug" {
+  type        = "string"
+  default     = "false"
+  description = "if true, scripts will be run in debug mode (set -x)"
+}

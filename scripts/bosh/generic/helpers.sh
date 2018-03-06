@@ -27,7 +27,6 @@ git_clone_or_update() {
 
 env_from_terraform() {
 	set -e
-	set +x
 
 	local env="$1"
 	local env_json=$(echo "$env" | base64 --decode)
@@ -36,5 +35,4 @@ env_from_terraform() {
 	done
 
 	set +e
-	set -x
 }

@@ -86,6 +86,9 @@ source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]
 
 # Optionnal (default is 1): Number of Credhub-UAA VMs to deploy
 # credhub_uaa_vm_count = 1
+
+# Optionnal (default is false): Debug enabled
+# debug = "false"
 ```
 
 Also export your GCP key:
