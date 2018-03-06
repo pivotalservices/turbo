@@ -29,8 +29,11 @@ This service account can be created using :
 gcloud auth login
 gcloud config set project <PROJECT_NAME>
 gcloud iam service-accounts create <SERVICE_ACCOUNT_NAME>
-gcloud iam service-accounts keys create gcp-key.json --iam-account=<SERVICE_ACCOUNT_NAME>@<PROJECT_NAME>.iam.gserviceaccount.com
-gcloud projects add-iam-policy-binding <PROJECT_NAME> --member='serviceAccount:<SERVICE_ACCOUNT_NAME>@<PROJECT_NAME>.iam.gserviceaccount.com' --role='roles/editor'
+gcloud iam service-accounts keys create gcp-key.json \
+  --iam-account=<SERVICE_ACCOUNT_NAME>@<PROJECT_NAME>.iam.gserviceaccount.com
+gcloud projects add-iam-policy-binding <PROJECT_NAME> \
+  --member='serviceAccount:<SERVICE_ACCOUNT_NAME>@<PROJECT_NAME>.iam.gserviceaccount.com' \
+  --role='roles/editor'
 ```
 
 ## Enable the GCP APIs
