@@ -63,6 +63,9 @@ locals {
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
     TF_CREDHUB_URL            = "https://${aws_route53_record.credhub.name}.${var.dns_domain_name}"
 
+    # Other
+    TF_DB_STATIC_IP = "${cidrhost(aws_subnet.concourse.cidr_block,6)}"
+
     # IAAS
     TF_LB_CA      = ""
     TF_LB_PUB_KEY = ""

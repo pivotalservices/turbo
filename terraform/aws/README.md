@@ -50,6 +50,15 @@ source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]
 
 # Optionnal (default is medium)
 # concourse_worker_vm_type = "medium" 
+
+# Optionnal (default is 1): Number of Concourse web VMs to deploy
+# concourse_web_vm_count = 1
+
+# Optionnal (default is 1): Number of Concourse workers to deploy
+# concourse_worker_vm_count = 1
+
+# Optionnal (default is 1): Number of Credhub-UAA VMs to deploy
+# credhub_uaa_vm_count = 1
 ```
 
 Also export your AWS Secret and Access key:

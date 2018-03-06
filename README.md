@@ -37,7 +37,7 @@ export TERRAFORM_ENV_NAME=$(cat terraform.tfvars \
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
   -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
-  credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-concourse/ui_password
+  credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-ucc/concourse_admin_password
 ```
 
 ## Retrieve the credhub admin client secret
@@ -52,7 +52,7 @@ export TERRAFORM_ENV_NAME=$(cat terraform.tfvars \
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
   -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
-  credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-credhub-uaa/credhub_admin_client_secret
+  credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-ucc/credhub_admin_client_secret
 ```
 
 ## Retrieve the uaa admin client password
@@ -67,5 +67,5 @@ export TERRAFORM_ENV_NAME=$(cat terraform.tfvars \
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
   -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
-  credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-credhub-uaa/uaa-admin
+  credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-ucc/uaa-admin
 ```

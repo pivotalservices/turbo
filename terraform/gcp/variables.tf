@@ -38,12 +38,6 @@ variable "bootstrap_subnet" {
   description = "Subnet used to deploy the bootstrap environment, needs to be a /24"
 }
 
-variable "source_admin_networks" {
-  type        = "list"
-  default     = ["0.0.0.0/0"]
-  description = "Admin networks whitelisted to ssh on the jumpbox"
-}
-
 variable "ssh_user" {
   type        = "string"
   default     = "ubuntu"
@@ -72,16 +66,4 @@ variable "use_external_postgres" {
   type        = "string"
   default     = "false"
   description = "whether you want to use an GCP provided postgresDB for Concourse and it's dependecies"
-}
-
-variable "concourse_web_vm_type" {
-  type        = "string"
-  default     = "small"
-  description = "Size of concourse web vms: small, medium, large, xlarge, 2xlarge"
-}
-
-variable "concourse_worker_vm_type" {
-  type        = "string"
-  default     = "medium"
-  description = "Size of concourse web vms: medium, large, xlarge, 2xlarge, 4xlarge, 10xlarge, 16xlarge"
 }

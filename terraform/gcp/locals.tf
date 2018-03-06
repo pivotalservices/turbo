@@ -64,6 +64,8 @@ locals {
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
     TF_CREDHUB_URL            = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
 
+    TF_DB_STATIC_IP = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,6)}"
+
     # IAAS
     TF_CA_CERT    = "${local.flags["gcp_https_lb"] == "true" ? tls_self_signed_cert.rootca_cert.cert_pem : ""}"
     TF_LB_PUB_KEY = "${local.flags["gcp_https_lb"] == "true" ? tls_private_key.ssl_private_key.public_key_pem : ""}"

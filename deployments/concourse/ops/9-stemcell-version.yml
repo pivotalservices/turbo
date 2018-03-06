@@ -1,6 +1,0 @@
-- type: replace
-  path: /stemcells
-  value:
-  - alias: trusty
-    os: ubuntu-trusty
-    version: ((stemcell_version))
