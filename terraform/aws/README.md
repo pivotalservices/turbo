@@ -23,7 +23,7 @@ subdomain that will be created = `xxx.sub.master-dns-zone.com` (the value of the
 
 ## Deploy
 Create a terraform.tfvars file with :
-```t
+```sh
 # Used to prefix every object
 env_name = "MyEnv"
 

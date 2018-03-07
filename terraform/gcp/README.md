@@ -47,7 +47,7 @@ Within Google Cloud Platform, enable the following:
 
 ## Deploy
 Create a terraform.tfvars file with :
-```t
+```sh
 # Used to prefix every object
 env_name = "MyEnv"
 
