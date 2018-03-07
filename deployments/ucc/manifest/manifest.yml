@@ -56,9 +56,9 @@
           - name: *credhub_db_username
             password: *credhub_db_password
           tls: 
-            ca: ((database-tls.ca))
-            certificate: ((database-tls.certificate))
-            private_key: ((database-tls.private_key))
+            ca: ((/database-tls.ca))
+            certificate: ((/database-tls.certificate))
+            private_key: ((/database-tls.private_key))
     - name: database-backup-restorer
       release: backup-and-restore-sdk
       properties: {}
@@ -77,13 +77,13 @@
       release: credhub
       properties:
         credhub:
-          tls: ((credhub-tls))
+          tls: ((/credhub-tls))
           authentication:
             uaa:
               url: *uaa-url
               verification_key: ((uaa-jwt.public_key))
               ca_certs:
-              - ((uaa-tls.ca)) 
+              - ((/uaa-tls.ca)) 
           data_storage:
             type: postgres
             host: ((db_static_ip))
@@ -92,7 +92,7 @@
             password: &credhub_db_password ((postgres_credhub_password))
             database: &credhub_db_name credhub
             require_tls: true
-            tls_ca: ((database-tls.ca))
+            tls_ca: ((/database-tls.ca))
           encryption:
             keys: 
             - provider_name: int
@@ -148,12 +148,12 @@
               scope: ""
               authorities: credhub.read,credhub.write
               access-token-validity: 3600
-              secret: ((credhub_admin_client_secret))
-          admin: {client_secret: ((uaa-admin))}
+              secret: ((/credhub_admin_client_secret))
+          admin: {client_secret: ((/uaa-admin))}
           login: {client_secret: ((uaa-login))}
           zones: {internal: {hostnames: []}}
-          sslCertificate: ((uaa-tls.certificate))
-          sslPrivateKey: ((uaa-tls.private_key))
+          sslCertificate: ((/uaa-tls.certificate))
+          sslPrivateKey: ((/uaa-tls.private_key))
           jwt:
             revocable: true
             policy:
@@ -175,8 +175,8 @@
             password: &uaa_db_password ((postgres_uaa_password))
         login:
           saml:
-            serviceProviderCertificate: ((uaa-tls.certificate))
-            serviceProviderKey: ((uaa-tls.private_key))
+            serviceProviderCertificate: ((/uaa-tls.certificate))
+            serviceProviderKey: ((/uaa-tls.private_key))
             serviceProviderKeyPassword: ""
 
 
@@ -204,12 +204,12 @@
             # Bug 3.9.0
           client_id: *concourse_client_username
           client_secret: *concourse_client_password
-        tls_cert: ((concourse_ssl.certificate))
-        tls_key: ((concourse_ssl.private_key))
+        tls_cert: ((/concourse_ssl.certificate))
+        tls_key: ((/concourse_ssl.private_key))
         bind_port: 80
         tls_bind_port: 443
         basic_auth_username: admin
-        basic_auth_password: ((concourse_admin_password))
+        basic_auth_password: ((/concourse_admin_password))
         log_level: debug
   
         token_signing_key: ((token_signing_key))
@@ -218,7 +218,7 @@
   
         postgresql:
           sslmode: verify-ca
-          ca_cert: ((database-tls.ca))
+          ca_cert: ((/database-tls.ca))
           database: &concourse_db_name atc
           role: &concourse_db_role
             name: concourse
@@ -259,16 +259,16 @@
           listen_address: 0.0.0.0:7777
   
   variables:
-  - name: default_ca
+  - name: /default_ca
     type: certificate
     options:
       is_ca: true
       common_name: ca
   # DB
-  - name: database-tls
+  - name: /database-tls
     type: certificate
     options: 
-      ca: default_ca
+      ca: /default_ca
       common_name: ((db_static_ip))
       alternative_names:
       - ((db_static_ip))
@@ -282,32 +282,32 @@
     type: ssh
   - name: worker_key
     type: ssh
-  - name: concourse_admin_password
+  - name: /concourse_admin_password
     type: password
-  - name: concourse_ssl
+  - name: /concourse_ssl
     type: certificate
     options:
-      ca: default_ca
+      ca: /default_ca
       common_name: ((domain_name))
       alternative_names: [((domain_name))]
   # Credhub
   - name: postgres_credhub_password
     type: password
-  - name: credhub_admin_client_secret
+  - name: /credhub_admin_client_secret
     type: password
   - name: credhub-encryption-password
     type: password
     options:
       length: 40
-  - name: credhub-tls
+  - name: /credhub-tls
     type: certificate
     options:
-      ca: default_ca
+      ca: /default_ca
       common_name: ((credhub_dns))
       alternative_names:
       - ((credhub_dns))
       - 127.0.0.1
-  # - name: database-tls
+  # - name: /database-tls
   #   type: certificate
   #   options: 
   #     ca: credhub-ca
@@ -318,10 +318,10 @@
   #     - 127.0.0.1
   - name: postgres_uaa_password
     type: password
-  - name: uaa-tls
+  - name: /uaa-tls
     type: certificate
     options:
-      ca: default_ca
+      ca: /default_ca
       common_name: ((uaa_dns))
       alternative_names:
       - ((uaa_dns))
@@ -332,7 +332,7 @@
       key_length: 4096
   - name: uaa-users-admin
     type: password
-  - name: uaa-admin
+  - name: /uaa-admin
     type: password
   - name: uaa-login
     type: password
