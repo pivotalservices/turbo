@@ -1,6 +1,6 @@
 stemcell_version: '3468.21'
-credhub_version: '1.6.5'
-credhub_sha1: 'eda4e8873aa2dbfacb1857b175f761d2d0b64538'
+credhub_version: '1.7.1'
+credhub_sha1: '366d2abe4fd40f515427a5fef322c3fee9e4b9a3'
 uaa_version: '52.7'
 uaa_sha1: '8be4d3b477fc3b41700c1f0c8922efe4da5296c3'
 concourse_version: '3.9.1-jerome-dev4'
