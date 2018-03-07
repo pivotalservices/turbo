@@ -30,7 +30,7 @@ chmod 600 local/ssh/*
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') -i local/ssh/jumpbox  -o "IdentitiesOnly=true"
 ```
 
-## Retrieve the concourse admin user password
+## Retrieve the concourse admin user password (login is `admin`)
 ```sh
 chmod 600 local/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
@@ -45,7 +45,7 @@ ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
   credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-ucc/concourse_admin_password
 ```
 
-## Retrieve the credhub admin client secret
+## Retrieve the credhub admin client secret (login is `credhub-admin`)
 ```sh
 chmod 600 local/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
@@ -60,7 +60,7 @@ ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
   credhub get -n /$TERRAFORM_ENV_NAME-bosh1/$TERRAFORM_ENV_NAME-ucc/credhub_admin_client_secret
 ```
 
-## Retrieve the uaa admin client password
+## Retrieve the uaa admin client password (login is `admin`)
 ```sh
 chmod 600 local/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
