@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 env_from_terraform "$TERRAFORM_ENV"
 
+cat >~/.bashrc <<EOF
+BOSH_ENV="$TF_ENV_NAME-bootstrap"
+BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
+STEMCELL="$TF_STEMCELL_TYPE"
+EOF
+cat >>~/.bashrc <<'EOF'
+BOSH_STATE_FOLDER="$BOSH_FOLDER/state"
+BOSH_VAR_STORE="$BOSH_STATE_FOLDER/creds.yml"
+BOSH_VAR_CACHE="$BOSH_STATE_FOLDER/var_cache.yml"
+
+credhub api https://$(bosh int "$BOSH_VAR_CACHE" --path /bosh_target):8844 --skip-tls-validation >/dev/null 2>&1
+credhub login --client-name=credhub-admin --client-secret=$(bosh int "$BOSH_VAR_CACHE" --path /credhub_admin_client_secret) >/dev/null 2>&1
+EOF
+
 BOSH_ENV="$TF_ENV_NAME-bootstrap"
 BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 
