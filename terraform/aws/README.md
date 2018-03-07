@@ -23,7 +23,7 @@ subdomain that will be created = `xxx.sub.master-dns-zone.com` (the value of the
 
 ## Deploy
 Create a terraform.tfvars file with :
-```
+```t
 # Used to prefix every object
 env_name = "MyEnv"
 
@@ -65,9 +65,9 @@ source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]
 ```
 
 Also export your AWS Secret and Access key:
-```
-export TF_VAR_aws_secret_key=XXXXXXXXXXXX
-export TF_VAR_aws_access_key=XXXXXXXXXXXX
+```sh
+export TF_VAR_aws_secret_key="XXXXXXXXXXXX"
+export TF_VAR_aws_access_key="XXXXXXXXXXXX"
 ```
 
 Then simply run `terraform init && terraform apply`

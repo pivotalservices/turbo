@@ -25,7 +25,7 @@ subdomain that will be created = `myenv.gcp.mydomain.com` (the value of the vari
 ## Create a GCP Service account
 To use terraform, you'll need the GCP of a service account.  
 This service account can be created using :
-```
+```sh
 gcloud auth login
 gcloud config set project <PROJECT_NAME>
 gcloud iam service-accounts create <SERVICE_ACCOUNT_NAME>
@@ -47,7 +47,7 @@ Within Google Cloud Platform, enable the following:
 
 ## Deploy
 Create a terraform.tfvars file with :
-```
+```t
 # Used to prefix every object
 env_name = "MyEnv"
 
@@ -92,7 +92,7 @@ source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]
 ```
 
 Also export your GCP key:
-```
+```sh
 export TF_VAR_gcp_key=$(cat gcp-key.json)
 ```
 

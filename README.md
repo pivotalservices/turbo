@@ -23,7 +23,7 @@ Follow documentation [here](terraform/aws/README.md)
 ## SSH into the jumpbox
 The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`  
 Assuming you're in the terraform forlder:
-```
+```sh
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
 chmod 600 local/ssh/*
@@ -31,7 +31,7 @@ ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') -i local/ssh/jumpbox 
 ```
 
 ## Retrieve the concourse admin user password
-```
+```sh
 chmod 600 local/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
@@ -46,7 +46,7 @@ ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
 ```
 
 ## Retrieve the credhub admin client secret
-```
+```sh
 chmod 600 local/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
@@ -61,7 +61,7 @@ ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
 ```
 
 ## Retrieve the uaa admin client password
-```
+```sh
 chmod 600 local/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
