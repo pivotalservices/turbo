@@ -11,7 +11,7 @@ bosh_create_env() {
 		--var internal_gw="$TF_INTERNAL_GW" \
 		--var internal_ip="$TF_INTERNAL_IP" \
 		--var project_id="$TF_PROJECT_ID" \
-		--var zone="$TF_ZONE" \
+		--var zone="$TF_GCP_ZONE_1" \
 		--var tags="$TF_VM_TAGS" \
 		--var network="$TF_NETWORK" \
 		--var subnetwork="$TF_SUBNETWORK" || exit 1
@@ -28,7 +28,7 @@ bosh_delete_env() {
 		--var internal_gw="$TF_INTERNAL_GW" \
 		--var internal_ip="$TF_INTERNAL_IP" \
 		--var project_id="$TF_PROJECT_ID" \
-		--var zone="$TF_ZONE" \
+		--var zone="$TF_GCP_ZONE_1" \
 		--var tags="$TF_VM_TAGS" \
 		--var network="$TF_NETWORK" \
 		--var subnetwork="$TF_SUBNETWORK" || exit 1
@@ -40,7 +40,7 @@ bosh_int() {
 		--var internal_gw=\"$TF_INTERNAL_GW\" \
 		--var internal_ip=\"$TF_INTERNAL_IP\" \
 		--var project_id=\"$TF_PROJECT_ID\" \
-		--var zone=\"$TF_ZONE\" \
+		--var zone=\"$TF_GCP_ZONE_1\" \
 		--var tags=\"$TF_VM_TAGS\" \
 		--var network=\"$TF_NETWORK\" \
 		--var subnetwork=\"$TF_SUBNETWORK\""
@@ -51,6 +51,13 @@ bosh_int() {
 bosh_update_cloud_config() {
 	bosh -e "$BOSH_ENV" update-cloud-config "$BOSH_CLOUD_CONFIG" \
 		--var gcp_zone_1="$TF_GCP_ZONE_1" \
+		$(if [ $TF_GCP_ZONES_COUNT -ge 2 ]; then
+			echo -o "$BOSH_CLOUD_CONFIG_FOLDER/2azs.yml" --var gcp_zone_2="$TF_GCP_ZONE_2"
+		fi) \
+		$(if [ $TF_GCP_ZONES_COUNT -ge 3 ]; then
+			echo -o "$BOSH_CLOUD_CONFIG_FOLDER/3azs.yml" --var gcp_zone_3="$TF_GCP_ZONE_3"
+		fi) \
+		--var az_list="$TF_AZ_LIST" \
 		--var concourse_subnet_range="$TF_CONCOURSE_SUBNET_RANGE" \
 		--var concourse_subnet_gateway="$TF_CONCOURSE_SUBNET_GATEWAY" \
 		--var bootstrap_network_name="$TF_BOOTSTRAP_NETWORK_NAME" \

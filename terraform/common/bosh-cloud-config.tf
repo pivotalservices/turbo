@@ -6,8 +6,8 @@ resource "null_resource" "cloud-config-update" {
   }
 
   provisioner "file" {
-    source      = "../../cloud-config/${local.iaas_type}/cloud-config.yml"
-    destination = "/home/${var.ssh_user}/automation/bosh/cloud-config/cloud-config.yml"
+    source      = "../../cloud-config/${local.iaas_type}/"
+    destination = "/home/${var.ssh_user}/automation/bosh/cloud-config/"
   }
 
   provisioner "remote-exec" {

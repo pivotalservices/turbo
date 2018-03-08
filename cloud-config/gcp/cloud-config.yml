@@ -125,7 +125,7 @@ networks:
     dns:     [8.8.8.8, 8.8.4.4]
     static: ((bosh_network_static_ips))
     reserved: ((bosh_network_reserved_ips))
-    azs:     [z1]
+    azs:     ((az_list))
     cloud_properties:
       network_name: ((bootstrap_network_name))
       subnetwork_name: ((bosh_subnet_name))
@@ -139,7 +139,7 @@ networks:
     dns:     [8.8.8.8, 8.8.4.4]
     static: ((concourse_network_static_ips))
     reserved: ((concourse_network_reserved_ips))
-    azs:     [z1]
+    azs:     ((az_list))
     cloud_properties:
       network_name: ((bootstrap_network_name))
       subnetwork_name: ((concourse_subnet_name))

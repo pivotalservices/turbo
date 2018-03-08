@@ -15,7 +15,7 @@ resource "google_dns_record_set" "jumpbox" {
 resource "google_compute_instance" "jumpbox" {
   name         = "${var.env_name}-jumpbox"
   machine_type = "${var.jumpbox_server_type}"
-  zone         = "${var.gcp_zone_1}"
+  zone         = "${element(var.gcp_zones,0)}"
 
   tags = ["${var.env_name}-jumpbox", "${var.env_name}-allow-ssh", "${var.env_name}-internal"]
 

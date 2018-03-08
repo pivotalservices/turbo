@@ -18,11 +18,6 @@ variable "gcp_region" {
   description = "Name of the GCP region"
 }
 
-variable "gcp_zone_1" {
-  type        = "string"
-  description = "Zone used to deploy everything"
-}
-
 variable "master_dns_zone_name" {
   type        = "string"
   description = "Zone name to integrate the subdomain into"
@@ -66,4 +61,9 @@ variable "use_external_postgres" {
   type        = "string"
   default     = "false"
   description = "whether you want to use an GCP provided postgresDB for Concourse and it's dependecies"
+}
+
+variable "gcp_zones" {
+  type        = "list"
+  description = "Ordered list of the gcp zones you want to use (max 3)"
 }

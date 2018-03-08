@@ -68,7 +68,7 @@
     vm_type: ((credhub_uaa_vm_type))
     vm_extensions:
       - credhub
-    azs: [z1]
+    azs: ((az_list))
     stemcell: trusty
     networks: [{name: ((network_name))}]
 
@@ -183,7 +183,7 @@
 
   - name: web
     instances: ((web_vm_count))
-    azs: [z1]
+    azs: ((az_list))
     networks: [{name: ((network_name))}]
     stemcell: trusty
     vm_type: ((web_vm_type))
@@ -234,7 +234,7 @@
   
   - name: worker
     instances: ((worker_vm_count))
-    azs: [z1]
+    azs: ((az_list))
     networks: [{name: ((network_name))}]
     stemcell: trusty
     vm_type: ((worker_vm_type))

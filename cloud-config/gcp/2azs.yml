@@ -1,0 +1,7 @@
+---
+- type: replace
+  path: /azs/-
+  value:
+    name: z2
+    cloud_properties: {zone: ((gcp_zone_2))}
+

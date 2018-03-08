@@ -1,0 +1,24 @@
+---
+- type: replace
+  path: /azs/-
+  value:
+    name: z3
+    cloud_properties: {zone: ((gcp_zone_3))}
+
+- type: replace
+  path: /networks/-
+  value:
+    name: concourse
+    type: manual
+    subnets:
+    - range:   ((az3_concourse_subnet_range))
+      gateway: ((az3_concourse_subnet_gateway))
+      dns:     [8.8.8.8, 8.8.4.4]
+      static: ((az3_concourse_network_static_ips))
+      reserved: ((az3_concourse_network_reserved_ips))
+      azs:     [z3]
+      cloud_properties:
+        network_name: ((az3_bootstrap_network_name))
+        subnetwork_name: ((az3_concourse_subnet_name))
+        ephemeral_external_ip: false
+        tags: ((az3_concourse_network_vm_tags))

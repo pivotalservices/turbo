@@ -14,7 +14,7 @@ resource "google_sql_database_instance" "postgres" {
     }
 
     location_preference {
-      zone = "${var.gcp_zone_1}"
+      zone = "${element(var.gcp_zones,0)}"
     }
   }
 

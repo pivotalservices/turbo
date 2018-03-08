@@ -15,6 +15,12 @@ locals {
 }
 
 locals {
+  concourse_backend_service_name = "${var.env_name}-concourse-https-lb-backend-${length(var.gcp_zones)}az"
+  credhub_backend_service_name   = "${var.env_name}-credhub-https-lb-backend-${length(var.gcp_zones)}az"
+  uaa_backend_service_name       = "${var.env_name}-credhub-https-lb-backend-${length(var.gcp_zones)}az"
+}
+
+locals {
   iaas_env = {
     TF_FLAGS = "${jsonencode(local.flags)}"
 
@@ -27,22 +33,27 @@ locals {
     TF_INTERNAL_GW       = "${google_compute_subnetwork.bosh.gateway_address}"
     TF_INTERNAL_IP       = "${cidrhost(google_compute_subnetwork.bosh.ip_cidr_range, 6)}"
     TF_PROJECT_ID        = "${var.gcp_project_name}"
-    TF_ZONE              = "${var.gcp_zone_1}"
-    TF_VM_TAGS           = "[${var.env_name}-internal,${var.env_name}-nat]"
-    TF_NETWORK           = "${google_compute_network.bootstrap.name}"
-    TF_SUBNETWORK        = "${google_compute_subnetwork.bosh.name}"
-    TF_CPI               = "${local.iaas_type}"
-    TF_STEMCELL_TYPE     = "${local.stemcell}"
+    TF_GCP_ZONES_COUNT   = "${length(var.gcp_zones)}"
+    TF_AZ_LIST           = "${length(var.gcp_zones) == 1 ? "[z1]" :
+                              length(var.gcp_zones) == 2 ? "[z1,z2]" : "[z1,z2,z3]"}"
+
+    TF_GCP_ZONE_1    = "${var.gcp_zones[0]}"
+    TF_GCP_ZONE_2    = "${length(var.gcp_zones) == 2 ? element(var.gcp_zones,1) : ""}"
+    TF_GCP_ZONE_3    = "${length(var.gcp_zones) == 3 ? element(var.gcp_zones,2) : ""}"
+    TF_VM_TAGS       = "[${var.env_name}-internal,${var.env_name}-nat]"
+    TF_NETWORK       = "${google_compute_network.bootstrap.name}"
+    TF_SUBNETWORK    = "${google_compute_subnetwork.bosh.name}"
+    TF_CPI           = "${local.iaas_type}"
+    TF_STEMCELL_TYPE = "${local.stemcell}"
 
     # Cloud-Config
-    TF_GCP_ZONE_1                     = "${var.gcp_zone_1}"
     TF_CONCOURSE_SUBNET_RANGE         = "${google_compute_subnetwork.concourse.ip_cidr_range}"
     TF_CONCOURSE_SUBNET_GATEWAY       = "${google_compute_subnetwork.concourse.gateway_address}"
     TF_BOOTSTRAP_NETWORK_NAME         = "${google_compute_network.bootstrap.name}"
     TF_CONCOURSE_SUBNET_NAME          = "${google_compute_subnetwork.concourse.name}"
-    TF_CONCOURSE_WEB_BACKEND_GROUP    = "${google_compute_backend_service.concourse_web_lb_https_backend_service.name}"
-    TF_CREDHUB_BACKEND_GROUP          = "${google_compute_backend_service.credhub_lb_https_backend_service.name}"
-    TF_UAA_BACKEND_GROUP              = "${google_compute_backend_service.uaa_lb_https_backend_service.name}"
+    TF_CONCOURSE_WEB_BACKEND_GROUP    = "${local.concourse_backend_service_name}"
+    TF_CREDHUB_BACKEND_GROUP          = "${local.credhub_backend_service_name}"
+    TF_UAA_BACKEND_GROUP              = "${local.uaa_backend_service_name}"
     TF_CONCOURSE_NETWORK_STATIC_IPS   = "[${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,5)}-${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,8)}]"
     TF_CONCOURSE_NETWORK_RESERVED_IPS = "[${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,0)}-${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,4)}]"
     TF_CONCOURSE_NETWORK_VM_TAGS      = "[${var.env_name}-internal,${var.env_name}-nat]"
