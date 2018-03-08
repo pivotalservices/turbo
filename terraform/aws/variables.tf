@@ -18,9 +18,9 @@ variable "aws_region" {
   description = "Name of the AWS region"
 }
 
-variable "aws_az_1" {
-  type        = "string"
-  description = "Name of the first az"
+variable "aws_azs" {
+  type        = "list"
+  description = "Ordered list of the AWS AZs you want to use (max 3)"
 }
 
 variable "master_dns_domain_name" {
@@ -35,7 +35,7 @@ variable "dns_domain_name" {
 
 variable "bootstrap_subnet" {
   type        = "string"
-  description = "Subnet used to deploy the bootstrap environment, needs to be a /24"
+  description = "Subnet used to deploy the bootstrap environment, needs to be a /22"
 }
 
 variable "ssh_user" {

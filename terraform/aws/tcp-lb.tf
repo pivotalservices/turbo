@@ -18,8 +18,8 @@ resource "aws_security_group_rule" "credhub_https_in" {
 
   cidr_blocks = [
     "${var.source_admin_networks}",
-    "${aws_eip.bosh_natgw.public_ip}/32",
-    "${aws_eip.jumpbox.public_ip}/32",
+    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
   ]
 }
 
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "credhub_all_out" {
 
 resource "aws_elb" "credhub-elb" {
   name            = "credhub-elb"
-  subnets         = ["${aws_subnet.jumpbox.id}"]
+  subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.credhub-elb.id}"]
   internal        = false
 
@@ -49,9 +49,7 @@ resource "aws_elb" "credhub-elb" {
   }
 
   health_check {
-    # Should be 
-    # target = "HTTPS:8844/health"
-    target = "TCP:8844"
+    target = "HTTPS:8844/health"
 
     timeout             = 4
     interval            = 5
@@ -80,8 +78,8 @@ resource "aws_security_group_rule" "uaa_https_in" {
 
   cidr_blocks = [
     "${var.source_admin_networks}",
-    "${aws_eip.bosh_natgw.public_ip}/32",
-    "${aws_eip.jumpbox.public_ip}/32",
+    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
   ]
 }
 
@@ -96,7 +94,7 @@ resource "aws_security_group_rule" "uaa_all_out" {
 
 resource "aws_elb" "uaa-elb" {
   name            = "uaa-elb"
-  subnets         = ["${aws_subnet.jumpbox.id}"]
+  subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.uaa-elb.id}"]
   internal        = false
 
@@ -139,8 +137,8 @@ resource "aws_security_group_rule" "concourse_https_in" {
 
   cidr_blocks = [
     "${var.source_admin_networks}",
-    "${aws_eip.bosh_natgw.public_ip}/32",
-    "${aws_eip.jumpbox.public_ip}/32",
+    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
   ]
 }
 
@@ -155,7 +153,7 @@ resource "aws_security_group_rule" "concourse_all_out" {
 
 resource "aws_elb" "concourse-elb" {
   name            = "concourse-elb"
-  subnets         = ["${aws_subnet.jumpbox.id}"]
+  subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.concourse-elb.id}"]
   internal        = false
 

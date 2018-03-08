@@ -1,0 +1,18 @@
+---
+- type: replace
+  path: /azs/-
+  value:
+    name: z3
+    cloud_properties: {availability_zone: ((aws_az3))}
+
+- type: replace
+  path: /networks/name=concourse/subnets/-
+  value:
+    range:   ((az3_concourse_subnet_range))
+    gateway: ((az3_concourse_subnet_gateway))
+    dns:     [169.254.169.253]
+    static: ((az3_concourse_network_static_ips))
+    reserved: ((az3_concourse_network_reserved_ips))
+    azs:     [z3]
+    cloud_properties:
+      subnet: ((az3_concourse_subnet_id))

@@ -17,7 +17,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "jumpbox" {
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
-  subnet_id     = "${aws_subnet.jumpbox.id}"
+  subnet_id     = "${aws_subnet.jumpbox.0.id}"
 
   vpc_security_group_ids = [
     "${aws_security_group.jumpbox.id}",
@@ -58,7 +58,7 @@ resource "null_resource" "destroy-all" {
   }
 
   depends_on = [
-    "aws_route_table_association.a_az1",
+    "aws_route_table_association.jumpbox_public_route",
     "aws_security_group.jumpbox",
     "aws_security_group.bosh_deployed_vms",
     "aws_nat_gateway.global_nat_gw",

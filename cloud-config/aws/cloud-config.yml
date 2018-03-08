@@ -152,14 +152,14 @@ networks:
 - name: concourse
   type: manual
   subnets:
-  - range:   ((concourse_subnet_range))
-    gateway: ((concourse_subnet_gateway))
+  - range:   ((az1_concourse_subnet_range))
+    gateway: ((az1_concourse_subnet_gateway))
     dns:     [169.254.169.253]
-    static: ((concourse_network_static_ips))
-    reserved: ((concourse_network_reserved_ips))
+    static: ((az1_concourse_network_static_ips))
+    reserved: ((az1_concourse_network_reserved_ips))
     azs:     [z1]
     cloud_properties:
-      subnet: ((concourse_subnet_id))
+      subnet: ((az1_concourse_subnet_id))
 
 vm_extensions:
 - name: concourse-web
