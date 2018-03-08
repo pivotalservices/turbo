@@ -18,6 +18,6 @@ done
 # 	bosh -e "$BOSH_ENV" -n delete-disk $disk
 # done
 
-bosh -e "$BOSH_ENV" clean-up --all || exit 1
+bosh -e "$BOSH_ENV" clean-up --all -n || exit 1
 
 bosh_delete_env || exit 1
