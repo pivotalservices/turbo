@@ -30,8 +30,10 @@ env_name = "MyEnv"
 # AWS Region
 aws_region = "eu-west-2"
 
-# AWS AZ 1
-aws_az_1 = "eu-west-2a"
+# AWS AZ list to use (up to 3 entries in the list).
+# Do not modify the order once created. You can add but not delete entries 
+# Eg for 3 entries: aws_azs = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
+aws_azs = ["eu-west-2a"]
 
 # The master DNS Domain name (fqdn)
 master_dns_domain_name = "sub.master-dns-zone.com"
@@ -39,8 +41,8 @@ master_dns_domain_name = "sub.master-dns-zone.com"
 # Will be created
 dns_domain_name = "xxx.sub.master-dns-zone.com"
 
-# Must be a /24
-bootstrap_subnet = "10.0.0.0/24"
+# Must be a /22
+bootstrap_subnet = "10.0.0.0/22"
 
 # Can be 0.0.0.0/0 for full access or a list of IPs/subnets for restricted access
 source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]

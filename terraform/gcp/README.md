@@ -54,11 +54,13 @@ env_name = "MyEnv"
 # Name of the GCP Project
 gcp_project_name = "GCP-Project-Name"
 
-# GCP Region
-gcp_region = "GCP-Region"
+# GCP Region to use
+gcp_region = "europe-west1"
 
-# GCP Zone in the region
-gcp_zone_1 = "GCP-Zone"
+# GCP Zones list in the region (up to 3 entries in the list).
+# Do not modify the order once created. You can add but not delete entries
+# Eg for 3 entries: gcp_zones = ["europe-west1-b", "europe-west1-c", "europe-west1-d"]
+gcp_zones = ["europe-west1-b"]
 
 # The master DNS Zone name (not the actual fqdn, but the name of the resource in GCP)
 master_dns_zone_name = "my-zone-name"
