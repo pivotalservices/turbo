@@ -14,4 +14,10 @@ for dep in $DEPLOYMENTS; do
 	bosh -e "$BOSH_ENV" -d "$dep" delete-deployment -n || exit 1
 done
 
+# for disk in $(bosh -e "$BOSH_ENV" disks --orphaned --json | jq -r '.Tables[].Rows[] .disk_cid'); do
+# 	bosh -e "$BOSH_ENV" -n delete-disk $disk
+# done
+
+bosh -e "$BOSH_ENV" clean-up --all || exit 1
+
 bosh_delete_env || exit 1
