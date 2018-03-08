@@ -1,6 +1,5 @@
 # Note
-This is a WIP, Concourse is not yet integrated with Credhub nor UAA.  
-Nothing is scalable for now.
+Do not use this for production, for now!
 
 # Howto use:
 ## Instance types
