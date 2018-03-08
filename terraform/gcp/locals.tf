@@ -38,7 +38,7 @@ locals {
                               length(var.gcp_zones) == 2 ? "[z1,z2]" : "[z1,z2,z3]"}"
 
     TF_GCP_ZONE_1    = "${var.gcp_zones[0]}"
-    TF_GCP_ZONE_2    = "${length(var.gcp_zones) == 2 ? element(var.gcp_zones,1) : ""}"
+    TF_GCP_ZONE_2    = "${length(var.gcp_zones) >= 2 ? element(var.gcp_zones,1) : ""}"
     TF_GCP_ZONE_3    = "${length(var.gcp_zones) == 3 ? element(var.gcp_zones,2) : ""}"
     TF_VM_TAGS       = "[${var.env_name}-internal,${var.env_name}-nat]"
     TF_NETWORK       = "${google_compute_network.bootstrap.name}"
