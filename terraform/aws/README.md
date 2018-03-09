@@ -4,6 +4,7 @@ Do not use this for production, for now!
 # Howto use:
 ## Instance types
 **bold** is default  
+
 | Terraform value | Concourse Web | Concourse Worker | postgres     |
 | --------------- | :-----------: | :--------------: | :----------: |
 | small           | **t2.small**  | -                | **t2.small** |
