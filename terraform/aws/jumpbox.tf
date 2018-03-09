@@ -15,9 +15,10 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "jumpbox" {
-  ami           = "${data.aws_ami.ubuntu.id}"
-  instance_type = "t2.micro"
-  subnet_id     = "${aws_subnet.jumpbox.0.id}"
+  ami               = "${data.aws_ami.ubuntu.id}"
+  instance_type     = "t2.micro"
+  subnet_id         = "${aws_subnet.jumpbox.0.id}"
+  availability_zone = "${var.aws_azs[0]}"
 
   vpc_security_group_ids = [
     "${aws_security_group.jumpbox.id}",
@@ -68,9 +69,5 @@ resource "null_resource" "destroy-all" {
     "aws_route_table_association.bosh_public_route",
     "aws_instance.jumpbox",
     "aws_eip.jumpbox",
-    "aws_security_group_rule.all-out-bosh-vms",
-    "aws_security_group_rule.all-in-bosh-vms",
-    "aws_security_group_rule.jumpbox_ssh_in",
-    "aws_security_group_rule.all-out",
   ]
 }
