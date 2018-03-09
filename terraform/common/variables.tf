@@ -34,6 +34,18 @@ variable "credhub_uaa_vm_count" {
   description = "Number of credhub-uaa VMs to deploy"
 }
 
+variable "db_vm_type" {
+  type        = "string"
+  default     = "small"
+  description = "Size of the postgres db vm: small, medium, large, xlarge, 2xlarge, 4xlarge, 10xlarge, 16xlarge"
+}
+
+variable "db_persistent_disk_size" {
+  type        = "string"
+  default     = "10"
+  description = "Size of the DB disk in GB. Possible values: 10, 25, 50, 100, 250, 500, 1000"
+}
+
 variable "debug" {
   type        = "string"
   default     = "false"

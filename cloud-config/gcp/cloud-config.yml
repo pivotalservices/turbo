@@ -4,15 +4,58 @@ azs:
   cloud_properties: {zone: ((gcp_zone_1))}
 
 vm_types:
-- name: concourse-db
+- name: db-small
+  cloud_properties:
+    machine_type: n1-standard-1
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+- name: db-medium
+  cloud_properties:
+    machine_type: n1-standard-2
+    preemptible: true
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+- name: db-large
   cloud_properties:
     machine_type: n1-standard-4
-    root_disk_size_gb: 20
+    preemptible: true
+    root_disk_size_gb: 10
     root_disk_type: pd-ssd
+- name: db-xlarge
+  cloud_properties:
+    machine_type: n1-standard-8
+    preemptible: true
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+- name: db-2xlarge
+  cloud_properties:
+    machine_type: n1-standard-16
+    preemptible: true
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+- name: db-4xlarge
+  cloud_properties:
+    machine_type: n1-standard-32
+    preemptible: true
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+- name: db-10xlarge
+  cloud_properties:
+    machine_type: n1-standard-64
+    preemptible: true
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+- name: db-16xlarge
+  cloud_properties:
+    machine_type: n1-standard-96
+    preemptible: true
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+
 - name: credhub
   cloud_properties:
     machine_type: n1-standard-1
-    root_disk_size_gb: 20
+    root_disk_size_gb: 10
     root_disk_type: pd-ssd
 
 # Concourse Web
@@ -100,16 +143,24 @@ vm_types:
   cloud_properties:
     machine_type: n1-standard-2
     preemptible: true
-    root_disk_size_gb: 20
+    root_disk_size_gb: 10
     root_disk_type: pd-ssd
 
 disk_types:
-- name: default
-  disk_size: 3000
-- name: db
+- name: 10G
   disk_size: 10240
-- name: 10GB
-  disk_size: 10240
+- name: 25G
+  disk_size: 25600
+- name: 50G
+  disk_size: 51200
+- name: 100G
+  disk_size: 102400
+- name: 250G
+  disk_size: 256000
+- name: 500G
+  disk_size: 512000
+- name: 1000G
+  disk_size: 1024000
 
 networks:
 - name: bosh

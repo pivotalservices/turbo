@@ -34,8 +34,8 @@ do_deploy() {
 		--var web_vm_count="$TF_CONCOURSE_WEB_VM_COUNT" \
 		--var worker_vm_type="worker-$TF_CONCOURSE_WORKER_VM_TYPE" \
 		--var worker_vm_count="$TF_CONCOURSE_WORKER_VM_COUNT" \
-		--var db_vm_type=concourse-db \
-		--var db_persistent_disk_type=db \
+		--var db_vm_type="db-$TF_DB_VM_TYPE" \
+		--var db_persistent_disk_size="${TF_DB_PERSISTENT_DISK_SIZE}G" \
 		--var db_static_ip="$TF_DB_STATIC_IP" \
 		--var credhub_uaa_vm_type=credhub \
 		--var credhub_uaa_vm_count="$TF_CREDHUB_UAA_VM_COUNT" \

@@ -36,7 +36,7 @@
       static_ips: ((db_static_ip))
     stemcell: trusty
     vm_type: ((db_vm_type))
-    persistent_disk_type: ((db_persistent_disk_type))
+    persistent_disk_type: ((db_persistent_disk_size))
     jobs:
     - release: postgres
       name: postgres

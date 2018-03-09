@@ -3,16 +3,17 @@ Do not use this for production, for now!
 
 # Howto use:
 ## Instance types
-| Terraform value | Concourse Web     | Concourse Worker  |
-| --------------- | :---------------: | :---------------: |
-| small           | **n1-standard-1** | -                 |
-| medium          | n1-standard-2     | **n1-standard-2** |
-| large           | n1-standard-4     | n1-standard-4     |
-| xlarge          | n1-standard-8     | n1-standard-8     |
-| 2xlarge         | n1-standard-16    | n1-standard-16    |
-| 4xlarge         | -                 | n1-standard-32    |
-| 10xlarge        | -                 | n1-standard-64    |
-| 16xlarge        | -                 | n1-standard-96    |
+**bold** is default  
+| Terraform value | Concourse Web     | Concourse Worker  | postgres          |
+| --------------- | :---------------: | :---------------: | :---------------: |
+| small           | **n1-standard-1** | -                 | **n1-standard-1** |
+| medium          | n1-standard-2     | **n1-standard-2** | n1-standard-2     |
+| large           | n1-standard-4     | n1-standard-4     | n1-standard-4     |
+| xlarge          | n1-standard-8     | n1-standard-8     | n1-standard-8     |
+| 2xlarge         | n1-standard-16    | n1-standard-16    | n1-standard-16    |
+| 4xlarge         | -                 | n1-standard-32    | n1-standard-32    |
+| 10xlarge        | -                 | n1-standard-64    | n1-standard-64    |
+| 16xlarge        | -                 | n1-standard-96    | n1-standard-96    |
 
 ## Create a master DNS Zone
 You'll want to create a master dns zone if you don't have one in GCP.  
@@ -44,6 +45,9 @@ Within Google Cloud Platform, enable the following:
   * GCP Cloud Resource Manager API [here](https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview)
   * GCP Storage Interopability [here](https://console.cloud.google.com/storage/settings)
 
+## Download a patched credhub-cli
+You can download a patched credhub-cli which works when credhub sits behind a GCP LB [here](https://storage.googleapis.com/bosh-release-jwi/credhub). It's compiled for macOS.  
+Or you can build it from source from the [credhub-cli repo](https://github.com/cloudfoundry-incubator/credhub-cli)
 ## Deploy
 Create a terraform.tfvars file with :
 ```sh
@@ -73,23 +77,29 @@ bootstrap_subnet = "10.0.0.0/24"
 # Can be 0.0.0.0/0 for full access or a list of IPs/subnets for restricted access
 source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"] 
 
-# Optionnal (default is small)
+# Optional (default is small)
 # concourse_web_vm_type = "small"
 
-# Optionnal (default is medium)
+# Optional (default is medium)
 # concourse_worker_vm_type = "medium"
 
-# Optionnal (default is 1): Number of Concourse web VMs to deploy
+# Optional (default is 1): Number of Concourse web VMs to deploy
 # concourse_web_vm_count = 1
 
-# Optionnal (default is 1): Number of Concourse workers to deploy
+# Optional (default is 1): Number of Concourse workers to deploy
 # concourse_worker_vm_count = 1
 
-# Optionnal (default is 1): Number of Credhub-UAA VMs to deploy
+# Optional (default is 1): Number of Credhub-UAA VMs to deploy
 # credhub_uaa_vm_count = 1
 
-# Optionnal (default is false): Debug enabled
+# Optional (default is false): Debug enabled
 # debug = "false"
+
+# Optional (default is 10): Size of the Database persistent disk
+# db_persistent_disk_size = "10"
+
+# Optional (default is small): Size of the postgres DB VM
+# db_vm_type = "small"
 ```
 
 Also export your GCP key:

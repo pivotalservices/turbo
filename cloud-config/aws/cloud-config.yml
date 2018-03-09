@@ -4,17 +4,70 @@ azs:
   cloud_properties: {availability_zone: ((aws_az1))}
 
 vm_types:
-- name: default
+- name: db-small
   cloud_properties:
-    instance_type: t2.xlarge
-
-- name: concourse-db
+    instance_type: t2.small
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-medium
   cloud_properties:
-    instance_type: t2.xlarge
+    instance_type: t2.medium
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-large
+  cloud_properties:
+    instance_type: m4.large
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-xlarge
+  cloud_properties:
+    instance_type: m4.xlarge
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-2xlarge
+  cloud_properties:
+    instance_type: m4.2xlarge
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-4xlarge
+  cloud_properties:
+    instance_type: m4.4xlarge
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-10xlarge
+  cloud_properties:
+    instance_type: m4.10xlarge
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+- name: db-16xlarge
+  cloud_properties:
+    instance_type: m4.16xlarge
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
 
 - name: credhub
   cloud_properties:
     instance_type: t2.medium
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
 
 - name: concourse-web-small
   cloud_properties:
@@ -119,23 +172,46 @@ vm_types:
     spot_bid_price: 0.13 # on-demand price: 0.111
     spot_ondemand_fallback: true
     ephemeral_disk:
-      size: 5_000
+      size: 10_000
       type: gp2
       encrypted: true
 
 disk_types:
-- name: default
+- name: 10G
   cloud_properties:
     type: gp2
-  disk_size: 3000
-- name: db
-  cloud_properties:
-    type: gp2
+    encrypted: true
   disk_size: 10240
-- name: 10GB
+- name: 25G
   cloud_properties:
     type: gp2
-  disk_size: 10240
+    encrypted: true
+  disk_size: 25600
+- name: 50G
+  cloud_properties:
+    type: gp2
+    encrypted: true
+  disk_size: 51200
+- name: 100G
+  cloud_properties:
+    type: gp2
+    encrypted: true
+  disk_size: 102400
+- name: 250G
+  cloud_properties:
+    type: gp2
+    encrypted: true
+  disk_size: 256000
+- name: 500G
+  cloud_properties:
+    type: gp2
+    encrypted: true
+  disk_size: 512000
+- name: 1000G
+  cloud_properties:
+    type: gp2
+    encrypted: true
+  disk_size: 1024000
 
 networks:
 - name: bosh
