@@ -69,6 +69,12 @@ if do_deploy; then
 	if [ -f $DEPLOYMENT_HOME/scripts/post-deploy.sh ]; then
 		source $DEPLOYMENT_HOME/scripts/post-deploy.sh
 	fi
+	echo "Cleaning up unused releases..."
+	for line in $(bosh -e "$BOSH_ENV" releases --json | jq '.Tables[].Rows[] | select(.version | endswith("*") | not)' -r --compact-output); do
+		release="$(echo $line | jq -r '.name')/$(echo $line | jq -r '.version')"
+		echo "Deleting release $release"
+		bosh -e "$BOSH_ENV" delete-release "$(echo $line | jq -r '.name')/$(echo $line | jq -r '.version')" -n
+	done
 	clean_exit 0
 else
 	clean_exit 1
