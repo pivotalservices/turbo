@@ -70,10 +70,16 @@ if do_deploy; then
 		source $DEPLOYMENT_HOME/scripts/post-deploy.sh
 	fi
 	echo "Cleaning up unused releases..."
-	for line in $(bosh -e "$BOSH_ENV" releases --json | jq '.Tables[].Rows[] | select(.version | endswith("*") | not)' -r --compact-output); do
-		release="$(echo $line | jq -r '.name')/$(echo $line | jq -r '.version')"
+	for line in $(bosh -e "$BOSH_ENV" releases --json | jq -M '.Tables[].Rows[] | select(.version | endswith("*") | not) | @base64' -r --compact-output); do
+		release="$(echo $line | base64 --decode | jq -r '.name')/$(echo $line | base64 --decode | jq -r '.version')"
 		echo "Deleting release $release"
-		bosh -e "$BOSH_ENV" delete-release "$(echo $line | jq -r '.name')/$(echo $line | jq -r '.version')" -n
+		bosh -e "$BOSH_ENV" delete-release "$release" -n
+	done
+	echo "Cleaning up unused stemcells..."
+	for line in $(bosh -e "$BOSH_ENV" stemcells --json | jq -M '.Tables[].Rows[] | select(.version | endswith("*") | not) | @base64' -r --compact-output); do
+		stemcell=$(echo $line | base64 --decode | jq -r '.name')/$(echo $line | base64 --decode | jq -r '.version')
+		echo "Deleting stemcell $stemcell"
+		bosh -e "$BOSH_ENV" delete-stemcell "$stemcell" -n
 	done
 	clean_exit 0
 else
