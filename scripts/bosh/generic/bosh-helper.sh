@@ -4,7 +4,7 @@ env_from_terraform "$TERRAFORM_ENV"
 BOSH_ENV="$TF_ENV_NAME-bootstrap"
 BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 
-BOSH_STATE_FOLDER="$BOSH_FOLDER/state"
+BOSH_STATE_FOLDER="/data/bosh-state"
 
 BOSH_VAR_STORE="$BOSH_STATE_FOLDER/creds.yml"
 BOSH_VAR_CACHE="$BOSH_STATE_FOLDER/var_cache.yml"

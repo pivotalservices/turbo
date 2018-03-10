@@ -12,6 +12,13 @@ resource "google_dns_record_set" "jumpbox" {
   rrdatas = ["${google_compute_instance.jumpbox.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
 
+resource "google_compute_disk" "jumpbox_data" {
+  name = "${var.env_name}-jumpbox-data"
+  type = "pd-standard"
+  size = "10"
+  zone = "${element(var.gcp_zones,0)}"
+}
+
 resource "google_compute_instance" "jumpbox" {
   name         = "${var.env_name}-jumpbox"
   machine_type = "${var.jumpbox_server_type}"
@@ -25,8 +32,10 @@ resource "google_compute_instance" "jumpbox" {
     }
   }
 
-  // Local SSD disk
-  scratch_disk {}
+  attached_disk {
+    source      = "${google_compute_disk.jumpbox_data.self_link}"
+    device_name = "data"
+  }
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.jumpbox.name}"
@@ -35,6 +44,20 @@ resource "google_compute_instance" "jumpbox" {
       nat_ip = "${local.ssh_host}"
     }
   }
+
+  metadata_startup_script = <<EOF
+  #!/usr/bin/env bash
+while [ ! -e /dev/disk/by-id/google-data ]; do sleep 1; done
+if ! sudo file -sL /dev/disk/by-id/google-data-part1 | grep ext4; then
+    echo -e "g\nn\np\n1\n\n\nw" | sudo fdisk /dev/disk/by-id/google-data
+    sudo mkfs.ext4 /dev/disk/by-id/google-data-part1
+fi
+sudo mkdir /data
+sudo mount /dev/disk/by-id/google-data-part1 /data
+if ! grep $(hostname) /etc/hosts; then
+  echo "127.0.1.1" $(hostname) >> /etc/hosts
+fi
+EOF
 
   metadata {
     sshKeys = "${var.ssh_user}:${tls_private_key.jumpbox_ssh_private_key.public_key_openssh}"
@@ -65,5 +88,6 @@ resource "google_compute_instance" "jumpbox" {
     "google_compute_subnetwork.concourse",
     "google_compute_instance.nat-gateway-pri",
     "google_compute_route.nat-primary",
+    "local_file.jumpbox_ssh_public_key_file",
   ]
 }

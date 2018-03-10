@@ -3,8 +3,8 @@ if [ "x$TF_DEBUG" == "xtrue" ]; then
 	set -x
 fi
 
-source ~/automation/scripts/bosh/generic/helpers.sh
-source ~/automation/scripts/bosh/generic/bosh-helper.sh
+source $HOME/automation/scripts/bosh/generic/helpers.sh
+source $HOME/automation/scripts/bosh/generic/bosh-helper.sh
 
 git_clone_or_update "$BOSH_REPO_FOLDER" "$BOSH_REPO"
 
@@ -29,7 +29,7 @@ export BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 export STEMCELL="$TF_STEMCELL_TYPE"
 EOF
 cat >>~/.bashrc <<'EOF'
-export BOSH_STATE_FOLDER="$BOSH_FOLDER/state"
+export BOSH_STATE_FOLDER="/data/bosh-state"
 export BOSH_VAR_STORE="$BOSH_STATE_FOLDER/creds.yml"
 export BOSH_VAR_CACHE="$BOSH_STATE_FOLDER/var_cache.yml"
 export BOSH_CLIENT=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client)

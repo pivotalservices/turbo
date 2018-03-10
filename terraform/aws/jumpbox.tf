@@ -3,7 +3,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180228.1"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
   }
 
   filter {
@@ -12,6 +12,25 @@ data "aws_ami" "ubuntu" {
   }
 
   owners = ["099720109477"] # Canonical
+}
+
+resource "aws_ebs_volume" "jumpbox_data" {
+  availability_zone = "${var.aws_azs[0]}"
+  size              = 10
+  encrypted         = true
+  type              = "gp2"
+
+  tags {
+    Name = "${var.env_name}-jumpbox-data"
+  }
+}
+
+resource "aws_volume_attachment" "jumpbox_data_att" {
+  device_name = "/dev/xvdh"
+  volume_id   = "${aws_ebs_volume.jumpbox_data.id}"
+  instance_id = "${aws_instance.jumpbox.id}"
+
+  skip_destroy = true
 }
 
 resource "aws_instance" "jumpbox" {
@@ -29,6 +48,20 @@ resource "aws_instance" "jumpbox" {
   tags {
     Name = "${var.env_name}-jumpbox"
   }
+
+  user_data = <<EOF
+#!/usr/bin/env bash
+while [ ! -d /sys/block/xvdh ]; do sleep 1; done
+if [ ! -d /sys/block/xvdh/xvdh1 ]; then
+    echo -e "g\nn\np\n1\n\n\nw" | sudo fdisk /dev/xvdh
+    sudo mkfs.ext4 /dev/xvdh1
+fi
+sudo mkdir /data
+sudo mount /dev/xvdh1 /data
+if ! grep $(hostname) /etc/hosts; then
+  echo "127.0.1.1" $(hostname) >> /etc/hosts
+fi
+EOF
 }
 
 resource "aws_eip" "jumpbox" {
@@ -69,5 +102,8 @@ resource "null_resource" "destroy-all" {
     "aws_route_table_association.bosh_public_route",
     "aws_instance.jumpbox",
     "aws_eip.jumpbox",
+    "aws_volume_attachment.jumpbox_data_att",
+    "aws_ebs_volume.jumpbox_data",
+    "local_file.jumpbox_ssh_public_key_file",
   ]
 }

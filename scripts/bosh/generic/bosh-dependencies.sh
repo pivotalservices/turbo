@@ -3,19 +3,43 @@ if [ "x$TF_DEBUG" == "xtrue" ]; then
 	set -x
 fi
 
-sudo apt-get update || exit 1
-sudo apt-get install -y build-essential zlibc zlib1g-dev ruby ruby-dev openssl libxslt-dev libxml2-dev libssl-dev libreadline6 libreadline6-dev libyaml-dev libsqlite3-dev sqlite3 jq || exit 1
+echo "Fetching updates and installing bosh dependencies..."
+sudo apt-get update >/dev/null || exit 1
+sudo apt-get install -y build-essential zlibc zlib1g-dev ruby ruby-dev openssl libxslt-dev libxml2-dev libssl-dev libreadline6 libreadline6-dev libyaml-dev libsqlite3-dev sqlite3 jq >/dev/null || exit 1
 
-curl -L --output bosh https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.48-linux-amd64 || exit 1
-chmod +x bosh || exit 1
-sudo mv bosh /usr/local/bin || exit 1
+curl -s -L --output bosh https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.48-linux-amd64 >/dev/null || exit 1
+chmod +x bosh >/dev/null || exit 1
+sudo mv bosh /usr/local/bin >/dev/null || exit 1
 
 credhub_url=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/credhub-cli/releases/latest | jq -r ".assets[] | select(.name | test(\"credhub-linux\")) | .browser_download_url")
 (
-	curl -L -o credhub.tgz $credhub_url &&
-		tar -zxvf credhub.tgz
-	chmod 755 credhub &&
-		sudo mv credhub /usr/local/bin/ &&
-		rm -rf credhub.tgz &&
+	curl -L -o credhub.tgz $credhub_url >/dev/null &&
+		tar -zxvf credhub.tgz >/dev/null &&
+		chmod 755 credhub >/dev/null &&
+		sudo mv credhub /usr/local/bin/ >/dev/null &&
+		rm -rf credhub.tgz >/dev/null &&
 		echo "credhub installation complete"
 ) || exit 1
+
+echo "Updates and bosh dependencies installed!"
+
+# Wait for persistent disk mount
+i=0
+echo "Waiting max 120sec for persistent disk to be mounted..."
+while ! mount | grep /data >/dev/null; do
+	sleep 1
+	i=$(($i + 1))
+	if [ $i -ge 120 ]; then # exit after 120 sec
+		echo "Persistent disk not mounted after 120 sec, exiting..."
+		exit 1
+	fi
+done
+echo "Persistent disk mounted to /data"
+
+USERNAME=$(id -un)
+GROUP=$(id -gn)
+BOSH_STATE="/data/bosh-state"
+sudo mkdir -p "$BOSH_STATE" >/dev/null || exit 1
+sudo chmod 755 "/data" >/dev/null || exit 1
+sudo chmod 700 "$BOSH_STATE" >/dev/null || exit 1
+sudo chown ${USERNAME}:${GROUP} "$BOSH_STATE" >/dev/null || exit 1
