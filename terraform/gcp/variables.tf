@@ -53,7 +53,7 @@ variable "jumpbox_server_type" {
 
 variable "natgw_server_type" {
   type        = "string"
-  default     = "n1-standard-1"
+  default     = "g1-small"
   description = "Server type for the nat gateway"
 }
 
