@@ -1,5 +1,5 @@
 resource "google_compute_instance" "nat-gateway-pri" {
-  name           = "${var.env_name}-nat-gateway-pri-az${count.index}"
+  name           = "${var.env_name}-nat-gateway-pri-az${count.index + 1}"
   machine_type   = "${var.natgw_server_type}"
   zone           = "${element(var.gcp_zones,count.index)}"
   can_ip_forward = true
@@ -33,7 +33,7 @@ EOF
 }
 
 resource "google_compute_route" "nat-primary" {
-  name                   = "${var.env_name}-nat-pri-az${count.index}"
+  name                   = "${var.env_name}-nat-pri-az${count.index + 1}"
   dest_range             = "0.0.0.0/0"
   network                = "${google_compute_network.bootstrap.name}"
   next_hop_instance      = "${element(google_compute_instance.nat-gateway-pri.*.name,count.index)}"
