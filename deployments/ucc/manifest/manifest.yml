@@ -73,35 +73,6 @@
     networks: [{name: ((network_name))}]
 
     jobs:
-    - name: credhub
-      release: credhub
-      properties:
-        credhub:
-          tls: ((/credhub-tls))
-          authentication:
-            uaa:
-              url: *uaa-url
-              verification_key: ((uaa-jwt.public_key))
-              ca_certs:
-              - ((/uaa-tls.ca)) 
-          data_storage:
-            type: postgres
-            host: ((db_static_ip))
-            port: 5432
-            username: &credhub_db_username credhub
-            password: &credhub_db_password ((postgres_credhub_password))
-            database: &credhub_db_name credhub
-            require_tls: true
-            tls_ca: ((/database-tls.ca))
-          encryption:
-            keys: 
-            - provider_name: int
-              encryption_password: ((credhub-encryption-password))
-              active: true
-            providers: 
-            - name: int
-              type: internal
-
     - name: uaa
       release: uaa
       consumes:
@@ -179,7 +150,34 @@
             serviceProviderKey: ((/uaa-tls.private_key))
             serviceProviderKeyPassword: ""
 
-
+    - name: credhub
+      release: credhub
+      properties:
+        credhub:
+          tls: ((/credhub-tls))
+          authentication:
+            uaa:
+              url: *uaa-url
+              verification_key: ((uaa-jwt.public_key))
+              ca_certs:
+              - ((/uaa-tls.ca)) 
+          data_storage:
+            type: postgres
+            host: ((db_static_ip))
+            port: 5432
+            username: &credhub_db_username credhub
+            password: &credhub_db_password ((postgres_credhub_password))
+            database: &credhub_db_name credhub
+            require_tls: true
+            tls_ca: ((/database-tls.ca))
+          encryption:
+            keys: 
+            - provider_name: int
+              encryption_password: ((credhub-encryption-password))
+              active: true
+            providers: 
+            - name: int
+              type: internal
 
   - name: web
     instances: ((web_vm_count))
