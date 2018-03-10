@@ -288,8 +288,8 @@
     type: certificate
     options:
       ca: /default_ca
-      common_name: ((domain_name))
-      alternative_names: [((domain_name))]
+      common_name: ci.((domain_name))
+      alternative_names: [ci.((domain_name))]
   # Credhub
   - name: postgres_credhub_password
     type: password
