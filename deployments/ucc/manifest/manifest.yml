@@ -78,6 +78,7 @@
       consumes:
         database: {from: db}
       properties:
+        release_level_backup: true
         login:
           self_service_links_enabled: false
         bpm:
@@ -178,6 +179,11 @@
             providers: 
             - name: int
               type: internal
+
+    - name: bbr-uaadb
+      release: uaa
+    - name: database-backup-restorer
+      release: backup-and-restore-sdk
 
   - name: web
     instances: ((web_vm_count))

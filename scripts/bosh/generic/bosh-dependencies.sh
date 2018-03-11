@@ -7,9 +7,9 @@ echo "Fetching updates and installing bosh dependencies..."
 sudo apt-get update >/dev/null || exit 1
 sudo apt-get install -y build-essential zlibc zlib1g-dev ruby ruby-dev openssl libxslt-dev libxml2-dev libssl-dev libreadline6 libreadline6-dev libyaml-dev libsqlite3-dev sqlite3 jq >/dev/null || exit 1
 
-curl -s -L --output bosh https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.48-linux-amd64 >/dev/null || exit 1
-chmod +x bosh >/dev/null || exit 1
-sudo mv bosh /usr/local/bin >/dev/null || exit 1
+curl -s -L --output bosh https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.48-linux-amd64 >/dev/null &&
+	chmod 755 bosh >/dev/null &&
+	sudo mv bosh /usr/local/bin >/dev/null || exit 1
 
 credhub_url=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/credhub-cli/releases/latest | jq -r ".assets[] | select(.name | test(\"credhub-linux\")) | .browser_download_url")
 (
@@ -19,6 +19,16 @@ credhub_url=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/credhu
 		sudo mv credhub /usr/local/bin/ >/dev/null &&
 		rm -rf credhub.tgz >/dev/null &&
 		echo "credhub installation complete"
+) || exit 1
+
+bbr_url=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/bosh-backup-and-restore/releases/latest | jq -r ".assets[] | select(.name | test(\"bbr-\")) | .browser_download_url")
+(
+	curl -L -o bbr.tar $bbr_url >/dev/null &&
+		tar -xvf bbr.tar >/dev/null &&
+		chmod 755 releases/bbr >/dev/null &&
+		sudo mv releases/bbr /usr/local/bin/ >/dev/null &&
+		rm -rf bbr.tar releases >/dev/null &&
+		echo "bbr installation complete"
 ) || exit 1
 
 echo "Updates and bosh dependencies installed!"
