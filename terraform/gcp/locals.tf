@@ -7,10 +7,8 @@ locals {
   stemcell  = "bosh-google-kvm-ubuntu-trusty-go_agent"
   iaas_type = "gcp"
 
-  flags = {
-    use_external_postgres = "false"
-    ha_concourse          = "false"
-    gcp_https_lb          = "true"
+  iaas_flags = {
+    gcp_https_lb = "true"
   }
 }
 
@@ -18,6 +16,7 @@ locals {
   concourse_backend_service_name = "${var.env_name}-concourse-https-lb-backend-${length(var.gcp_zones)}az"
   credhub_backend_service_name   = "${var.env_name}-credhub-https-lb-backend-${length(var.gcp_zones)}az"
   uaa_backend_service_name       = "${var.env_name}-credhub-https-lb-backend-${length(var.gcp_zones)}az"
+  metrics_backend_service_name   = "${var.env_name}-metrics-https-lb-backend-${length(var.gcp_zones)}az"
 }
 
 locals {
@@ -75,7 +74,10 @@ locals {
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
     TF_CREDHUB_URL            = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
 
-    TF_DB_STATIC_IP = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,6)}"
+    TF_METRICS_BACKEND_GROUP = "${local.metrics_backend_service_name}"
+
+    TF_DB_STATIC_IP      = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,6)}"
+    TF_METRICS_STATIC_IP = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,7)}"
 
     # IAAS
     TF_CA_CERT    = "${local.flags["gcp_https_lb"] == "true" ? tls_self_signed_cert.rootca_cert.cert_pem : ""}"

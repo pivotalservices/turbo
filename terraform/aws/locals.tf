@@ -7,11 +7,7 @@ locals {
   stemcell  = "bosh-aws-xen-hvm-ubuntu-trusty-go_agent"
   iaas_type = "aws"
 
-  flags = {
-    use_external_postgres = "false"
-    ha_concourse          = "false"
-    aws_elb               = "true"
-  }
+  iaas_flags = {}
 }
 
 locals {
@@ -73,6 +69,8 @@ locals {
     TF_BOSH_NETWORK_RESERVED_IPS = "[${cidrhost(aws_subnet.bosh.0.cidr_block,0)}-${cidrhost(aws_subnet.bosh.0.cidr_block,6)}]"
     TF_BOSH_SUBNET_ID            = "${aws_subnet.bosh.0.id}"
 
+    TF_METRICS_BACKEND_GROUP = "${local.common_flags["metrics"] == "true" ? join(" ", aws_elb.metrics-elb.*.name) : "DUMMY"}"
+
     # Credhub UAA
     TF_CREDHUB_DNS_ENTRY = "${aws_route53_record.credhub.name}.${var.dns_domain_name}"
     TF_UAA_DNS_ENTRY     = "${aws_route53_record.uaa.name}.${var.dns_domain_name}"
@@ -83,7 +81,8 @@ locals {
     TF_CREDHUB_URL            = "https://${aws_route53_record.credhub.name}.${var.dns_domain_name}"
 
     # Other
-    TF_DB_STATIC_IP = "${cidrhost(aws_subnet.concourse.0.cidr_block,6)}"
+    TF_DB_STATIC_IP      = "${cidrhost(aws_subnet.concourse.0.cidr_block,6)}"
+    TF_METRICS_STATIC_IP = "${cidrhost(aws_subnet.concourse.0.cidr_block,7)}"
 
     # IAAS
     TF_LB_CA      = ""

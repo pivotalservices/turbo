@@ -12,47 +12,46 @@ vm_types:
 - name: db-medium
   cloud_properties:
     machine_type: n1-standard-2
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 - name: db-large
   cloud_properties:
     machine_type: n1-standard-4
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 - name: db-xlarge
   cloud_properties:
     machine_type: n1-standard-8
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 - name: db-2xlarge
   cloud_properties:
     machine_type: n1-standard-16
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 - name: db-4xlarge
   cloud_properties:
     machine_type: n1-standard-32
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 - name: db-10xlarge
   cloud_properties:
     machine_type: n1-standard-64
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 - name: db-16xlarge
   cloud_properties:
     machine_type: n1-standard-96
-    preemptible: true
     root_disk_size_gb: 10
     root_disk_type: pd-ssd
 
 - name: credhub
+  cloud_properties:
+    machine_type: n1-standard-1
+    root_disk_size_gb: 10
+    root_disk_type: pd-ssd
+
+- name: metrics
   cloud_properties:
     machine_type: n1-standard-1
     root_disk_size_gb: 10
@@ -201,10 +200,10 @@ vm_extensions:
   cloud_properties:
     backend_service:
       name: ((credhub_backend_group))
-- name: uaa
+- name: metrics
   cloud_properties:
     backend_service:
-      name: ((uaa_backend_group))
+      name: ((metrics_backend_group))
 
 compilation:
   workers: 3

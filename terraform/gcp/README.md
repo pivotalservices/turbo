@@ -101,6 +101,9 @@ source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]
 
 # Optional (default is small): Size of the postgres DB VM
 # db_vm_type = "small"
+
+# Optional (default is false): Deploy grafana and influxdb to monitor the solution
+# deploy_metrics = "false"
 ```
 
 Also export your GCP key:

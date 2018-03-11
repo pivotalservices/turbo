@@ -78,3 +78,17 @@ resource "aws_route53_record" "concourse" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_record" "metrics" {
+  zone_id = "${aws_route53_zone.bootstrap.zone_id}"
+  name    = "metrics"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.metrics-elb.dns_name}"
+    zone_id                = "${aws_elb.metrics-elb.zone_id}"
+    evaluate_target_health = true
+  }
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}

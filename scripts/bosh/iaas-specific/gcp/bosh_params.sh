@@ -74,5 +74,6 @@ bosh_update_cloud_config() {
 		--var bosh_network_static_ips="$TF_BOSH_NETWORK_STATIC_IPS" \
 		--var bosh_network_reserved_ips="$TF_BOSH_NETWORK_RESERVED_IPS" \
 		--var bosh_network_vm_tags="$TF_BOSH_NETWORK_VM_TAGS" \
+		--var metrics_backend_group="$TF_METRICS_BACKEND_GROUP" \
 		-n || exit 1
 }

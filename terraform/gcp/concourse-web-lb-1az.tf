@@ -52,6 +52,24 @@ resource "google_compute_backend_service" "uaa_lb_https_backend_service_1az" {
   count = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }
 
+resource "google_compute_backend_service" "metrics_lb_https_backend_service_1az" {
+  name        = "${var.env_name}-metrics-https-lb-backend-1az"
+  port_name   = "grafana"
+  protocol    = "HTTPS"
+  timeout_sec = 30
+  enable_cdn  = false
+
+  backend {
+    group                 = "${google_compute_instance_group.metrics_lb.0.self_link}"
+    balancing_mode        = "RATE"
+    max_rate_per_instance = "10000"
+  }
+
+  health_checks = ["${google_compute_https_health_check.metrics_https_hc.self_link}"]
+
+  count = "${length(var.gcp_zones) == 1 ? 1 : 0}"
+}
+
 resource "google_compute_url_map" "concourse_web_https_lb_url_map_1az" {
   name = "${var.env_name}-concourse-web-https-1az"
 
@@ -79,6 +97,17 @@ resource "google_compute_url_map" "concourse_web_https_lb_url_map_1az" {
     default_service = "${google_compute_backend_service.uaa_lb_https_backend_service_1az.self_link}"
   }
 
+  host_rule {
+    hosts        = ["metrics.${var.dns_domain_name}"]
+    path_matcher = "metrics"
+  }
+
+  path_matcher {
+    name = "metrics"
+
+    default_service = "${google_compute_backend_service.metrics_lb_https_backend_service_1az.self_link}"
+  }
+
   count = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }
 
@@ -95,20 +124,5 @@ resource "google_compute_global_forwarding_rule" "concourse_web_https_1az" {
   ip_address = "${google_compute_global_address.concourse_web_lb.address}"
   target     = "${google_compute_target_https_proxy.concourse_web_https_lb_proxy_1az.self_link}"
   port_range = "443"
-  count      = "${length(var.gcp_zones) == 1 ? 1 : 0}"
-}
-
-resource "google_compute_target_http_proxy" "concourse_web_http_lb_proxy_1az" {
-  name        = "${var.env_name}-concourse-web-http-proxy-1az"
-  description = "Load balancing front end http"
-  url_map     = "${google_compute_url_map.concourse_web_https_lb_url_map_1az.self_link}"
-  count       = "${length(var.gcp_zones) == 1 ? 1 : 0}"
-}
-
-resource "google_compute_global_forwarding_rule" "concourse_web_http_1az" {
-  name       = "${var.env_name}-concourse-web-lb-http-1az"
-  ip_address = "${google_compute_global_address.concourse_web_lb.address}"
-  target     = "${google_compute_target_http_proxy.concourse_web_http_lb_proxy_1az.self_link}"
-  port_range = "80"
   count      = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }

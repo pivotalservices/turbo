@@ -33,11 +33,6 @@ resource "google_compute_instance_group" "concourse_web_lb" {
     port = 443
   }
 
-  named_port {
-    name = "http"
-    port = 80
-  }
-
   count = "${length(var.gcp_zones)}"
 }
 
@@ -109,6 +104,42 @@ resource "google_compute_https_health_check" "uaa_https_hc" {
 
   port                = 8443
   request_path        = "/healthz"
+  check_interval_sec  = 5
+  timeout_sec         = 4
+  healthy_threshold   = 3
+  unhealthy_threshold = 3
+}
+
+# Metrics (grafana)
+resource "google_dns_record_set" "metrics-lb" {
+  name = "metrics.${google_dns_managed_zone.bootstrap.dns_name}"
+  type = "A"
+  ttl  = 300
+
+  managed_zone = "${google_dns_managed_zone.bootstrap.name}"
+
+  rrdatas = ["${google_compute_global_address.concourse_web_lb.address}"]
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}
+
+resource "google_compute_instance_group" "metrics_lb" {
+  name = "${var.env_name}-metrics-lb"
+  zone = "${element(var.gcp_zones, count.index)}"
+
+  named_port {
+    name = "grafana"
+    port = 3000
+  }
+
+  count = "${length(var.gcp_zones)}"
+}
+
+resource "google_compute_https_health_check" "metrics_https_hc" {
+  name = "${var.env_name}-metrics-https-public"
+
+  port                = 3000
+  request_path        = "/api/health"
   check_interval_sec  = 5
   timeout_sec         = 4
   healthy_threshold   = 3

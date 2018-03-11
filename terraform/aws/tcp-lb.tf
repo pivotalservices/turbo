@@ -175,3 +175,70 @@ resource "aws_elb" "concourse-elb" {
     healthy_threshold   = 3
   }
 }
+
+# metrics (grafana)
+resource "aws_security_group" "metrics-elb" {
+  name        = "${var.env_name}-inbound-metrics"
+  description = "${var.env_name} Inbound metrics"
+  vpc_id      = "${aws_vpc.bootstrap.id}"
+
+  tags {
+    Name = "${var.env_name}-Inbound metrics"
+  }
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}
+
+resource "aws_security_group_rule" "metrics_https_in" {
+  security_group_id = "${aws_security_group.metrics-elb.id}"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+
+  cidr_blocks = [
+    "${var.source_admin_networks}",
+    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
+  ]
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}
+
+resource "aws_security_group_rule" "metrics_all_out" {
+  security_group_id = "${aws_security_group.metrics-elb.id}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}
+
+resource "aws_elb" "metrics-elb" {
+  name            = "metrics-elb"
+  subnets         = ["${aws_subnet.jumpbox.*.id}"]
+  security_groups = ["${aws_security_group.metrics-elb.id}"]
+  internal        = false
+
+  // The time in seconds that the connection is allowed to be idle
+  idle_timeout = 300
+
+  listener {
+    instance_port     = 3000
+    instance_protocol = "TCP"
+    lb_port           = 443
+    lb_protocol       = "TCP"
+  }
+
+  health_check {
+    target              = "TCP:3000"
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}

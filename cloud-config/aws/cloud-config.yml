@@ -69,6 +69,14 @@ vm_types:
       type: gp2
       encrypted: true
 
+- name: metrics
+  cloud_properties:
+    instance_type: t2.small
+    ephemeral_disk:
+      size: 10_000
+      type: gp2
+      encrypted: true
+
 - name: concourse-web-small
   cloud_properties:
     instance_type: t2.small
@@ -247,6 +255,10 @@ vm_extensions:
     elbs:
     - ((credhub_backend_group))
     - ((uaa_backend_group))
+- name: metrics
+  cloud_properties:
+    elbs:
+    - ((metrics_backend_group))
 
 compilation:
   workers: 3

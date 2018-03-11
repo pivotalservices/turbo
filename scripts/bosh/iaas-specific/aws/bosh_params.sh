@@ -88,5 +88,6 @@ bosh_update_cloud_config() {
 		--var bosh_subnet_id="$TF_BOSH_SUBNET_ID" \
 		--var bosh_network_static_ips="$TF_BOSH_NETWORK_STATIC_IPS" \
 		--var bosh_network_reserved_ips="$TF_BOSH_NETWORK_RESERVED_IPS" \
+		--var metrics_backend_group="$TF_METRICS_BACKEND_GROUP" \
 		-n || exit 1
 }

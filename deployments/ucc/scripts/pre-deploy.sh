@@ -43,6 +43,7 @@ do_deploy() {
 		--var credhub_url="$TF_CREDHUB_URL" \
 		--var uaa_dns="$TF_UAA_DNS_ENTRY" \
 		--var credhub_dns="$TF_CREDHUB_DNS_ENTRY" \
+		--var metrics_static_ip="$TF_METRICS_STATIC_IP" \
 		--var-file lb_ca=<(echo -n "$TF_CA_CERT") \
 		--var-file lb_public_key=<(echo -n "$TF_LB_PUB_KEY") \
 		$(if [ "x$TF_DEBUG" == "xtrue" ]; then echo "--no-redact"; fi) \

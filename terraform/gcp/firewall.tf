@@ -69,3 +69,18 @@ resource "google_compute_firewall" "uaa" {
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
   target_tags   = ["${var.env_name}-ucc-credhub-uaa"]
 }
+
+resource "google_compute_firewall" "metrics" {
+  name    = "${var.env_name}-allow-metrics"
+  network = "${google_compute_network.bootstrap.name}"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3000"]
+  }
+
+  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
+  target_tags   = ["${var.env_name}-ucc-metrics"]
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}

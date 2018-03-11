@@ -21,3 +21,7 @@ output "credhub_url" {
 output "uaa_url" {
   value = "https://${aws_route53_record.uaa.name}.${var.dns_domain_name}"
 }
+
+output "metrics_url" {
+  value = "${local.common_flags["metrics"] == "true" ? format("https://%s.%s", join("", aws_route53_record.metrics.*.name), var.dns_domain_name) : ""}"
+}

@@ -22,8 +22,14 @@ locals {
     TF_DB_VM_TYPE                = "${var.db_vm_type}"
     TF_DB_PERSISTENT_DISK_SIZE   = "${var.db_persistent_disk_size}"
   }
+
+  common_flags = {
+    metrics               = "${var.deploy_metrics}"
+    use_external_postgres = "false"
+  }
 }
 
 locals {
-  env = "${merge(local.common_env, local.iaas_env)}"
+  env   = "${merge(local.common_env, local.iaas_env)}"
+  flags = "${merge(local.common_flags, local.iaas_flags)}"
 }

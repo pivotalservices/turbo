@@ -51,3 +51,9 @@ variable "debug" {
   default     = "false"
   description = "if true, scripts will be run in debug mode (set -x)"
 }
+
+variable "deploy_metrics" {
+  type        = "string"
+  default     = "false"
+  description = "if true, deploys grafana, riemann and influxdb to monitor your concourse"
+}
