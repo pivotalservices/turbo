@@ -32,6 +32,7 @@ cat >>~/.bashrc <<'EOF'
 export BOSH_STATE_FOLDER="/data/bosh-state"
 export BOSH_VAR_STORE="$BOSH_STATE_FOLDER/creds.yml"
 export BOSH_VAR_CACHE="$BOSH_STATE_FOLDER/var_cache.yml"
+export BOSH_CA_CERT="$BOSH_STATE_FOLDER/ca.pem"
 export BOSH_CLIENT=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client)
 export BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret)
 
