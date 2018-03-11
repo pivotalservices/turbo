@@ -23,5 +23,5 @@ output "uaa_url" {
 }
 
 output "metrics_url" {
-  value = "${local.common_flags["metrics"] == "true" ? format("https://%s", replace(join("", google_dns_record_set.uaa-lb.*.name),"/\\.$/","")) : ""}"
+  value = "${local.common_flags["metrics"] == "true" ? format("https://%s", replace(join("", google_dns_record_set.metrics-lb.*.name),"/\\.$/","")) : ""}"
 }

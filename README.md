@@ -89,3 +89,20 @@ The password is the one of the previous step
 uaac target $(echo $TERRAFORM_OUTPUT | jq -r '.uaa_url') --skip-ssl-validation
 uaac token client get admin
 ```
+
+## Grafana
+### Retrieve the grafana admin password (login is `admin`)
+```sh
+chmod 600 local/ssh/*
+export TERRAFORM_OUTPUT="$(terraform output \
+  -json | jq 'map_values(.value)')"
+
+ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
+  -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
+  credhub get -n /grafana_admin_password
+```
+### Connect to grafana
+If you opted for `deploy_metrics = "true"`, you can connect to grafana through the URL provided as terraform output and using the password retrieved from the previous step.
+```sh
+terraform output -json | jq -r '.metrics_url.value'
+```
