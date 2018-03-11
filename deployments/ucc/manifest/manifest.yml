@@ -59,9 +59,6 @@
             ca: ((/database-tls.ca))
             certificate: ((/database-tls.certificate))
             private_key: ((/database-tls.private_key))
-    - name: database-backup-restorer
-      release: backup-and-restore-sdk
-      properties: {}
 
   - name: credhub-uaa
     instances: ((credhub_uaa_vm_count))
