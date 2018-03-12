@@ -44,6 +44,10 @@ do_deploy() {
 		--var uaa_dns="$TF_UAA_DNS_ENTRY" \
 		--var credhub_dns="$TF_CREDHUB_DNS_ENTRY" \
 		--var metrics_static_ip="$TF_METRICS_STATIC_IP" \
+		--var concourse_admin_password="$TF_CONCOURSE_ADMIN_PASSWORD" \
+		--var credhub_admin_password="$TF_CREDHUB_ADMIN_PASSWORD" \
+		--var uaa_admin_password="$TF_UAA_ADMIN_PASSWORD" \
+		--var metrics_admin_password="$TF_METRICS_ADMIN_PASSWORD" \
 		--var-file lb_ca=<(echo -n "$TF_CA_CERT") \
 		--var-file lb_public_key=<(echo -n "$TF_LB_PUB_KEY") \
 		$(if [ "x$TF_DEBUG" == "xtrue" ]; then echo "--no-redact"; fi) \

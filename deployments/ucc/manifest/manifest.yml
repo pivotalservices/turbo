@@ -117,8 +117,8 @@
               scope: ""
               authorities: credhub.read,credhub.write
               access-token-validity: 3600
-              secret: ((/credhub_admin_client_secret))
-          admin: {client_secret: ((/uaa-admin))}
+              secret: ((credhub_admin_password))
+          admin: {client_secret: ((uaa_admin_password))}
           login: {client_secret: ((uaa-login))}
           zones: {internal: {hostnames: []}}
           sslCertificate: ((/uaa-tls.certificate))
@@ -210,7 +210,7 @@
         bind_port: 80
         tls_bind_port: 443
         basic_auth_username: admin
-        basic_auth_password: ((/concourse_admin_password))
+        basic_auth_password: ((concourse_admin_password))
         log_level: debug
   
         token_signing_key: ((token_signing_key))
@@ -284,8 +284,6 @@
     type: ssh
   - name: worker_key
     type: ssh
-  - name: /concourse_admin_password
-    type: password
   - name: /concourse_ssl
     type: certificate
     options:
@@ -298,8 +296,6 @@
       length: 32
   # Credhub
   - name: postgres_credhub_password
-    type: password
-  - name: /credhub_admin_client_secret
     type: password
   - name: credhub-encryption-password
     type: password
@@ -337,8 +333,6 @@
     options:
       key_length: 4096
   - name: uaa-users-admin
-    type: password
-  - name: /uaa-admin
     type: password
   - name: uaa-login
     type: password

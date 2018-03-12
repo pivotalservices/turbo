@@ -21,6 +21,11 @@ locals {
     TF_CREDHUB_UAA_VM_COUNT      = "${var.credhub_uaa_vm_count}"
     TF_DB_VM_TYPE                = "${var.db_vm_type}"
     TF_DB_PERSISTENT_DISK_SIZE   = "${var.db_persistent_disk_size}"
+
+    TF_CONCOURSE_ADMIN_PASSWORD = "${random_string.concourse_password.result}"
+    TF_CREDHUB_ADMIN_PASSWORD   = "${random_string.credhub_password.result}"
+    TF_UAA_ADMIN_PASSWORD       = "${random_string.uaa_password.result}"
+    TF_METRICS_ADMIN_PASSWORD   = "${random_string.metrics_password.result}"
   }
 
   common_flags = {
@@ -32,4 +37,44 @@ locals {
 locals {
   env   = "${merge(local.common_env, local.iaas_env)}"
   flags = "${merge(local.common_flags, local.iaas_flags)}"
+}
+
+resource "random_string" "credhub_password" {
+  length  = 30
+  special = false
+}
+
+resource "random_string" "uaa_password" {
+  length  = 30
+  special = false
+}
+
+resource "random_string" "concourse_password" {
+  length  = 30
+  special = false
+}
+
+resource "random_string" "metrics_password" {
+  length  = 30
+  special = false
+}
+
+output "credhub_password" {
+  value     = "${random_string.credhub_password.result}"
+  sensitive = true
+}
+
+output "concourse_password" {
+  value     = "${random_string.concourse_password.result}"
+  sensitive = true
+}
+
+output "uaa_password" {
+  value     = "${random_string.uaa_password.result}"
+  sensitive = true
+}
+
+output "metrics_password" {
+  value     = "${local.common_flags["metrics"] == "true" ? random_string.metrics_password.result : ""}"
+  sensitive = true
 }
