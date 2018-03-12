@@ -216,6 +216,7 @@
         token_signing_key: ((token_signing_key))
   
         external_url: ((concourse_external_url))
+        encryption_key: ((concourse_encryption_key))
   
         postgresql:
           sslmode: verify-ca
@@ -291,6 +292,10 @@
       ca: /default_ca
       common_name: ci.((domain_name))
       alternative_names: [ci.((domain_name))]
+  - name: concourse_encryption_key
+    type: password
+    options:
+      length: 32
   # Credhub
   - name: postgres_credhub_password
     type: password
