@@ -26,19 +26,22 @@ Assuming you're in the terraform forlder:
 ```sh
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
-chmod 600 local/ssh/*
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') -i local/ssh/jumpbox  -o "IdentitiesOnly=true"
+chmod 600 local/$(terraform workspace show)/ssh/*
+ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
+  -i "local/$(terraform workspace show)/ssh/jumpbox" \
+  -o "IdentitiesOnly=true"
 ```
 
 ## Concourse
 ### Retrieve the concourse admin user password (login is `admin`)
 ```sh
-chmod 600 local/ssh/*
+chmod 600 local/$(terraform workspace show)/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
+  -i "local/$(terraform workspace show)/ssh/jumpbox" \
+  -o "IdentitiesOnly=true" \
   credhub get -n /concourse_admin_password
 ```
 ### Login to concourse
@@ -51,12 +54,13 @@ fly login -c $(echo $TERRAFORM_OUTPUT | jq -r '.concourse_url') -t bootstrap -k
 ## Credhub
 ### Retrieve the credhub admin client secret (login is `credhub-admin`)
 ```sh
-chmod 600 local/ssh/*
+chmod 600 local/$(terraform workspace show)/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
+  -i "local/$(terraform workspace show)/ssh/jumpbox" \
+  -o "IdentitiesOnly=true" \
   credhub get -n /credhub_admin_client_secret
 ```
 ### Login to credub
@@ -66,20 +70,22 @@ The password is the one of the previous step
 credhub api -s $(echo $TERRAFORM_OUTPUT | jq -r '.credhub_url') --skip-tls-validation
 export CREDHUB_CLIENT="credhub-admin"
 export CREDHUB_SECRET=$(ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
+  -i "local/$(terraform workspace show)/ssh/jumpbox" \
+  -o "IdentitiesOnly=true" \
   credhub get -n /credhub_admin_client_secret -j | jq -r '.value')
-credhub login
+  credhub login
 ```
 
 ## UAA
 ### Retrieve the uaa admin client password (login is `admin`)
 ```sh
-chmod 600 local/ssh/*
+chmod 600 local/$(terraform workspace show)/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
+  -i "local/$(terraform workspace show)/ssh/jumpbox" \
+  -o "IdentitiesOnly=true" \
   credhub get -n /uaa-admin
 ```
 ### Login with uaac
@@ -93,12 +99,13 @@ uaac token client get admin
 ## Grafana
 ### Retrieve the grafana admin password (login is `admin`)
 ```sh
-chmod 600 local/ssh/*
+chmod 600 local/$(terraform workspace show)/ssh/*
 export TERRAFORM_OUTPUT="$(terraform output \
   -json | jq 'map_values(.value)')"
 
 ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i local/ssh/jumpbox  -o "IdentitiesOnly=true" \
+  -i "local/$(terraform workspace show)/ssh/jumpbox" \
+  -o "IdentitiesOnly=true" \
   credhub get -n /grafana_admin_password
 ```
 ### Connect to grafana

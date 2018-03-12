@@ -3,4 +3,5 @@
 **/.terraform.tfstate.*
 **/local/
 **/.terraform
-**/terraform.tfvars
+**/*.tfvars
+**/tfstate-store.tf
