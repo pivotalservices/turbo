@@ -88,7 +88,5 @@ EOF
     "google_compute_subnetwork.concourse",
     "google_compute_instance.nat-gateway-pri",
     "google_compute_route.nat-primary",
-    "local_file.jumpbox_ssh_public_key_file",
-    "local_file.jumpbox_ssh_private_key_file",
   ]
 }
