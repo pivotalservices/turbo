@@ -104,7 +104,5 @@ resource "null_resource" "destroy-all" {
     "aws_eip.jumpbox",
     "aws_volume_attachment.jumpbox_data_att",
     "aws_ebs_volume.jumpbox_data",
-    "local_file.jumpbox_ssh_public_key_file",
-    "local_file.jumpbox_ssh_private_key_file",
   ]
 }

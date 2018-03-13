@@ -81,12 +81,6 @@
 - type: replace
   path: /variables/-
   value:
-    name: /grafana_admin_password
-    type: password
-
-- type: replace
-  path: /variables/-
-  value:
     name: grafana-tls
     type: certificate
     options:
@@ -142,7 +136,7 @@
       properties:
         grafana:
           admin_username: admin
-          admin_password: ((/grafana_admin_password))
+          admin_password: ((metrics_admin_password))
           listen_port: 3000
           root_url: https://grafana.((domain_name))
           datasource:

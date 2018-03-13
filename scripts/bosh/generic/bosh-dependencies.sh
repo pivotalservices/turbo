@@ -3,6 +3,12 @@ if [ "x$TF_DEBUG" == "xtrue" ]; then
 	set -x
 fi
 
+if [ ! -f ~/.first_run_done ]; then
+	touch ~/.first_run_done
+	echo "Waiting 20sec for network to be up completely..."
+	sleep 20
+fi
+
 echo "Fetching updates and installing bosh dependencies..."
 sudo apt-get update >/dev/null || exit 1
 sudo apt-get install -y build-essential zlibc zlib1g-dev ruby ruby-dev openssl libxslt-dev libxml2-dev libssl-dev libreadline6 libreadline6-dev libyaml-dev libsqlite3-dev sqlite3 jq >/dev/null || exit 1
