@@ -7,11 +7,14 @@ This tool will deploy:
     * credhub
     * uaa
     * concourse and it's worker
+    * grafana, influxdb and riemann if you choose to (`deploy_metrics = "true"`)
 
 Only using `terraform`
 
-You can scale each vm horizontally or verticaly (appart from postgres)
+You can scale each vm horizontally or verticaly (appart from postgres and grafana)  
+Your deployment will be `bbr` ready.
 
+---
 # Howto
 ## GCP
 Follow documentation [here](terraform/gcp/README.md)
@@ -19,97 +22,59 @@ Follow documentation [here](terraform/gcp/README.md)
 ## AWS
 Follow documentation [here](terraform/aws/README.md)
 
+---
 # Usage
+For every command below, we assume that you're in the terraform folder of your iaas provider, and that a terraform apply has finished succesfully
 ## SSH into the jumpbox
-The key is located in the subfolder `local/ssh/`, and the username is `ubuntu`  
-Assuming you're in the terraform forlder:
+The key is located in the `terraform output`, and the username is `ubuntu`  
+You can connect to the jumpbox with:
 ```sh
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-chmod 600 local/$(terraform workspace show)/ssh/*
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i "local/$(terraform workspace show)/ssh/jumpbox" \
-  -o "IdentitiesOnly=true"
+../../bin/jumpbox-ssh.sh
 ```
 
 ## Concourse
-### Retrieve the concourse admin user password (login is `admin`)
+1. Retrieve the concourse `admin` user password
 ```sh
-chmod 600 local/$(terraform workspace show)/ssh/*
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i "local/$(terraform workspace show)/ssh/jumpbox" \
-  -o "IdentitiesOnly=true" \
-  credhub get -n /concourse_admin_password
+terraform output concourse_password
 ```
-### Login to concourse
-The username is: `admin`  
-The password is the one of the previous step    
+2. Login to concourse with the fly cli
+The username is: `admin`    
 ```sh
-fly login -c $(echo $TERRAFORM_OUTPUT | jq -r '.concourse_url') -t bootstrap -k
+../../bin/fly-login.sh
 ```
-
+3. Or connect to the web gui URL
+```
+terraform output concourse_url
+```
 ## Credhub
-### Retrieve the credhub admin client secret (login is `credhub-admin`)
+1. Retrieve the `credhub-admin` client secret
 ```sh
-chmod 600 local/$(terraform workspace show)/ssh/*
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i "local/$(terraform workspace show)/ssh/jumpbox" \
-  -o "IdentitiesOnly=true" \
-  credhub get -n /credhub_admin_client_secret
+terraform output credhub_password
 ```
-### Login to credub
+2. Login to credhub
 The username is: `credhub-admin`  
-The password is the one of the previous step  
 ```sh
-credhub api -s $(echo $TERRAFORM_OUTPUT | jq -r '.credhub_url') --skip-tls-validation
-export CREDHUB_CLIENT="credhub-admin"
-export CREDHUB_SECRET=$(ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i "local/$(terraform workspace show)/ssh/jumpbox" \
-  -o "IdentitiesOnly=true" \
-  credhub get -n /credhub_admin_client_secret -j | jq -r '.value')
-  credhub login
+../../bin/credhub-login.sh
 ```
 
 ## UAA
-### Retrieve the uaa admin client password (login is `admin`)
+1. Retrieve the uaa `admin` client password
 ```sh
-chmod 600 local/$(terraform workspace show)/ssh/*
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i "local/$(terraform workspace show)/ssh/jumpbox" \
-  -o "IdentitiesOnly=true" \
-  credhub get -n /uaa-admin
+terraform output uaa_password
 ```
-### Login with uaac
+2. Login with uaac
 The username is: `admin`  
-The password is the one of the previous step  
 ```sh
-uaac target $(echo $TERRAFORM_OUTPUT | jq -r '.uaa_url') --skip-ssl-validation
-uaac token client get admin
+../../bin/uaa-login.sh
 ```
 
 ## Grafana
-### Retrieve the grafana admin password (login is `admin`)
-```sh
-chmod 600 local/$(terraform workspace show)/ssh/*
-export TERRAFORM_OUTPUT="$(terraform output \
-  -json | jq 'map_values(.value)')"
-
-ssh ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r '.jumpbox_ip') \
-  -i "local/$(terraform workspace show)/ssh/jumpbox" \
-  -o "IdentitiesOnly=true" \
-  credhub get -n /grafana_admin_password
-```
-### Connect to grafana
 If you opted for `deploy_metrics = "true"`, you can connect to grafana through the URL provided as terraform output and using the password retrieved from the previous step.
+1. Retrieve the grafana `admin` password
 ```sh
-terraform output -json | jq -r '.metrics_url.value'
+terraform output metrics_password
+```
+2. Retrieve the grafana URL
+```sh
+terraform output metrics_url
 ```
