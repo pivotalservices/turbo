@@ -24,6 +24,7 @@ vars() {
 bosh_login || exit 1
 
 cat >~/.bashrc <<EOF
+export ENV_NAME="$TF_ENV_NAME"
 export BOSH_ENVIRONMENT="$TF_ENV_NAME-bootstrap"
 export BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 export STEMCELL="$TF_STEMCELL_TYPE"
