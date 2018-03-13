@@ -37,20 +37,24 @@ You can connect to the jumpbox with:
 ```sh
 terraform output concourse_password
 ```
+
 2. Login to concourse with the fly cli
 The username is: `admin`    
 ```sh
 ../../bin/fly-login.sh
 ```
+
 3. Or connect to the web gui URL
 ```
 terraform output concourse_url
 ```
+
 ## Credhub
 1. Retrieve the `credhub-admin` client secret
 ```sh
 terraform output credhub_password
 ```
+
 2. Login to credhub
 The username is: `credhub-admin`  
 ```sh
@@ -62,6 +66,7 @@ The username is: `credhub-admin`
 ```sh
 terraform output uaa_password
 ```
+
 2. Login with uaac
 The username is: `admin`  
 ```sh
@@ -74,6 +79,7 @@ If you opted for `deploy_metrics = "true"`, you can connect to grafana through t
 ```sh
 terraform output metrics_password
 ```
+
 2. Retrieve the grafana URL
 ```sh
 terraform output metrics_url
