@@ -3,8 +3,7 @@ if [ "x$TF_DEBUG" == "xtrue" ]; then
 	set -x
 fi
 
-source $HOME/automation/scripts/bosh/generic/helpers.sh
-source $HOME/automation/scripts/bosh/generic/bosh-helper.sh
+source $HOME/automation/bosh/scripts/generic/helpers.sh
 
 if [ -f "$BOSH_VAR_STORE" ]; then
 	echo "Deleting all deployments, orphaned disks and bosh"

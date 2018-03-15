@@ -1,5 +1,7 @@
 # Introduction
-This tool will deploy:  
+**TuRBO** stands for: TeRrafforming BOsh
+
+TuRBO will deploy:  
 * A jumpbox
 * A bosh director with credhub and uaa integrated
 * A deployment with

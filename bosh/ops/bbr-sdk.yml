@@ -1,0 +1,35 @@
+---
+- type: replace
+  path: /releases/-
+  value: 
+    name: backup-and-restore-sdk
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/backup-and-restore-sdk-release?v=((bbr_sdk_version))
+    sha1: ((bbr_sdk_sha1))
+    version: ((bbr_sdk_version))
+
+# Disabled until :
+# https://github.com/cloudfoundry/uaa-release/blob/develop/jobs/bbr-uaadb/templates/config.json.erb
+# is fixed
+# - type: replace
+#   path: /instance_groups/name=bosh/jobs/-
+#   value:
+#     name: bbr-uaadb
+#     release: uaa
+#     properties:
+#       uaadb:
+#         address: 127.0.0.1
+#         port: 5432
+#         db_scheme: postgresql
+#         databases:
+#         - tag: uaa
+#           name: uaa
+#         roles:
+#         - tag: admin
+#           name: postgres
+#           password: ((postgres_password))
+
+- type: replace
+  path: /instance_groups/name=bosh/jobs/-
+  value:
+    name: database-backup-restorer
+    release: backup-and-restore-sdk

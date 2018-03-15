@@ -1,32 +1,26 @@
 resource "null_resource" "bosh-create-env" {
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/${var.ssh_user}/automation/scripts/bosh/generic",
-      "mkdir -p /home/${var.ssh_user}/automation/scripts/bosh/iaas-specific",
+      "mkdir -p /home/${var.ssh_user}/automation/bosh/",
     ]
   }
 
   provisioner "file" {
-    source      = "../../scripts/bosh/generic/"
-    destination = "/home/${var.ssh_user}/automation/scripts/bosh/generic/"
-  }
-
-  provisioner "file" {
-    source      = "../../scripts/bosh/iaas-specific/${local.iaas_type}/"
-    destination = "/home/${var.ssh_user}/automation/scripts/bosh/iaas-specific/"
+    source      = "../../bosh/"
+    destination = "/home/${var.ssh_user}/automation/bosh/"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "find /home/${var.ssh_user}/automation/scripts/ -name \\*.sh -exec chmod +x {} \\;",
-      "/home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-dependencies.sh",
+      "find /home/${var.ssh_user}/automation/bosh/scripts -name \\*.sh -exec chmod +x {} \\;",
+      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-dependencies.sh",
     ]
   }
 
   provisioner "remote-exec" {
     inline = [
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "/home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-create-env.sh",
+      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-create-env.sh",
     ]
   }
 

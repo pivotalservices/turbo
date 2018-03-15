@@ -200,9 +200,9 @@
           path_prefix: /concourse
           url: ((credhub_url))
           tls:
-            #ca_cert: ((credhub_ca_cert))
-            insecure_skip_verify: true
-            # Bug 3.9.0
+            ca_cert:
+              certificate: ((/default_ca.certificate))
+            insecure_skip_verify: false
           client_id: *concourse_client_username
           client_secret: *concourse_client_password
         tls_cert: ((/concourse_ssl.certificate))

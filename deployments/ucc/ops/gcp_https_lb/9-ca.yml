@@ -8,3 +8,9 @@
   path: /instance_groups/name=credhub-uaa/jobs/name=credhub/properties/credhub/authentication/uaa/verification_key
   value: |
     ((lb_public_key))
+
+- type: replace
+  path: /instance_groups/name=web/jobs/name=atc/properties/credhub/tls/ca_cert
+  value:
+    certificate: |
+      ((lb_ca))
