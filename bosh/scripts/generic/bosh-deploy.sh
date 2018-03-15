@@ -11,8 +11,7 @@ fi
 
 DEPLOYMENT=$1
 
-source $HOME/automation/scripts/bosh/generic/helpers.sh
-source $HOME/automation/scripts/bosh/generic/bosh-helper.sh
+source $HOME/automation/bosh/scripts/generic/helpers.sh
 
 DEPLOYMENT_NAME="$TF_ENV_NAME-$DEPLOYMENT"
 DEPLOYMENT_HOME="$BOSH_DEPLOYMENTS_FOLDER/$DEPLOYMENT"

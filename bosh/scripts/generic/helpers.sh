@@ -36,3 +36,5 @@ env_from_terraform() {
 
 	set +e
 }
+
+source $HOME/automation/bosh/scripts/generic/bosh-helper.sh

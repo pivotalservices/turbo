@@ -13,7 +13,7 @@ resource "null_resource" "cloud-config-update" {
   provisioner "remote-exec" {
     inline = [
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "/home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-cloud-config.sh",
+      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-cloud-config.sh",
     ]
   }
 

@@ -9,9 +9,11 @@ BOSH_STATE_FOLDER="/data/bosh-state"
 BOSH_VAR_STORE="$BOSH_STATE_FOLDER/creds.yml"
 BOSH_VAR_CACHE="$BOSH_STATE_FOLDER/var_cache.yml"
 BOSH_CA_CERT="$BOSH_STATE_FOLDER/ca.pem"
+BOSH_SSH_KEY="$BOSH_STATE_FOLDER/director_id_rsa"
+
 BOSH_CLOUD_CONFIG_FOLDER="$BOSH_FOLDER/cloud-config"
 BOSH_CLOUD_CONFIG="$BOSH_CLOUD_CONFIG_FOLDER/cloud-config.yml"
-BOSH_IAAS_SPECIFIC_FOLDER="/home/$TF_SSH_USER/automation/scripts/bosh/iaas-specific"
+BOSH_IAAS_SPECIFIC_FOLDER="/home/$TF_SSH_USER/automation/bosh/scripts/iaas-specific/$TF_CPI"
 BOSH_VARS_FILE="$BOSH_IAAS_SPECIFIC_FOLDER/var-file.yml"
 BOSH_IAAS_SPECIFIC_PARAMS="$BOSH_IAAS_SPECIFIC_FOLDER/bosh_params.sh"
 
@@ -21,7 +23,9 @@ BOSH_REPO=https://github.com/cloudfoundry/bosh-deployment
 BOSH_OPS_FILES="-o $BOSH_FOLDER/bosh-deployment/$TF_CPI/cpi.yml \
                 -o $BOSH_FOLDER/bosh-deployment/uaa.yml \
                 -o $BOSH_FOLDER/bosh-deployment/credhub.yml \
-                -o $BOSH_FOLDER/bosh-deployment/jumpbox-user.yml"
+                -o $BOSH_FOLDER/bosh-deployment/jumpbox-user.yml \
+				-o $BOSH_FOLDER/ops/bbr-sdk.yml \
+				-l $BOSH_FOLDER/versions/versions.yml"
 
 STEMCELL="$TF_STEMCELL_TYPE"
 BOSH_DEPLOYMENTS_FOLDER="/home/$TF_SSH_USER/automation/deployments"
@@ -37,32 +41,11 @@ bosh_vars() {
 	echo "credhub_password: $(bosh int $(bosh_int) --path /instance_groups/0/jobs/name=uaa/properties/uaa/clients/credhub-admin/secret)"
 }
 
-# bosh_create_env() {
-# 	bosh create-env "$BOSH_REPO_FOLDER/bosh.yml" \
-# 		--state="$BOSH_STATE_FOLDER/state.json" \
-# 		--vars-store="$BOSH_VAR_STORE" \
-# 		$BOSH_OPS_FILES \
-# 		--vars-file "$BOSH_VARS_FILE" || exit 1
-# }
-
-# bosh_delete_env() {
-# 	bosh delete-env "$BOSH_REPO_FOLDER/bosh.yml" \
-# 		--state="$BOSH_STATE_FOLDER/state.json" \
-# 		--vars-store="$BOSH_VAR_STORE" \
-# 		$BOSH_OPS_FILES \
-# 		--vars-file "$BOSH_VARS_FILE" || exit 1
-# }
-
-# bosh_int() {
-# 	vars_file_arg="--vars-file $BOSH_VAR_STORE"
-# 	manifest="$BOSH_REPO_FOLDER/bosh.yml"
-# 	echo "$manifest" "$vars_file_arg" $BOSH_OPS_FILES --vars-file "$BOSH_VARS_FILE"
-# }
-
 bosh_login() {
 	bosh_vars >"$BOSH_VAR_CACHE"
 
 	bosh int "$BOSH_VAR_CACHE" --path /default_ca/ca >"$BOSH_CA_CERT" || exit 1
+	bosh int "$BOSH_VAR_CACHE" --path /jumpbox_ssh/private_key >"$BOSH_SSH_KEY" || exit 1
 	export BOSH_CLIENT=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client)
 	export BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret)
 

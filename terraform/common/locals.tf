@@ -78,3 +78,7 @@ output "metrics_password" {
   value     = "${local.common_flags["metrics"] == "true" ? random_string.metrics_password.result : ""}"
   sensitive = true
 }
+
+output "environment_name" {
+  value = "${var.env_name}"
+}

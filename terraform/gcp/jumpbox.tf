@@ -65,9 +65,9 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-delete-all.sh",
+      "chmod +x /home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-delete-all.sh",
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "/home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-delete-all.sh",
+      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-delete-all.sh",
     ]
 
     when = "destroy"

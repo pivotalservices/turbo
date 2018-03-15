@@ -13,9 +13,9 @@ resource "null_resource" "bosh_deployments" {
 
   provisioner "remote-exec" {
     inline = [
-      "find /home/${var.ssh_user}/automation/scripts/ -name \\*.sh -exec chmod +x {} \\;",
+      "find /home/${var.ssh_user}/automation/bosh/scripts/ -name \\*.sh -exec chmod +x {} \\;",
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "for dep in ${join(" ", local.deployments_list)}; do /home/${var.ssh_user}/automation/scripts/bosh/generic/bosh-deploy.sh $dep || exit 1; done",
+      "for dep in ${join(" ", local.deployments_list)}; do /home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-deploy.sh $dep || exit 1; done",
     ]
   }
 
