@@ -40,7 +40,7 @@ resource "google_compute_firewall" "concourse_web" {
     ports    = ["80", "443"]
   }
 
-  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
+  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
   target_tags   = ["${var.env_name}-ucc-web"]
 }
 
@@ -53,7 +53,7 @@ resource "google_compute_firewall" "credhub" {
     ports    = ["8443"]
   }
 
-  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
+  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
   target_tags   = ["${var.env_name}-ucc-credhub-uaa"]
 }
 
@@ -66,7 +66,7 @@ resource "google_compute_firewall" "uaa" {
     ports    = ["8844"]
   }
 
-  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
+  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
   target_tags   = ["${var.env_name}-ucc-credhub-uaa"]
 }
 
@@ -79,7 +79,7 @@ resource "google_compute_firewall" "metrics" {
     ports    = ["3000"]
   }
 
-  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16"]
+  source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
   target_tags   = ["${var.env_name}-ucc-metrics"]
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
