@@ -8,10 +8,14 @@ resource "aws_security_group" "jumpbox" {
   }
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.source_admin_networks}"]
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "${var.source_admin_networks}",
+      "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    ]
   }
 
   egress {

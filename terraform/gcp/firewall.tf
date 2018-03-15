@@ -7,8 +7,12 @@ resource "google_compute_firewall" "allow-ssh" {
     ports    = ["22"]
   }
 
-  source_ranges = "${var.source_admin_networks}"
-  target_tags   = ["${var.env_name}-allow-ssh"]
+  source_ranges = [
+    "${var.source_admin_networks}",
+    "${formatlist("%s/32", google_compute_instance.nat-gateway-pri.*.address)}",
+  ]
+
+  target_tags = ["${var.env_name}-allow-ssh"]
 }
 
 resource "google_compute_firewall" "internal-all" {
