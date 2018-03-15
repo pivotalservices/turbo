@@ -4,20 +4,14 @@ BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret)
 BOSH_CA_CERT="$BOSH_STATE_FOLDER/ca.pem"
 BOSH_SSH_PRIVATE_KEY="${BOSH_SSH_KEY}"
 
-bbr deployment -t ${BOSH_HOST} \
-	-u ${BOSH_CLIENT} \
-	--ca-cert ${BOSH_CA_CERT} \
-	-d ${ENV_NAME}-ucc \
-	restore --artifact-path $1
-
 usage() {
 	echo "Usage: $0 [director|deployment [deployment-name]] [artifact-path]"
 	exit 1
 }
 
-if [ "x$1" == "x" ]; then
+if [ "x$1" == "x" ] || [ "x$2" == "x" ]; then
 	usage
-elif [ "$1" == "deployment" ] && [ "x$2" == "x" ]; then
+elif [ "$1" == "deployment" ] && [ "x$3" == "x" ]; then
 	usage
 fi
 
