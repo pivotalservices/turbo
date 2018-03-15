@@ -18,3 +18,15 @@
   value:
     name: database-backup-restorer
     release: backup-and-restore-sdk
+    properties:
+      uaadb:
+        address: 127.0.0.1
+        port: 5432
+        db_scheme: postgresql
+        databases:
+        - tag: uaa
+          name: uaa
+        roles:
+        - tag: admin
+          name: postgres
+          password: ((postgres_password))
