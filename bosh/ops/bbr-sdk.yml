@@ -12,12 +12,6 @@
   value:
     name: bbr-uaadb
     release: uaa
-
-- type: replace
-  path: /instance_groups/name=bosh/jobs/-
-  value:
-    name: database-backup-restorer
-    release: backup-and-restore-sdk
     properties:
       uaadb:
         address: 127.0.0.1
@@ -30,3 +24,9 @@
         - tag: admin
           name: postgres
           password: ((postgres_password))
+
+- type: replace
+  path: /instance_groups/name=bosh/jobs/-
+  value:
+    name: database-backup-restorer
+    release: backup-and-restore-sdk
