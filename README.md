@@ -52,3 +52,37 @@ terraform output concourse_url
 ```
 
 ## Credhub
+1. Retrieve the `credhub-admin` client secret
+```sh
+terraform output credhub_password
+```
+
+2. Login to credhub
+The username is: `credhub-admin`  
+```sh
+../../bin/credhub-login.sh
+```
+
+## UAA
+1. Retrieve the uaa `admin` client password
+```sh
+terraform output uaa_password
+```
+
+2. Login with uaac
+The username is: `admin`  
+```sh
+../../bin/uaa-login.sh
+```
+
+## Grafana
+If you opted for `deploy_metrics = "true"`, you can connect to grafana through the URL provided as terraform output and using the password retrieved from the previous step.
+1. Retrieve the grafana `admin` password
+```sh
+terraform output metrics_password
+```
+
+2. Retrieve the grafana URL
+```sh
+terraform output metrics_url
+```
