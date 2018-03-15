@@ -9,7 +9,7 @@ resource "google_compute_firewall" "allow-ssh" {
 
   source_ranges = [
     "${var.source_admin_networks}",
-    "${formatlist("%s/32", google_compute_instance.nat-gateway-pri.*.address)}",
+    "${formatlist("%s/32", google_compute_instance.nat-gateway-pri.*.network_interface.0.access_config.0.nat_ip)}",
   ]
 
   target_tags = ["${var.env_name}-allow-ssh"]
