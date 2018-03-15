@@ -52,6 +52,8 @@ terraform output concourse_url
 ```
 
 ## Credhub
+Make sure you are using credhub-cli >=1.7.0
+
 1. Retrieve the `credhub-admin` client secret
 ```sh
 terraform output credhub_password
