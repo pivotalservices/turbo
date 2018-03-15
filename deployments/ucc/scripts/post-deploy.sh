@@ -2,8 +2,12 @@
 
 ucc_credhub_login() {
 	credhub api "$TF_CREDHUB_URL" --skip-tls-validation || return 1
-	credhub login --client-name=credhub-admin --client-secret="$TF_CREDHUB_PASSWORD" || return 1
+	credhub login --client-name=credhub-admin --client-secret="$TF_CREDHUB_ADMIN_PASSWORD" || return 1
 }
+
+unset CREDHUB_SECRET
+unset CREDHUB_CLIENT
+unset CREDHUB_SERVER
 
 ucc_credhub_login || clean_exit 1
 
