@@ -1,5 +1,5 @@
 # Introduction
-**TuRBO** stands for: **T**e**R**afforming **BO**sh
+**TuRBO** stands for: TeRrafforming BOsh
 
 TuRBO will deploy:  
 * A jumpbox
