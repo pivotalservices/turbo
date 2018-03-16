@@ -1,0 +1,279 @@
+---
+resources:
+- name: this-repo
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+
+  # releases
+
+- name: concourse-release
+  type: bosh-io-release
+  source:
+    repository: concourse/concourse
+
+- name: credhub-release
+  type: bosh-io-release
+  source:
+    repository: pivotal-cf/credhub-release
+
+- name: uaa-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/uaa-release
+
+- name: garden-runc-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/garden-runc-release
+
+- name: postgres-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/postgres-release
+
+- name: bbr-sdk-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry-incubator/backup-and-restore-sdk-release
+
+- name: grafana-release
+  type: bosh-io-release
+  source:
+    repository: vito/grafana-boshrelease
+
+- name: influxdb-release
+  type: bosh-io-release
+  source:
+    repository: vito/influxdb-boshrelease
+
+- name: riemann-release
+  type: bosh-io-release
+  source:
+    repository: xoebus/riemann-boshrelease
+
+# stemcells
+
+- name: ubuntu-trusty-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version_family: 3468.latest
+
+# outputs
+
+- name: compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: ".*-(\\d+).tgz"
+
+resource_types:
+  - name: gcs-bucket
+    type: docker-image
+    source:
+      repository: frodenas/gcs-resource
+
+jobs:
+  - name: compile-uaa-release-55
+    plan:
+      - aggregate:
+          - get: this-repo
+          - get: uaa-release
+            version:
+              version: "55"
+          - get: ubuntu-trusty-stemcell
+            version:
+              version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: uaa-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-credhub-release-1.7
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: credhub-release
+          version:
+            version: "1.7.1"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: credhub-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-bbr-sdk-release-1.5
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: bbr-sdk-release
+          version:
+            version: "1.5.2"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: bbr-sdk-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-bbr-sdk-release-1.5-stemcell-director
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: bbr-sdk-release
+          version:
+            version: "1.5.2"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.21"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: bbr-sdk-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-garden-runc-release-1.11
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: garden-runc-release
+          version:
+            version: "1.11.1"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: garden-runc-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-postgres-release-26
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: postgres-release
+          version:
+            version: "26"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: postgres-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-concourse-release-3.9
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: concourse-release
+          version:
+            version: "3.9.2"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: concourse-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-grafana-release-13.1
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: grafana-release
+          version:
+            version: "13.1.0"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: grafana-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-influxdb-release-4
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: influxdb-release
+          version:
+            version: "4"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: influxdb-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+
+  - name: compile-riemann-release-5
+    plan:
+      - aggregate:
+        - get: this-repo
+        - get: riemann-release
+          version:
+            version: "5"
+        - get: ubuntu-trusty-stemcell
+          version:
+            version: "3468.27"
+      - task: export-release
+        file: this-repo/ci/compiled-releases/tasks/export-release.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: riemann-release
+      - put: compiled-releases
+        params:
+          file: "compiled-release/*.tgz"

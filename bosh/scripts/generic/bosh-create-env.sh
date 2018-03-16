@@ -28,5 +28,5 @@ export BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secre
 
 credhub api https://$(bosh int "$BOSH_VAR_CACHE" --path /bosh_target):8844 --skip-tls-validation >/dev/null 2>&1
 credhub login --client-name=credhub-admin --client-secret=$(bosh int "$BOSH_VAR_CACHE" --path /credhub_admin_client_secret) >/dev/null 2>&1
-bosh -e "$BOSH_ENV" log-in >/dev/null 2>&1
+bosh -e "$BOSH_ENVIRONMENT" log-in >/dev/null 2>&1
 EOF
