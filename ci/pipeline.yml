@@ -377,6 +377,19 @@ jobs:
     - put: aws-environments
       params: {release: aws-environments}
 
+- name: unlock-aws-devel
+  plan:
+    - get: aws-environments
+    - put: aws-environments
+      params: {release: aws-environments}
+
+- name: unlock-gcp-devel
+  plan:
+    - get: gcp-environments
+    - put: gcp-environments
+      params: {release: gcp-environments}
+
+
 - name: destroy-aws-devel
   plan:
     - get: this-repo
