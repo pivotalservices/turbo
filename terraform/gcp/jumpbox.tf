@@ -50,6 +50,7 @@ resource "google_compute_instance" "jumpbox" {
 while [ ! -e /dev/disk/by-id/google-data ]; do sleep 1; done
 if ! sudo file -sL /dev/disk/by-id/google-data-part1 | grep ext4; then
     echo -e "g\nn\np\n1\n\n\nw" | sudo fdisk /dev/disk/by-id/google-data
+    sleep 10
     sudo mkfs.ext4 /dev/disk/by-id/google-data-part1
 fi
 sudo mkdir /data
