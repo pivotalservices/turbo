@@ -7,6 +7,7 @@ image_resource:
     repository: bosh/main-bosh-docker
 
 inputs:
+  - name: this-repo
   - name: bosh-deployment
   - name: stemcell
   - name: release
