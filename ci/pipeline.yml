@@ -1,0 +1,595 @@
+---
+resources:
+- name: this-repo
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+
+- name: this-repo-ci
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: ci
+    private_key: ((ssh_key_gitlab))
+
+- name: gcp-environments
+  type: pool
+  source:
+    uri: git@gitlab.com:RomRider/turbo-pools.git
+    branch: master
+    pool: gcp
+    private_key: ((ssh_key_gitlab))
+
+- name: aws-environments
+  type: pool
+  source:
+    uri: git@gitlab.com:RomRider/turbo-pools.git
+    branch: master
+    pool: aws
+    private_key: ((ssh_key_gitlab))
+
+- name: concourse-release
+  type: bosh-io-release
+  source:
+    repository: concourse/concourse
+
+- name: credhub-release
+  type: bosh-io-release
+  source:
+    repository: pivotal-cf/credhub-release
+
+- name: uaa-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/uaa-release
+
+- name: garden-runc-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/garden-runc-release
+
+- name: postgres-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/postgres-release
+
+- name: bbr-sdk-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry-incubator/backup-and-restore-sdk-release
+
+- name: grafana-release
+  type: bosh-io-release
+  source:
+    repository: vito/grafana-boshrelease
+
+- name: influxdb-release
+  type: bosh-io-release
+  source:
+    repository: vito/influxdb-boshrelease
+
+- name: riemann-release
+  type: bosh-io-release
+  source:
+    repository: xoebus/riemann-boshrelease
+
+- name: terraform
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: tfstate-storage
+      prefix: terraform/state/bootstrap-concourse/
+    env:
+      GOOGLE_CREDENTIALS: ((gcp_key))
+
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+    tag: beta-backend
+
+
+jobs:
+- name: generate-versions
+  plan:
+  - aggregate:
+    - get: this-repo
+      trigger: true
+    - get: concourse-release
+      trigger: true
+      params: {tarball: false}
+    - get: credhub-release
+      trigger: true
+      params: {tarball: false}
+    - get: uaa-release
+      trigger: true
+      params: {tarball: false}
+    - get: garden-runc-release
+      trigger: true
+      params: {tarball: false}
+    - get: postgres-release
+      trigger: true
+      params: {tarball: false}
+    - get: bbr-sdk-release
+      trigger: true
+      params: {tarball: false}
+    - get: grafana-release
+      trigger: true
+      params: {tarball: false}
+    - get: influxdb-release
+      trigger: true
+      params: {tarball: false}
+    - get: riemann-release
+      trigger: true
+      params: {tarball: false}
+
+  - task: 'generate version.yml'
+    config:
+      inputs:
+        - name: concourse-release
+        - name: credhub-release
+        - name: uaa-release
+        - name: garden-runc-release
+        - name: postgres-release
+        - name: bbr-sdk-release
+        - name: grafana-release
+        - name: influxdb-release
+        - name: riemann-release
+        - name: this-repo
+      outputs:
+        - name: this-repo-ci
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: czero/rootfs}
+      run:
+        path: sh
+        args:
+        - -c
+        - |
+          #echo $(cat ./credhub-release/version)
+          cat <<EOF > ./local_versions.yml
+          stemcell_version: '3468.26'
+          credhub_version: '$(cat ./credhub-release/version)'
+          credhub_sha1: '$(cat ./credhub-release/sha1)'
+          uaa_version: '$(cat ./uaa-release/version)'
+          uaa_sha1: '$(cat ./uaa-release/sha1)'
+          concourse_version: '3.9.1-jerome-dev4'
+          concourse_sha1: 'df7126dc542bf79c0b12a1442ff33123f4b57e68'
+          garden_runc_version: '$(cat ./garden-runc-release/version)'
+          garden_runc_sha1: '$(cat ./garden-runc-release/sha1)'
+          postgres_version: '$(cat ./postgres-release/version)'
+          postgres_sha1: '$(cat ./postgres-release/sha1)'
+          bbr_sdk_version: '$(cat ./bbr-sdk-release/version)'
+          bbr_sdk_sha1: '$(cat ./bbr-sdk-release/sha1)'
+
+          grafana_version: '$(cat ./grafana-release/version)'
+          grafana_sha1: '$(cat ./grafana-release/sha1)'
+          influxdb_version: '$(cat ./influxdb-release/version)'
+          influxdb_sha1: '$(cat ./influxdb-release/sha1)'
+          riemann_version: '$(cat ./riemann-release/version)'
+          riemann_sha1: '$(cat ./riemann-release/sha1)'
+          EOF
+          git clone this-repo this-repo-ci
+          echo "The versions.yml should be:"
+          cat ./local_versions.yml
+          echo "The diff with the existing one is:"
+          diff --strip-trailing-cr -u ./this-repo/deployments/ucc/versions/versions.yml ./local_versions.yml || true
+          cp ./local_versions.yml ./this-repo-ci/deployments/ucc/versions/versions.yml
+          git config --global user.name "concourse"
+          git config --global user.email "ci@wnetworks.org"
+          cd ./this-repo-ci/
+          git add ./deployments/ucc/versions/versions.yml
+          git commit -m "ci - bump versions.yml"
+  - put: this-repo-ci
+    params:
+      repository: this-repo-ci
+      force: true
+
+- name: terraform-apply-gcp
+  plan:
+    - get: this-repo
+    - get: this-repo-ci
+      passed: [generate-versions]
+      trigger: false
+    - put: terraform
+      params:
+        terraform_source: this-repo-ci/terraform/gcp/
+        env_name: ci-gcp
+        vars:
+          <<: *terraform-vars-gcp
+
+- name: testing-gcp
+  plan:
+    - get: this-repo
+    - get: this-repo-ci
+      passed: [terraform-apply-gcp]
+      trigger: true
+    - get: terraform
+      passed: [terraform-apply-gcp]
+      trigger: true
+    - task: testing-gcp
+      <<: *task-testing
+
+- name: terraform-destroy-gcp
+  plan:
+    - get: this-repo-ci
+      passed: [testing-gcp]
+    - get: terraform
+      trigger: false
+      passed: [testing-gcp]
+    - put: terraform
+      params:
+        terraform_source: this-repo-ci/terraform/gcp/
+        env_name: ci-gcp
+        action: destroy
+        vars:
+          <<: *terraform-vars-gcp
+      get_params:
+        action: destroy
+
+- name: deploy-gcp-devel
+  plan:
+    - get: this-repo
+      trigger: true
+    - put: gcp-environments
+      params: {claim: gcp-devel}
+    - put: terraform
+      params:
+        terraform_source: this-repo/terraform/gcp/
+        env_name: gcp-devel
+        vars:
+          <<: *terraform-vars-gcp-devel
+      on_failure:
+        put: gcp-environments
+        params: {release: gcp-environments}
+
+- name: testing-gcp-devel
+  plan:
+    - get: gcp-environments
+      passed: [deploy-gcp-devel]
+    - get: this-repo
+      passed: [deploy-gcp-devel]
+    - get: terraform
+      passed: [deploy-gcp-devel]
+      trigger: true
+    - task: testing-gcp-devel
+      on_failure:
+        put: gcp-environments
+        params: {release: gcp-environments}
+      config:
+        inputs:
+          - name: this-repo
+          - name: terraform
+        platform: linux
+        image_resource:
+          type: docker-image
+          source: {repository: czero/rootfs}
+        run:
+          <<: *task-run
+    - put: gcp-environments
+      params: {release: gcp-environments}
+
+
+- name: destroy-gcp-devel
+  plan:
+    - get: this-repo
+    - get: terraform
+      trigger: false
+      passed: [testing-gcp-devel]
+    - put: terraform
+      params:
+        terraform_source: this-repo/terraform/gcp/
+        env_name: gcp-devel
+        action: destroy
+        vars:
+          <<: *terraform-vars-gcp-devel
+      get_params:
+        action: destroy
+
+
+- name: terraform-apply-aws
+  plan:
+    - get: this-repo
+    - get: this-repo-ci
+      passed: [generate-versions]
+      trigger: false
+    - put: terraform
+      params:
+        terraform_source: this-repo-ci/terraform/aws/
+        env_name: ci-aws
+        vars:
+          <<: *terraform-vars-aws
+
+- name: testing-aws
+  plan:
+    - get: this-repo
+    - get: this-repo-ci
+      passed: [terraform-apply-aws]
+      trigger: true
+    - get: terraform
+      passed: [terraform-apply-aws]
+      trigger: true
+    - task: testing-aws
+      <<: *task-testing
+
+- name: terraform-destroy-aws
+  plan:
+    - get: this-repo-ci
+      passed: [testing-aws]
+    - get: terraform
+      trigger: false
+      passed: [testing-aws]
+    - put: terraform
+      params:
+        terraform_source: this-repo-ci/terraform/aws/
+        env_name: ci-aws
+        action: destroy
+        vars:
+          <<: *terraform-vars-aws
+      get_params:
+        action: destroy
+
+
+- name: deploy-aws-devel
+  plan:
+    - put: aws-environments
+      params: {claim: aws-devel}
+    - get: this-repo
+      trigger: true
+    - put: terraform
+      params:
+        terraform_source: this-repo/terraform/aws/
+        env_name: aws-devel
+        vars:
+          <<: *terraform-vars-aws-devel
+      on_failure:
+        put: aws-environments
+        params: {release: aws-environments}
+
+- name: testing-aws-devel
+  plan:
+    - get: aws-environments
+      passed: [deploy-aws-devel]
+    - get: this-repo
+      passed: [deploy-aws-devel]
+    - get: terraform
+      passed: [deploy-aws-devel]
+      trigger: true
+    - task: testing-aws
+      config:
+        inputs:
+          - name: this-repo
+          - name: terraform
+        platform: linux
+        image_resource:
+          type: docker-image
+          source: {repository: czero/rootfs}
+        run:
+          <<: *task-run
+      on_failure:
+        put: aws-environments
+        params: {release: aws-environments}
+    - put: aws-environments
+      params: {release: aws-environments}
+
+- name: destroy-aws-devel
+  plan:
+    - get: this-repo
+    - get: terraform
+      trigger: false
+      passed: [testing-aws-devel]
+    - put: terraform
+      params:
+        terraform_source: this-repo/terraform/aws/
+        env_name: aws-devel
+        action: destroy
+        vars:
+          <<: *terraform-vars-aws
+      get_params:
+        action: destroy
+
+terraform-vars-gcp: &terraform-vars-gcp
+  env_name: ci-gcp
+  gcp_project_name: 'fe-jwiedemann'
+  gcp_region: 'europe-west1'
+  gcp_zones: ["europe-west1-b"]
+  master_dns_zone_name: 'gcp-wnetworks'
+  dns_domain_name: 'ci.gcp.pcf.wnetworks.org'
+  bootstrap_subnet: '10.0.0.0/24'
+  source_admin_networks: ["83.202.25.187/32", "35.187.160.72/32"]
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  gcp_key: '((gcp_key))'
+
+terraform-vars-gcp-devel: &terraform-vars-gcp-devel
+  env_name: gcp-devel
+  gcp_project_name: 'fe-jwiedemann'
+  gcp_region: 'europe-west1'
+  gcp_zones: ["europe-west1-b"]
+  master_dns_zone_name: 'gcp-wnetworks'
+  dns_domain_name: 'gcp-devel.gcp.pcf.wnetworks.org'
+  bootstrap_subnet: '10.0.0.0/24'
+  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  gcp_key: '((gcp_key))'
+
+terraform-vars-aws: &terraform-vars-aws
+  env_name: ci-aws
+  aws_region: "eu-west-2"
+  aws_azs: ["eu-west-2a"]
+  bootstrap_subnet: "10.0.0.0/22"
+  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
+  master_dns_domain_name: "aws.pcf.wnetworks.org"
+  dns_domain_name: "ci.aws.pcf.wnetworks.org"
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  aws_access_key: ((aws_access_key))
+  aws_secret_key: ((aws_secret_key))
+
+terraform-vars-aws-devel: &terraform-vars-aws-devel
+  env_name: aws-devel
+  aws_region: "eu-west-2"
+  aws_azs: ["eu-west-2a"]
+  bootstrap_subnet: "10.0.0.0/22"
+  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
+  master_dns_domain_name: "aws.pcf.wnetworks.org"
+  dns_domain_name: "aws-devel.aws.pcf.wnetworks.org"
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  aws_access_key: ((aws_access_key))
+  aws_secret_key: ((aws_secret_key))
+
+task-testing: &task-testing
+  config:
+    inputs:
+      - name: this-repo-ci
+      - name: terraform
+    platform: linux
+    image_resource:
+      type: docker-image
+      source: {repository: czero/rootfs}
+    run: &task-run
+      path: bash
+      args:
+      - -c
+      - |-
+        set -eo pipefail
+
+        # Export metadata as environment variables
+        green=`tput -T xterm setaf 2`
+        reset=`tput -T xterm sgr0`
+        env_json="$(cat terraform/metadata)"
+        for var in $(echo "$env_json" | jq -r 'keys[]'); do
+          export $var="$(echo "$env_json" | jq -r ".$var")"
+        done
+        export env_name="$(cat terraform/name)"
+
+        cat terraform/metadata | jq -r '.jumpbox_ssh_private_key' > id_rsa
+        chmod 600 id_rsa
+
+        curl -o credhub https://storage.googleapis.com/bosh-release-jwi/credhub-linux && \
+        chmod +x credhub
+
+        curl -k -o fly "${concourse_url}/api/v1/cli?arch=amd64&platform=linux" && \
+        chmod +x fly
+
+        export CREDHUB_SERVER=${credhub_url}
+        export CREDHUB_CLIENT=credhub-admin
+        export CREDHUB_SECRET=${credhub_password}
+        
+        echo "${green}Connection to the jumpbox and ls the ~/automation folder${reset}"
+        ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
+          -i id_rsa \
+          -o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" "ls -la automation"
+        
+        echo "${green}Connecting to credhub on ${credhub_url}${reset}"
+        ./credhub api -s ${credhub_url} --skip-tls-validation
+        echo "${green}Setting /concourse/main/test_value in credhub${reset}"
+        ./credhub set -n /concourse/main/test_value -t value -v "World"
+
+        echo "${green}Connecting to concourse on ${concourse_url}${reset}"
+        ./fly -t local login -c "${concourse_url}" -k \
+          -u admin -p "${concourse_password}"
+
+
+
+        cat <<"EOF" > test.yml
+        jobs:
+          - name: hello-world
+            plan:
+            - task: say-hello
+              config:
+                platform: linux
+                image_resource:
+                  type: docker-image
+                  source: {repository: busybox}
+                run:
+                  path: sh
+                  args:
+                  - -c
+                  - |
+                    #!/usr/bin/env sh
+                    echo Hello $CREDHUB_VALUE
+              params:
+                  CREDHUB_VALUE: ((test_value))
+        EOF
+
+        set -x
+        echo "${green}Testing pipelines and credhub integration${reset}"
+        ./fly -t local sp -p hello-world -c test.yml -n
+        ./fly -t local unpause-pipeline -p hello-world
+        ./fly -t local trigger-job --job=hello-world/hello-world -w | tee output
+        grep "Hello World" output
+        rm -rf output
+
+        # Dirty Fix fox :
+        # (https://github.com/pivotal-cf/credhub-release/pull/19)
+        echo "${green}Dirty fix while https://github.com/pivotal-cf/credhub-release/pull/19 is not accepted${reset}"
+        cat <<EOF > metadata
+        #!/usr/bin/env bash
+        echo "---
+        restore_should_be_locked_before:
+        - job_name: uaa
+          release: uaa"
+        EOF
+        chmod 755 metadata
+
+        scp -i id_rsa \
+          -o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
+          metadata "${jumpbox_ssh_user}@${jumpbox_ip}":~/
+
+        ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
+          -i id_rsa \
+          -o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
+          'bosh -d ${ENV_NAME}-ucc scp ~/metadata credhub-uaa:/tmp/ ;\
+          bosh -d ${ENV_NAME}-ucc ssh credhub-uaa "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata" ;'
+
+        # End Dirty Fix
+        echo "${green}Running bbr backup of the deployment${reset}"
+        ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
+          -i id_rsa \
+          -o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
+          'mkdir -p ci-tests && \
+          cd ci-tests && \
+          ~/automation/bosh/scripts/generic/bbr-backup.sh deployment ${ENV_NAME}-ucc'
+        
+        echo "${green}Waiting 2min for everything to be running again${reset}"
+        sleep 120
+
+        echo "${green}Deleting the pipeline and the credhub entry${reset}"
+        ./fly -t local destroy-pipeline -p hello-world -n
+        ./credhub delete -n /concourse/main/test_value
+
+        echo "${green}Running bbr restore of the deployment${reset}"
+        ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
+          -i id_rsa \
+          -o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
+          'mkdir -p ci-tests && \
+          pushd ci-tests ; \
+          ~/automation/bosh/scripts/generic/bbr-restore.sh deployment ${ENV_NAME}-ucc "$(pwd)/$(ls -1t -d ${ENV_NAME}-ucc* | head -n 1)";\
+          rc=$?;
+          popd; \
+          rm -rf ci-tests metadata;\
+          exit $rc'
+
+        echo "${green}Waiting 2min for everything to be running again${reset}"
+        sleep 120
+
+        echo "${green}Verifying that the pipeline and the credhub entry is still there${reset}"
+        ./fly -t local trigger-job --job=hello-world/hello-world -w | tee output
+        grep "Hello World" output
+        echo "${green}Cleaning up the environment${reset}"
+        ./fly -t local destroy-pipeline -p hello-world -n
+        ./credhub delete -n /concourse/main/test_value
+        rm -f id_rsa test.yml metadata output
+
