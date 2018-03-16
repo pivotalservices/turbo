@@ -30,7 +30,7 @@ locals {
 
   common_flags = {
     metrics                   = "${var.deploy_metrics}"
-    compiled_releaes          = "true"
+    compiled_releases         = "true"
     metrics_compiled_releases = "true"
     use_external_postgres     = "false"
   }
