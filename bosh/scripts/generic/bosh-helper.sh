@@ -24,7 +24,8 @@ BOSH_OPS_FILES="-o $BOSH_FOLDER/bosh-deployment/$TF_CPI/cpi.yml \
                 -o $BOSH_FOLDER/bosh-deployment/uaa.yml \
                 -o $BOSH_FOLDER/bosh-deployment/credhub.yml \
                 -o $BOSH_FOLDER/bosh-deployment/jumpbox-user.yml \
-				-o $BOSH_FOLDER/ops/bbr-sdk.yml \
+				-o $BOSH_FOLDER/ops/0-bbr-sdk.yml \
+				-o $BOSH_FOLDER/ops/8-compiled-release.yml \
 				-l $BOSH_FOLDER/versions/versions.yml"
 
 STEMCELL="$TF_STEMCELL_TYPE"
