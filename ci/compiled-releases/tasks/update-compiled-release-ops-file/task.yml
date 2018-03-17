@@ -12,7 +12,7 @@ inputs:
 - name: uaa-compiled-releases
 - name: garden-runc-compiled-releases
 - name: postgres-compiled-releases
-- name: bbr-sdk-compiled-releases
+- name: backup-and-restore-sdk-compiled-releases
 - name: grafana-compiled-releases
 - name: influxdb-compiled-releases
 - name: riemann-compiled-releases
