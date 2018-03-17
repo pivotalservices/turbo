@@ -6,7 +6,7 @@ set -o pipefail
 git clone turbo turbo-out
 
 # Get release details
-for i in ./*-compiled-release; do
+for i in ./*-compiled-releases; do
 	pushd $i >/dev/null
 	tar -xzf *.tgz $(tar -tzf *.tgz | grep 'release.MF')
 	release_name=$(grep -E '^name: ' release.MF | awk '{print $2}' | tr -d "\"'")
