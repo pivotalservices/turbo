@@ -23,4 +23,4 @@ outputs:
 - name: turbo-out
 
 run:
-  path: turbo/ci/tasks/update-compiled-release-ops-file/task.sh
+  path: turbo/ci/compiled-releases/tasks/update-compiled-release-ops-file/task.sh
