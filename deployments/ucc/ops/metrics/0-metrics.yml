@@ -1,24 +1,5 @@
 ---
 - type: replace
-  path: /releases/-
-  value:
-    name: riemann
-    version: latest
-
-- type: replace
-  path: /releases/-
-  value:
-    name: grafana
-    version: latest
-
-- type: replace
-  path: /releases/-
-  value:
-    name: influxdb
-    version: latest
-
-
-- type: replace
   path: /instance_groups/name=web/jobs/name=atc/properties/riemann?
   value:
     host: ((metrics_static_ip))
