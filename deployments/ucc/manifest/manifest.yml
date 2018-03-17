@@ -3,29 +3,17 @@
   
   releases:
   - name: concourse
-    version: ((concourse_version))
-    sha1: ((concourse_sha1))
-    url: https://bosh.io/d/github.com/concourse/concourse?v=((concourse_version))
+    version: latest
   - name: garden-runc
-    version: ((garden_runc_version))
-    sha1: ((garden_runc_sha1))
-    url: https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=((garden_runc_version))
+    version: latest
   - name: postgres
-    version: ((postgres_version))
-    sha1: ((postgres_sha1))
-    url: https://bosh.io/d/github.com/cloudfoundry/postgres-release?v=((postgres_version))
+    version: latest
   - name: credhub
-    version: ((credhub_version))
-    url: https://bosh.io/d/github.com/pivotal-cf/credhub-release?v=((credhub_version))
-    sha1: ((credhub_sha1))
+    version: latest
   - name: uaa
-    version: ((uaa_version))
-    url: https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=((uaa_version))
-    sha1: ((uaa_sha1))
+    version: latest
   - name: backup-and-restore-sdk
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/backup-and-restore-sdk-release?v=((bbr_sdk_version))
-    sha1: ((bbr_sdk_sha1))
-    version: ((bbr_sdk_version))
+    version: latest
   
   instance_groups:
   - name: db

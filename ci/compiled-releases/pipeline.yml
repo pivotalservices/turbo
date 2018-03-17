@@ -7,12 +7,12 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
 
-- name: turbo-compiled-release
-  type: git
-  source:
-    uri: git@gitlab.com:RomRider/turbo.git
-    branch: compiled-release
-    private_key: ((ssh_key_gitlab))
+# - name: turbo-compiled-release
+#   type: git
+#   source:
+#     uri: git@gitlab.com:RomRider/turbo.git
+#     branch: compiled-release
+#     private_key: ((ssh_key_gitlab))
 
 - name: bosh-deployment
   type: git
@@ -388,13 +388,13 @@ jobs:
         - compile-uaa-release
         - compile-garden-runc-release
         - compile-postgres-release
-        - compile-bbr-sdk-release
+        - compile-backup-and-restore-sdk-release
         - compile-grafana-release
         - compile-influxdb-release
         - compile-riemann-release
         params: {tarball: false}
     - task: 'generate-ops-files'
-      file: turbo-devel/ci/compiled-release/tasks/update-compiled-release-ops-file/task.yml
+      file: turbo-devel/ci/compiled-releases/tasks/update-compiled-release-ops-file/task.yml
       input_mapping:
         turbo: turbo-devel
     - put: turbo-devel

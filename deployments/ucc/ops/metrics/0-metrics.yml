@@ -3,25 +3,19 @@
   path: /releases/-
   value:
     name: riemann
-    url: https://bosh.io/d/github.com/xoebus/riemann-boshrelease?v=((riemann_version))
-    sha1: ((riemann_sha1))
-    version: ((riemann_version))
+    version: latest
 
 - type: replace
   path: /releases/-
   value:
     name: grafana
-    sha1: ((grafana_sha1))
-    url: https://bosh.io/d/github.com/vito/grafana-boshrelease?v=((grafana_version))
-    version: ((grafana_version))
+    version: latest
 
 - type: replace
   path: /releases/-
   value:
     name: influxdb
-    sha1: ((influxdb_sha1))
-    url: https://bosh.io/d/github.com/vito/influxdb-boshrelease?v=((influxdb_version))
-    version: ((influxdb_version))
+    version: latest
 
 
 - type: replace

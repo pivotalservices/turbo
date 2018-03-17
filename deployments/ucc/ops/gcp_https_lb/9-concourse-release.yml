@@ -1,6 +1,6 @@
 #Credhub
 - type: replace
-  path: /releases/name=concourse
+  path: /releases/name=concourse?
   value:
     name: concourse
     version: '3.9.1-jerome-dev4'
