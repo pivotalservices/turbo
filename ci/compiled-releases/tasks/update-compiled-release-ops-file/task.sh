@@ -44,7 +44,7 @@ YML
 	stemcell_version="$(cat ubuntu-trusty-stemcell/version)"
 
 	pushd turbo-out >/dev/null
-	versions_file="deployments/ucc/versions/version.yml"
+	versions_file="deployments/ucc/versions/versions.yml"
 	echo "stemcell_version: '${stemcell_version}'" >${versions_file}
 	if [[ -z $(git config --global user.email) ]]; then
 		git config --global user.email "ci@wnetworks.org"
