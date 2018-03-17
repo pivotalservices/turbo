@@ -1,0 +1,7 @@
+- type: replace
+  path: /releases/name=influxdb?
+  value:
+    name: influxdb
+    version: 4
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/influxdb-4-ubuntu-trusty-3468.27-20180317-164826-588375986.tgz
+    sha1: 800aac0cba9964777ffdb66d688407cb7de9f300
