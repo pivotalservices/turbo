@@ -38,5 +38,24 @@ YML
 		git add "${OPS_FILE_PATH}"
 		git commit -m "Compiled releases updated: ${release_name}/${release_version}"
 	fi
+
+	popd >/dev/null
+
+	stemcell_version="$(cat ubuntu-trusty-stemcell/version)"
+
+	pushd turbo-out >/dev/null
+	versions_file="deployments/ucc/versions/version.yml"
+	echo "stemcell_version: '${stemcell_version}'" >${versions_file}
+	if [[ -z $(git config --global user.email) ]]; then
+		git config --global user.email "ci@wnetworks.org"
+	fi
+	if [[ -z $(git config --global user.name) ]]; then
+		git config --global user.name "CI Bot"
+	fi
+
+	if [[ -n $(git status -s) ]]; then
+		git add "${versions_file}"
+		git commit -m "Stemcell updated: ${stemcell_version}"
+	fi
 	popd >/dev/null
 done
