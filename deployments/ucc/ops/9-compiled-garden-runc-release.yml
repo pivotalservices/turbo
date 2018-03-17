@@ -1,0 +1,7 @@
+- type: replace
+  path: /releases/name=garden-runc?
+  value:
+    name: garden-runc
+    version: 1.12.1
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/garden-runc-1.12.1-ubuntu-trusty-3468.27-20180317-180910-505745699.tgz
+    sha1: a419f8a6e1da6fe2f0e547b22ee10e80fc61a26c
