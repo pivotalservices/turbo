@@ -7,7 +7,7 @@ image_resource:
     repository: bosh/main-bosh-docker
 
 inputs:
-  - name: this-repo
+  - name: turbo-devel
   - name: bosh-deployment
   - name: stemcell
   - name: release
@@ -22,4 +22,4 @@ outputs:
   - name: compiled-release
 
 run:
-  path: this-repo/ci/compiled-releases/tasks/export-release.sh
+  path: turbo-devel/ci/compiled-releases/tasks/export-release/task.sh

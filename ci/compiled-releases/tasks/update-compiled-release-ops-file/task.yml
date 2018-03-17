@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: czero/rootfs
+
+inputs:
+- name: concourse-compiled-releases
+- name: credhub-compiled-releases
+- name: uaa-compiled-releases
+- name: garden-runc-compiled-releases
+- name: postgres-compiled-releases
+- name: bbr-sdk-compiled-releases
+- name: grafana-compiled-releases
+- name: influxdb-compiled-releases
+- name: riemann-compiled-releases
+- name: ubuntu-trusty-stemcell
+- name: turbo
+
+outputs:
+- name: turbo-out
+
+run:
+  path: turbo/ci/tasks/update-compiled-release-ops-file/task.sh
