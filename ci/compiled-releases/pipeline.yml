@@ -73,7 +73,7 @@ resources:
 - name: compiled-releases
   type: gcs-bucket
   source:
-    bucket: "bosh-compiled-release-tarballs"
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
     json_key: ((gcp_key))
     regexp: ".*-(\\d+).tgz"
 
@@ -84,17 +84,15 @@ resource_types:
       repository: frodenas/gcs-resource
 
 jobs:
-  - name: compile-uaa-release-55
+  - name: compile-uaa-release
     plan:
       - aggregate:
           - get: this-repo
           - get: bosh-deployment
           - get: uaa-release
-            version:
-              version: "56"
+            trigger: true
           - get: ubuntu-trusty-stemcell
-            version:
-              version: "3468.27"
+            trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -104,18 +102,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-credhub-release-1.7
+  - name: compile-credhub-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: credhub-release
-          version:
-            version: "1.7.2"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -125,18 +126,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-bbr-sdk-release-1.5
+  - name: compile-bbr-sdk-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: bbr-sdk-release
-          version:
-            version: "1.5.2"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -146,16 +150,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-bbr-sdk-release-1.5-stemcell-director
+  - name: compile-bbr-sdk-release-stemcell-director
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: bbr-sdk-release
-          version:
-            version: "1.5.2"
+          trigger: true
         - get: ubuntu-trusty-stemcell
+          trigger: true
           version:
             version: "3468.21"
       - task: export-release
@@ -167,18 +176,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-garden-runc-release-1.11
+  - name: compile-garden-runc-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: garden-runc-release
-          version:
-            version: "1.12.1"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -188,18 +200,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-postgres-release-26
+  - name: compile-postgres-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: postgres-release
-          version:
-            version: "27"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -209,18 +224,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-concourse-release-3.9
+  - name: compile-concourse-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: concourse-release
-          version:
-            version: "3.9.2"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -230,18 +248,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-grafana-release-13.1
+  - name: compile-grafana-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: grafana-release
-          version:
-            version: "13.1.0"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -251,18 +272,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-influxdb-release-4
+  - name: compile-influxdb-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: influxdb-release
-          version:
-            version: "4"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -272,18 +296,21 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
 
-  - name: compile-riemann-release-5
+  - name: compile-riemann-release
     plan:
       - aggregate:
         - get: this-repo
         - get: bosh-deployment
         - get: riemann-release
-          version:
-            version: "5"
+          trigger: true
         - get: ubuntu-trusty-stemcell
-          version:
-            version: "3468.27"
+          trigger: true
       - task: export-release
         file: this-repo/ci/compiled-releases/tasks/export-release.yml
         privileged: true
@@ -293,3 +320,8 @@ jobs:
       - put: compiled-releases
         params:
           file: "compiled-release/*.tgz"
+      - task: make-public
+        file: this-repo/ci/compiled-releases/tasks/make-public.yml
+        params:
+          GCP_BUCKET: *compiled_bucket_name
+          GCP_KEY: ((gcp_key))
