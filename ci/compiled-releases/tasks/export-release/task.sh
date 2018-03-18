@@ -6,6 +6,8 @@ set -eu
 # stemcell metadata/upload
 #
 
+curl -L -s "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64" -o jq && chmod 755 jq && mv jq /usr/local/bin
+
 tar -xzf stemcell/*.tgz $(tar -tzf stemcell/*.tgz | grep 'stemcell.MF')
 STEMCELL_OS=$(grep -E '^operating_system: ' stemcell.MF | awk '{print $2}' | tr -d "\"'")
 STEMCELL_VERSION=$(grep -E '^version: ' stemcell.MF | awk '{print $2}' | tr -d "\"'")
