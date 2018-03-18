@@ -1,12 +1,24 @@
 ---
 resources:
-- name: turbo-devel
+- name: turbo-devel-gcp
   type: git
   source:
     uri: git@gitlab.com:RomRider/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
-    ignore_paths: [ci/*]
+    ignore_paths:
+    - ci/*
+    - **/aws
+
+- name: turbo-devel-aws
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+    ignore_paths:
+    - ci/*
+    - **/gcp
 
 - name: turbo-ci
   type: git
@@ -55,13 +67,13 @@ jobs:
 - name: deploy-gcp-devel
   max_in_flight: 1
   plan:
-    - get: turbo-devel
+    - get: turbo-devel-gcp
       trigger: true
     - put: gcp-environments
       params: {claim: gcp-devel}
     - put: terraform
       params:
-        terraform_source: turbo-devel/terraform/gcp/
+        terraform_source: turbo-devel-gcp/terraform/gcp/
         env_name: gcp-devel
         vars:
           <<: *terraform-vars-gcp-devel
@@ -78,7 +90,7 @@ jobs:
     - get: turbo-ci
     - get: gcp-environments
       passed: [deploy-gcp-devel]
-    - get: turbo-devel
+    - get: turbo-devel-gcp
       passed: [deploy-gcp-devel]
     - get: terraform
       passed: [deploy-gcp-devel]
@@ -99,7 +111,7 @@ jobs:
 
 - name: destroy-gcp-devel
   plan:
-    - get: turbo-devel
+    - get: turbo-devel-gcp
     - get: terraform
       trigger: false
       passed: [testing-gcp-devel]
@@ -118,11 +130,11 @@ jobs:
   plan:
     - put: aws-environments
       params: {claim: aws-devel}
-    - get: turbo-devel
+    - get: turbo-devel-aws
       trigger: true
     - put: terraform
       params:
-        terraform_source: turbo-devel/terraform/aws/
+        terraform_source: turbo-devel-aws/terraform/aws/
         env_name: aws-devel
         vars:
           <<: *terraform-vars-aws-devel
@@ -139,7 +151,7 @@ jobs:
     - get: turbo-ci
     - get: aws-environments
       passed: [deploy-aws-devel]
-    - get: turbo-devel
+    - get: turbo-devel-aws
       passed: [deploy-aws-devel]
     - get: terraform
       passed: [deploy-aws-devel]
@@ -172,13 +184,13 @@ jobs:
 
 - name: destroy-aws-devel
   plan:
-    - get: turbo-devel
+    - get: turbo-devel-aws
     - get: terraform
       trigger: false
       passed: [testing-aws-devel]
     - put: terraform
       params:
-        terraform_source: turbo-devel/terraform/aws/
+        terraform_source: turbo-devel-aws/terraform/aws/
         env_name: aws-devel
         action: destroy
         vars:
