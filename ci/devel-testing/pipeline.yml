@@ -7,9 +7,9 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
-    - 'ci/**'
-    - 'bin/**'
-    - 'docs/**'
+    - 'ci/*'
+    - 'bin/*'
+    - 'docs/*'
     - 'README.md'
     - '.gitignore'
     - '**/.gitignore'
@@ -22,9 +22,9 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
-    - 'ci/**'
-    - 'bin/**'
-    - 'docs/**'
+    - 'ci/*'
+    - 'bin/*'
+    - 'docs/*'
     - 'README.md'
     - '.gitignore'
     - '**/.gitignore'
@@ -77,10 +77,11 @@ jobs:
 - name: deploy-gcp-devel
   max_in_flight: 1
   plan:
-    - get: turbo-devel-gcp
-      trigger: true
-    - put: gcp-environments
-      params: {claim: gcp-devel}
+    - aggregate:
+      - get: turbo-devel-gcp
+        trigger: true
+      - put: gcp-environments
+        params: {claim: gcp-devel}
     - put: terraform
       params:
         terraform_source: turbo-devel-gcp/terraform/gcp/
@@ -97,14 +98,15 @@ jobs:
 - name: testing-gcp-devel
   max_in_flight: 1
   plan:
-    - get: turbo-ci
-    - get: gcp-environments
-      passed: [deploy-gcp-devel]
-    - get: turbo-devel-gcp
-      passed: [deploy-gcp-devel]
-    - get: terraform
-      passed: [deploy-gcp-devel]
-      trigger: true
+    - aggregate:
+      - get: turbo-ci
+      - get: gcp-environments
+        passed: [deploy-gcp-devel]
+      - get: turbo-devel-gcp
+        passed: [deploy-gcp-devel]
+      - get: terraform
+        passed: [deploy-gcp-devel]
+        trigger: true
     - task: testing-gcp-devel
       file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
       input_mapping:
@@ -122,10 +124,11 @@ jobs:
 
 - name: destroy-gcp-devel
   plan:
-    - get: turbo-devel-gcp
-    - get: terraform
-      trigger: false
-      passed: [testing-gcp-devel]
+    - aggregate:
+      - get: turbo-devel-gcp
+      - get: terraform
+        trigger: false
+        passed: [testing-gcp-devel]
     - put: terraform
       params:
         terraform_source: turbo-devel/terraform/gcp/
@@ -139,10 +142,11 @@ jobs:
 - name: deploy-aws-devel
   max_in_flight: 1
   plan:
-    - put: aws-environments
-      params: {claim: aws-devel}
-    - get: turbo-devel-aws
-      trigger: true
+    - aggregate:
+      - put: aws-environments
+        params: {claim: aws-devel}
+      - get: turbo-devel-aws
+        trigger: true
     - put: terraform
       params:
         terraform_source: turbo-devel-aws/terraform/aws/
@@ -159,14 +163,15 @@ jobs:
 - name: testing-aws-devel
   max_in_flight: 1
   plan:
-    - get: turbo-ci
-    - get: aws-environments
-      passed: [deploy-aws-devel]
-    - get: turbo-devel-aws
-      passed: [deploy-aws-devel]
-    - get: terraform
-      passed: [deploy-aws-devel]
-      trigger: true
+    - aggregate:
+      - get: turbo-ci
+      - get: aws-environments
+        passed: [deploy-aws-devel]
+      - get: turbo-devel-aws
+        passed: [deploy-aws-devel]
+      - get: terraform
+        passed: [deploy-aws-devel]
+        trigger: true
     - task: testing-aws
       file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
       input_mapping:
@@ -196,10 +201,11 @@ jobs:
 
 - name: destroy-aws-devel
   plan:
-    - get: turbo-devel-aws
-    - get: terraform
-      trigger: false
-      passed: [testing-aws-devel]
+    - aggregate:
+      - get: turbo-devel-aws
+      - get: terraform
+        trigger: false
+        passed: [testing-aws-devel]
     - put: terraform
       params:
         terraform_source: turbo-devel-aws/terraform/aws/
