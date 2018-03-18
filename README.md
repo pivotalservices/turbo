@@ -1,5 +1,5 @@
 # Introduction
-**TuRBO** stands for: TeRrafforming BOsh
+**TuRBO** stands for: TeRafforming BOsh
 
 TuRBO will deploy:  
 * A jumpbox
@@ -19,10 +19,10 @@ Your deployment will be `bbr` ready.
 ---
 # Howto
 ## GCP
-Follow documentation [here](terraform/gcp/README.md)
+Follow documentation [here](docs/gcp/README.md)
 
 ## AWS
-Follow documentation [here](terraform/aws/README.md)
+Follow documentation [here](docs/aws/README.md)
 
 ---
 # Usage

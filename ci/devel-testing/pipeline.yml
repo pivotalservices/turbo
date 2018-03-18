@@ -7,7 +7,12 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
-    - 'ci/*'
+    - 'ci/**'
+    - 'bin/**'
+    - 'docs/**'
+    - 'README.md'
+    - '.gitignore'
+    - '**/.gitignore'
     - '**/aws'
 
 - name: turbo-devel-aws
@@ -17,7 +22,12 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
-    - 'ci/*'
+    - 'ci/**'
+    - 'bin/**'
+    - 'docs/**'
+    - 'README.md'
+    - '.gitignore'
+    - '**/.gitignore'
     - '**/gcp'
 
 - name: turbo-ci
