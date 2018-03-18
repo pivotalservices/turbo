@@ -21,22 +21,24 @@ RELEASE_VERSION=$(grep -E '^version: ' release.MF | awk '{print $2}' | tr -d "\"
 
 popd >/dev/null
 
-releases_in_bucket=$(curl -s "https://storage.googleapis.com/bosh-compiled-release-tarballs/?prefix=${RELEASE_NAME}")
-if [[ ${releases_in_bucket} == *"${RELEASE_VERSION}-${STEMCELL_OS}-${STEMCELL_VERSION}"-* ]]; then
-	exit 0
-fi
+releases_in_bucket=$(curl -s "https://www.googleapis.com/storage/v1/b/bosh-compiled-release-tarballs/o/?prefix=${RELEASE_NAME}" | jq -r ".items[] | select(.name | startswith(\"${RELEASE_NAME}-${RELEASE_VERSION}-${STEMCELL_OS}-${STEMCELL_VERSION}-\"))")
 
-start-bosh
-source /tmp/local-bosh/director/env
-bosh -n upload-stemcell stemcell/*.tgz
-pushd release >/dev/null
-bosh -n upload-release *.tgz
-popd >/dev/null
-#
-# compilation deployment
-#
+if [[ ! -z ${releases_in_bucket} ]]; then
+	curl -s $(echo ${releases_in_bucket} | jq -r '.mediaLink') \
+		-o compiled-release/$(echo ${releases_in_bucket} | jq -r '.name')
+else
 
-cat >manifest.yml <<EOF
+	start-bosh
+	source /tmp/local-bosh/director/env
+	bosh -n upload-stemcell stemcell/*.tgz
+	pushd release >/dev/null
+	bosh -n upload-release *.tgz
+	popd >/dev/null
+	#
+	# compilation deployment
+	#
+
+	cat >manifest.yml <<EOF
 ---
 name: compilation
 releases:
@@ -54,8 +56,9 @@ update:
 instance_groups: []
 EOF
 
-bosh -n -d compilation deploy manifest.yml
-bosh -d compilation export-release $RELEASE_NAME/$RELEASE_VERSION $STEMCELL_OS/$STEMCELL_VERSION
+	bosh -n -d compilation deploy manifest.yml
+	bosh -d compilation export-release $RELEASE_NAME/$RELEASE_VERSION $STEMCELL_OS/$STEMCELL_VERSION
 
-mv *.tgz compiled-release/$(echo *.tgz | sed "s/\.tgz$/-$(date -u +%Y%m%d%H%M%S).tgz/")
-sha1sum compiled-release/*.tgz
+	mv *.tgz compiled-release/$(echo *.tgz | sed "s/\.tgz$/-$(date -u +%Y%m%d%H%M%S).tgz/")
+	sha1sum compiled-release/*.tgz
+fi
