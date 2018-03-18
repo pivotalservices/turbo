@@ -7,8 +7,8 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
-    - ci/*
-    - **/aws
+    - 'ci/*'
+    - '**/aws'
 
 - name: turbo-devel-aws
   type: git
@@ -17,8 +17,8 @@ resources:
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
-    - ci/*
-    - **/gcp
+    - 'ci/*'
+    - '**/gcp'
 
 - name: turbo-ci
   type: git
@@ -98,7 +98,8 @@ jobs:
     - task: testing-gcp-devel
       file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
       input_mapping:
-        turbo-ci-devel: turbo-ci
+        turbo-devel-ci: turbo-ci
+        turbo-devel: turbo-devel-gcp
       on_failure:
         put: gcp-environments
         params: {release: gcp-environments}
@@ -159,7 +160,8 @@ jobs:
     - task: testing-aws
       file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
       input_mapping:
-        turbo-ci-devel: turbo-ci
+        turbo-devel-ci: turbo-ci
+        turbo-devel: turbo-devel-aws
       on_failure:
         put: aws-environments
         params: {release: aws-environments}
