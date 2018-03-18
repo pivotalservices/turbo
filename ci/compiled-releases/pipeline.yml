@@ -105,6 +105,13 @@ resources:
     json_key: ((gcp_key))
     regexp: "backup-and-restore-sdk.*-(\\d+).tgz"
 
+- name: backup-and-restore-sdk-bosh-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "backup-and-restore-sdk.*-(\\d+).tgz"
+
 - name: garden-runc-compiled-releases
   type: gcs-bucket
   source:
@@ -148,6 +155,7 @@ resource_types:
 
 jobs:
   - name: compile-uaa-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
           - get: turbo-devel
@@ -168,6 +176,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-credhub-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -188,6 +197,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-backup-and-restore-sdk-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -207,7 +217,8 @@ jobs:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
 
-  - name: compile-bbr-sdk-release-stemcell-director
+  - name: compile-backup-and-restore-sdk-release-stemcell-director
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -224,12 +235,13 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: backup-and-restore-sdk-release
-      - put: backup-and-restore-sdk-compiled-releases
+      - put: backup-and-restore-sdk-bosh-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
 
   - name: compile-garden-runc-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -250,6 +262,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-postgres-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -270,6 +283,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-concourse-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -290,6 +304,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-grafana-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -310,6 +325,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-influxdb-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -330,6 +346,7 @@ jobs:
           predefined_acl: publicRead
 
   - name: compile-riemann-release
+    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -395,6 +412,24 @@ jobs:
         params: {tarball: false}
     - task: 'generate-ops-files'
       file: turbo-devel/ci/compiled-releases/tasks/update-compiled-release-ops-file/task.yml
+      input_mapping:
+        turbo: turbo-devel
+    - put: turbo-devel
+      params:
+        repository: turbo-out
+        merge: true
+
+  - name: generate-bosh-ops-files
+    plan:
+    - aggregate:
+      - get: turbo-devel
+      - get: ubuntu-trusty-stemcell
+        passed: [compile-backup-and-restore-sdk-release-stemcell-director]
+        trigger: true
+      - get: backup-and-restore-sdk-bosh-compiled-releases
+        passed: [compile-backup-and-restore-sdk-release-stemcell-director]
+    - task: 'generate-bosh-ops-files'
+      file: turbo-devel/ci/compiled-releases/tasks/update-bosh-director-ops-file/task.yml
       input_mapping:
         turbo: turbo-devel
     - put: turbo-devel

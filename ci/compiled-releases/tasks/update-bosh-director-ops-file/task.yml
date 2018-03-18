@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: czero/rootfs
+
+inputs:
+- name: backup-and-restore-sdk-bosh-compiled-releases
+- name: ubuntu-trusty-stemcell
+- name: turbo
+
+outputs:
+- name: turbo-out
+
+run:
+  path: turbo/ci/compiled-releases/tasks/update-bosh-director-ops-file/task.sh
