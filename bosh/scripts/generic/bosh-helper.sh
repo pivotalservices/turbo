@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 env_from_terraform "$TERRAFORM_ENV"
 
-BOSH_ENV="$TF_ENV_NAME-bootstrap"
+BOSH_ENV="turbo"
 BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 
 BOSH_STATE_FOLDER="/data/bosh-state"
@@ -24,7 +24,8 @@ BOSH_OPS_FILES="-o $BOSH_FOLDER/bosh-deployment/$TF_CPI/cpi.yml \
                 -o $BOSH_FOLDER/bosh-deployment/uaa.yml \
                 -o $BOSH_FOLDER/bosh-deployment/credhub.yml \
                 -o $BOSH_FOLDER/bosh-deployment/jumpbox-user.yml \
-				-o $BOSH_FOLDER/ops/bbr-sdk.yml \
+				-o $BOSH_FOLDER/ops/0-bbr-sdk.yml \
+				-o $BOSH_FOLDER/ops/9-compiled-backup-and-restore-sdk-release.yml \
 				-l $BOSH_FOLDER/versions/versions.yml"
 
 STEMCELL="$TF_STEMCELL_TYPE"

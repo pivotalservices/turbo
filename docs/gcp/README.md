@@ -46,9 +46,8 @@ Within Google Cloud Platform, enable the following:
   * GCP Cloud Resource Manager API [here](https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview)
   * GCP Storage Interopability [here](https://console.cloud.google.com/storage/settings)
 
-## Download a patched credhub-cli
-You can download a patched credhub-cli which works when credhub sits behind a GCP LB [here](https://storage.googleapis.com/bosh-release-jwi/credhub). It's compiled for macOS.  
-Or you can build it from source from the [credhub-cli repo](https://github.com/cloudfoundry-incubator/credhub-cli)
+## Download credhub-cli >=1.7.0
+You'll need to download credhub-cli >=1.7.0 from the [credhub-cli repo](https://github.com/cloudfoundry-incubator/credhub-cli)
 ## Deploy
 Create a terraform.tfvars file with :
 ```sh

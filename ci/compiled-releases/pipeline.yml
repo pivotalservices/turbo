@@ -1,0 +1,438 @@
+---
+resources:
+- name: turbo-devel
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+
+# - name: turbo-compiled-release
+#   type: git
+#   source:
+#     uri: git@gitlab.com:RomRider/turbo.git
+#     branch: compiled-release
+#     private_key: ((ssh_key_gitlab))
+
+- name: bosh-deployment
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/bosh-deployment.git
+    branch: master
+
+  # releases
+
+- name: concourse-release
+  type: bosh-io-release
+  source:
+    repository: concourse/concourse
+
+- name: credhub-release
+  type: bosh-io-release
+  source:
+    repository: pivotal-cf/credhub-release
+
+- name: uaa-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/uaa-release
+
+- name: garden-runc-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/garden-runc-release
+
+- name: postgres-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/postgres-release
+
+- name: backup-and-restore-sdk-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry-incubator/backup-and-restore-sdk-release
+
+- name: grafana-release
+  type: bosh-io-release
+  source:
+    repository: vito/grafana-boshrelease
+
+- name: influxdb-release
+  type: bosh-io-release
+  source:
+    repository: vito/influxdb-boshrelease
+
+- name: riemann-release
+  type: bosh-io-release
+  source:
+    repository: xoebus/riemann-boshrelease
+
+# stemcells
+
+- name: ubuntu-trusty-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version_family: "3468"
+
+# outputs
+
+- name: concourse-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "concourse.*-(\\d+).tgz"
+
+- name: uaa-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "uaa.*-(\\d+).tgz"
+
+- name: credhub-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "credhub.*-(\\d+).tgz"
+
+- name: backup-and-restore-sdk-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "backup-and-restore-sdk.*-(\\d+).tgz"
+
+- name: backup-and-restore-sdk-bosh-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "backup-and-restore-sdk.*-(\\d+).tgz"
+
+- name: garden-runc-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "garden-runc.*-(\\d+).tgz"
+
+- name: postgres-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "postgres.*-(\\d+).tgz"
+
+- name: grafana-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "grafana.*-(\\d+).tgz"
+
+- name: influxdb-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "influxdb.*-(\\d+).tgz"
+
+- name: riemann-compiled-releases
+  type: gcs-bucket
+  source:
+    bucket: &compiled_bucket_name "bosh-compiled-release-tarballs"
+    json_key: ((gcp_key))
+    regexp: "riemann.*-(\\d+).tgz"
+
+resource_types:
+  - name: gcs-bucket
+    type: docker-image
+    source:
+      repository: frodenas/gcs-resource
+
+jobs:
+  - name: compile-uaa-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+          - get: turbo-devel
+          - get: bosh-deployment
+          - get: uaa-release
+            trigger: true
+          - get: ubuntu-trusty-stemcell
+            trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: uaa-release
+      - put: uaa-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-credhub-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: credhub-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: credhub-release
+      - put: credhub-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-backup-and-restore-sdk-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: backup-and-restore-sdk-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: backup-and-restore-sdk-release
+      - put: backup-and-restore-sdk-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-backup-and-restore-sdk-release-stemcell-director
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: backup-and-restore-sdk-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+          version:
+            version: "3468.21"
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: backup-and-restore-sdk-release
+      - put: backup-and-restore-sdk-bosh-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-garden-runc-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: garden-runc-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: garden-runc-release
+      - put: garden-runc-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-postgres-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: postgres-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: postgres-release
+      - put: postgres-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-concourse-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: concourse-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: concourse-release
+      - put: concourse-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-grafana-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: grafana-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: grafana-release
+      - put: grafana-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-influxdb-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: influxdb-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: influxdb-release
+      - put: influxdb-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: compile-riemann-release
+    serial_groups: [compile-release]
+    plan:
+      - aggregate:
+        - get: turbo-devel
+        - get: bosh-deployment
+        - get: riemann-release
+          trigger: true
+        - get: ubuntu-trusty-stemcell
+          trigger: true
+      - task: export-release
+        file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
+        privileged: true
+        input_mapping:
+          stemcell: ubuntu-trusty-stemcell
+          release: riemann-release
+      - put: riemann-compiled-releases
+        params:
+          file: "compiled-release/*.tgz"
+          predefined_acl: publicRead
+
+  - name: generate-ops-files
+    plan:
+    - aggregate:
+      - get: turbo-devel
+      - get: concourse-compiled-releases
+        passed: [compile-concourse-release]
+        trigger: true
+      - get: credhub-compiled-releases
+        passed: [compile-credhub-release]
+        trigger: true
+      - get: uaa-compiled-releases
+        trigger: true
+        passed: [compile-uaa-release]
+      - get: garden-runc-compiled-releases
+        trigger: true
+        passed: [compile-garden-runc-release]
+      - get: postgres-compiled-releases
+        trigger: true
+        passed: [compile-postgres-release]
+      - get: backup-and-restore-sdk-compiled-releases
+        trigger: true
+        passed: [compile-backup-and-restore-sdk-release]
+      - get: grafana-compiled-releases
+        trigger: true
+        passed: [compile-grafana-release]
+      - get: influxdb-compiled-releases
+        trigger: true
+        passed: [compile-influxdb-release]
+      - get: riemann-compiled-releases
+        trigger: true
+        passed: [compile-riemann-release]
+      - get: ubuntu-trusty-stemcell
+        trigger: true
+        passed:
+        - compile-concourse-release
+        - compile-credhub-release
+        - compile-uaa-release
+        - compile-garden-runc-release
+        - compile-postgres-release
+        - compile-backup-and-restore-sdk-release
+        - compile-grafana-release
+        - compile-influxdb-release
+        - compile-riemann-release
+        params: {tarball: false}
+    - task: 'generate-ops-files'
+      file: turbo-devel/ci/compiled-releases/tasks/update-compiled-release-ops-file/task.yml
+      input_mapping:
+        turbo: turbo-devel
+    - put: turbo-devel
+      params:
+        repository: turbo-out
+        merge: true
+
+  - name: generate-bosh-ops-files
+    plan:
+    - aggregate:
+      - get: turbo-devel
+      - get: ubuntu-trusty-stemcell
+        passed: [compile-backup-and-restore-sdk-release-stemcell-director]
+        trigger: true
+      - get: backup-and-restore-sdk-bosh-compiled-releases
+        passed: [compile-backup-and-restore-sdk-release-stemcell-director]
+    - task: 'generate-bosh-ops-files'
+      file: turbo-devel/ci/compiled-releases/tasks/update-bosh-director-ops-file/task.yml
+      input_mapping:
+        turbo: turbo-devel
+    - put: turbo-devel
+      params:
+        repository: turbo-out
+        merge: true

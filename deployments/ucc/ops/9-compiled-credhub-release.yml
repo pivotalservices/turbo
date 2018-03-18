@@ -1,0 +1,7 @@
+- type: replace
+  path: /releases/name=credhub?
+  value:
+    name: credhub
+    version: 1.7.2
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/credhub-1.7.2-ubuntu-trusty-3468.27-20180317-170323-292636535.tgz
+    sha1: 7e49df31dbf42998582253753fe39a7e142a8cf1

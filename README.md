@@ -1,5 +1,5 @@
 # Introduction
-**TuRBO** stands for: TeRrafforming BOsh
+**TuRBO** stands for: TeRafforming BOsh
 
 TuRBO will deploy:  
 * A jumpbox
@@ -19,10 +19,10 @@ Your deployment will be `bbr` ready.
 ---
 # Howto
 ## GCP
-Follow documentation [here](terraform/gcp/README.md)
+Follow documentation [here](docs/gcp/README.md)
 
 ## AWS
-Follow documentation [here](terraform/aws/README.md)
+Follow documentation [here](docs/aws/README.md)
 
 ---
 # Usage
@@ -52,6 +52,8 @@ terraform output concourse_url
 ```
 
 ## Credhub
+Make sure you are using credhub-cli >=1.7.0
+
 1. Retrieve the `credhub-admin` client secret
 ```sh
 terraform output credhub_password

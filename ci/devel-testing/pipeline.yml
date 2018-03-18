@@ -1,0 +1,273 @@
+---
+resources:
+- name: turbo-devel-gcp
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+    ignore_paths:
+    - 'ci/*'
+    - 'bin/*'
+    - 'docs/*'
+    - 'README.md'
+    - '.gitignore'
+    - '**/.gitignore'
+    - '**/aws'
+
+- name: turbo-devel-aws
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+    ignore_paths:
+    - 'ci/*'
+    - 'bin/*'
+    - 'docs/*'
+    - 'README.md'
+    - '.gitignore'
+    - '**/.gitignore'
+    - '**/gcp'
+
+- name: turbo-ci
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+    paths: [ci/*]
+
+- name: gcp-environments
+  type: pool
+  source:
+    uri: git@gitlab.com:RomRider/turbo-pools.git
+    branch: master
+    pool: gcp
+    private_key: ((ssh_key_gitlab))
+
+- name: aws-environments
+  type: pool
+  source:
+    uri: git@gitlab.com:RomRider/turbo-pools.git
+    branch: master
+    pool: aws
+    private_key: ((ssh_key_gitlab))
+
+- name: terraform
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: tfstate-storage
+      prefix: terraform/state/bootstrap-concourse/
+    env:
+      GOOGLE_CREDENTIALS: ((gcp_key))
+
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+    tag: beta-backend
+
+
+jobs:
+
+- name: deploy-gcp-devel
+  max_in_flight: 1
+  plan:
+    - aggregate:
+      - get: turbo-devel-gcp
+        trigger: true
+      - put: gcp-environments
+        params: {claim: gcp-devel}
+    - put: terraform
+      params:
+        terraform_source: turbo-devel-gcp/terraform/gcp/
+        env_name: gcp-devel
+        vars:
+          <<: *terraform-vars-gcp-devel
+      on_failure:
+        put: gcp-environments
+        params: {release: gcp-environments}
+      on_abort:
+        put: gcp-environments
+        params: {release: gcp-environments}
+
+- name: testing-gcp-devel
+  max_in_flight: 1
+  plan:
+    - aggregate:
+      - get: turbo-ci
+      - get: gcp-environments
+        passed: [deploy-gcp-devel]
+      - get: turbo-devel-gcp
+        passed: [deploy-gcp-devel]
+      - get: terraform
+        passed: [deploy-gcp-devel]
+        trigger: true
+    - task: testing-gcp-devel
+      file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
+      input_mapping:
+        turbo-devel-ci: turbo-ci
+        turbo-devel: turbo-devel-gcp
+      on_failure:
+        put: gcp-environments
+        params: {release: gcp-environments}
+      on_abort:
+        put: gcp-environments
+        params: {release: gcp-environments}
+    - put: gcp-environments
+      params: {release: gcp-environments}
+
+
+- name: destroy-gcp-devel
+  plan:
+    - aggregate:
+      - get: turbo-devel-gcp
+      - get: terraform
+        trigger: false
+        passed: [testing-gcp-devel]
+    - put: terraform
+      params:
+        terraform_source: turbo-devel/terraform/gcp/
+        env_name: gcp-devel
+        action: destroy
+        vars:
+          <<: *terraform-vars-gcp-devel
+      get_params:
+        action: destroy
+
+- name: deploy-aws-devel
+  max_in_flight: 1
+  plan:
+    - aggregate:
+      - put: aws-environments
+        params: {claim: aws-devel}
+      - get: turbo-devel-aws
+        trigger: true
+    - put: terraform
+      params:
+        terraform_source: turbo-devel-aws/terraform/aws/
+        env_name: aws-devel
+        vars:
+          <<: *terraform-vars-aws-devel
+      on_failure:
+        put: aws-environments
+        params: {release: aws-environments}
+      on_abort:
+        put: aws-environments
+        params: {release: aws-environments}
+
+- name: testing-aws-devel
+  max_in_flight: 1
+  plan:
+    - aggregate:
+      - get: turbo-ci
+      - get: aws-environments
+        passed: [deploy-aws-devel]
+      - get: turbo-devel-aws
+        passed: [deploy-aws-devel]
+      - get: terraform
+        passed: [deploy-aws-devel]
+        trigger: true
+    - task: testing-aws
+      file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
+      input_mapping:
+        turbo-devel-ci: turbo-ci
+        turbo-devel: turbo-devel-aws
+      on_failure:
+        put: aws-environments
+        params: {release: aws-environments}
+      on_abort:
+        put: aws-environments
+        params: {release: aws-environments}
+    - put: aws-environments
+      params: {release: aws-environments}
+
+- name: unlock-aws-devel
+  plan:
+    - get: aws-environments
+    - put: aws-environments
+      params: {release: aws-environments}
+
+- name: unlock-gcp-devel
+  plan:
+    - get: gcp-environments
+    - put: gcp-environments
+      params: {release: gcp-environments}
+
+
+- name: destroy-aws-devel
+  plan:
+    - aggregate:
+      - get: turbo-devel-aws
+      - get: terraform
+        trigger: false
+        passed: [testing-aws-devel]
+    - put: terraform
+      params:
+        terraform_source: turbo-devel-aws/terraform/aws/
+        env_name: aws-devel
+        action: destroy
+        vars:
+          <<: *terraform-vars-aws
+      get_params:
+        action: destroy
+
+terraform-vars-gcp: &terraform-vars-gcp
+  env_name: ci-gcp
+  gcp_project_name: 'fe-jwiedemann'
+  gcp_region: 'europe-west1'
+  gcp_zones: ["europe-west1-b"]
+  master_dns_zone_name: 'gcp-wnetworks'
+  dns_domain_name: 'ci.gcp.pcf.wnetworks.org'
+  bootstrap_subnet: '10.0.0.0/24'
+  source_admin_networks: ["83.202.25.187/32", "35.187.160.72/32"]
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  gcp_key: '((gcp_key))'
+
+terraform-vars-gcp-devel: &terraform-vars-gcp-devel
+  env_name: gcp-devel
+  gcp_project_name: 'fe-jwiedemann'
+  gcp_region: 'europe-west1'
+  gcp_zones: ["europe-west1-b"]
+  master_dns_zone_name: 'gcp-wnetworks'
+  dns_domain_name: 'gcp-devel.gcp.pcf.wnetworks.org'
+  bootstrap_subnet: '10.0.0.0/24'
+  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  gcp_key: '((gcp_key))'
+
+terraform-vars-aws: &terraform-vars-aws
+  env_name: ci-aws
+  aws_region: "eu-west-2"
+  aws_azs: ["eu-west-2a"]
+  bootstrap_subnet: "10.0.0.0/22"
+  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
+  master_dns_domain_name: "aws.pcf.wnetworks.org"
+  dns_domain_name: "ci.aws.pcf.wnetworks.org"
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  aws_access_key: ((aws_access_key))
+  aws_secret_key: ((aws_secret_key))
+
+terraform-vars-aws-devel: &terraform-vars-aws-devel
+  env_name: aws-devel
+  aws_region: "eu-west-2"
+  aws_azs: ["eu-west-2a"]
+  bootstrap_subnet: "10.0.0.0/22"
+  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
+  master_dns_domain_name: "aws.pcf.wnetworks.org"
+  dns_domain_name: "aws-devel.aws.pcf.wnetworks.org"
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
+  aws_access_key: ((aws_access_key))
+  aws_secret_key: ((aws_secret_key))

@@ -1,0 +1,8 @@
+#Credhub
+- type: replace
+  path: /releases/name=concourse?
+  value:
+    name: concourse
+    version: '3.9.1-jerome-dev4'
+    url: https://storage.googleapis.com/bosh-release-jwi/concourse-3.9.1-jerome-dev4.tgz
+    sha1: 'df7126dc542bf79c0b12a1442ff33123f4b57e68'

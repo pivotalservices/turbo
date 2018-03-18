@@ -13,7 +13,7 @@ bosh_login || exit 1
 
 cat >~/.bashrc <<EOF
 export ENV_NAME="$TF_ENV_NAME"
-export BOSH_ENVIRONMENT="$TF_ENV_NAME-bootstrap"
+export BOSH_ENVIRONMENT="$BOSH_ENV"
 export BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 export STEMCELL="$TF_STEMCELL_TYPE"
 EOF
@@ -28,5 +28,5 @@ export BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secre
 
 credhub api https://$(bosh int "$BOSH_VAR_CACHE" --path /bosh_target):8844 --skip-tls-validation >/dev/null 2>&1
 credhub login --client-name=credhub-admin --client-secret=$(bosh int "$BOSH_VAR_CACHE" --path /credhub_admin_client_secret) >/dev/null 2>&1
-bosh -e "$BOSH_ENV" log-in >/dev/null 2>&1
+bosh -e "$BOSH_ENVIRONMENT" log-in >/dev/null 2>&1
 EOF
