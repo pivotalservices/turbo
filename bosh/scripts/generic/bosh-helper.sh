@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 env_from_terraform "$TERRAFORM_ENV"
 
-BOSH_ENV="$TF_ENV_NAME-bootstrap"
+BOSH_ENV="turbo"
 BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
 
 BOSH_STATE_FOLDER="/data/bosh-state"

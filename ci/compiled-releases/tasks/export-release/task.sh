@@ -26,6 +26,7 @@ popd >/dev/null
 releases_in_bucket=$(curl -s "https://www.googleapis.com/storage/v1/b/bosh-compiled-release-tarballs/o/?prefix=${RELEASE_NAME}" | jq -r ".items[] | select(.name | startswith(\"${RELEASE_NAME}-${RELEASE_VERSION}-${STEMCELL_OS}-${STEMCELL_VERSION}-\"))")
 
 if [[ ! -z ${releases_in_bucket} ]]; then
+	echo "Nothing to compile, release ${RELEASE_NAME}-${RELEASE_VERSION}-${STEMCELL_OS}-${STEMCELL_VERSION} already in bucket. Reusing it."
 	curl -s $(echo ${releases_in_bucket} | jq -r '.mediaLink') \
 		-o compiled-release/$(echo ${releases_in_bucket} | jq -r '.name')
 else
