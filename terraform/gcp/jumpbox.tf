@@ -63,7 +63,9 @@ EOF
   metadata {
     sshKeys = "${var.ssh_user}:${tls_private_key.jumpbox_ssh_private_key.public_key_openssh}"
   }
+}
 
+resource "null_resource" "destroy-all" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-delete-all.sh",
@@ -83,6 +85,8 @@ EOF
 
   # Used to destroy the jumpbox
   depends_on = [
+    "google_compute_instance.jumpbox",
+    "google_compute_disk.jumpbox_data",
     "google_compute_firewall.allow-ssh",
     "google_compute_firewall.internal-all",
     "google_compute_subnetwork.bosh",
