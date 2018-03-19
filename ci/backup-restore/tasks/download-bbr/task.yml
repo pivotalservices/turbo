@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: busybox
+
+inputs:
+- name: turbo
+
+outputs:
+- name: bbr
+
+run:
+  path: turbo/ci/backup-restore/tasks/download-bbr/task.sh

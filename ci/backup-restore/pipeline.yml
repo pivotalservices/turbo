@@ -1,0 +1,50 @@
+---
+resources:
+- name: turbo-ci
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+    paths: [ci/*]
+
+- name: night-2am
+  type: time
+  source:
+    start: 2:00 AM
+    stop: 3:00 AM
+
+- name: bucket-jumpbox
+  type: gcs-bucket
+  source:
+    bucket: ((backups_bucket_name))
+    json_key: ((gcp_key))
+    regexp: "jumpbox-backup-.*.tgz"
+
+resource_types:
+  - name: gcs-bucket
+    type: docker-image
+    source:
+      repository: frodenas/gcs-resource
+
+jobs:
+- name: backup-jumpbox
+  plan:
+  - aggregate:
+    - get: turbo-ci
+    - get: night-2am
+  - task: download-bbr
+    file: turbo-ci/ci/backup-restore/tasks/download-bbr/task.yml
+    input_mapping:
+      turbo: turbo-ci
+  - task: backup-jumpbox
+    file: turbo-ci/ci/backup-restore/tasks/backup-jumpbox/task.yml
+    params:
+      JUMPBOX_SSH_KEY: ((jumpbox_ssh_key))
+      JUMPBOX_SSH_USER: ((jumpbox_ssh_user))
+      BOSH_STATE_FOLDER: /data/bosh-state/
+  - put: bucket-jumpbox
+    params:
+      file: "backups/*.tgz"
+    
+      
