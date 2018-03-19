@@ -27,6 +27,7 @@ locals {
     TF_UAA_ADMIN_PASSWORD       = "${random_string.uaa_password.result}"
     TF_METRICS_ADMIN_PASSWORD   = "${random_string.metrics_password.result}"
     TF_JUMPBOX_SSH_KEY          = "${tls_private_key.jumpbox_ssh_private_key.private_key_pem}"
+    TF_JUMPBOX_HOST             = "${local.ssh_host}"
   }
 
   common_flags = {

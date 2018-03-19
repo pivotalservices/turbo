@@ -16,6 +16,7 @@ credhub set -n /concourse/main/bosh_host -t value -v "$(bosh int "$BOSH_VAR_CACH
 credhub set -n /concourse/main/bosh_admin -t user -z "$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client)" -w "$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret)" >/dev/null || clean_exit 1
 credhub set -n /concourse/main/bosh_ssh_key -t ssh -p "$BOSH_SSH_KEY" >/dev/null || clean_exit 1
 credhub set -n /concourse/main/bosh_ssh_user -t value -v "jumpbox" >/dev/null || clean_exit 1
+credhub set -n /concourse/main/jumpbox_host -t value -v "$TF_JUMPBOX_HOST" >/dev/null || clean_exit 1
 credhub set -n /concourse/main/jumpbox_ssh_key -t ssh -p "$TF_JUMPBOX_SSH_KEY" >/dev/null || clean_exit 1
 credhub set -n /concourse/main/jumpbox_user -t value -v "$TF_SSH_USER" >/dev/null || clean_exit 1
 credhub set -n /concourse/main/env_name -t value -v "$TF_ENV_NAME" >/dev/null || clean_exit 1
