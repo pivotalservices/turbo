@@ -53,9 +53,11 @@ jobs:
       turbo: turbo-ci
   - task: backup-jumpbox
     file: turbo-ci/ci/backup-restore/tasks/backup-jumpbox/task.yml
+    input_mapping:
+      turbo: turbo-ci
     params:
-      JUMPBOX_SSH_KEY: ((jumpbox_ssh_key))
-      JUMPBOX_SSH_USER: ((jumpbox_ssh_user))
+      JUMPBOX_SSH_KEY: ((jumpbox_ssh_key.private_key))
+      JUMPBOX_SSH_USER: ((jumpbox_user))
       BOSH_STATE_FOLDER: /data/bosh-state/
   - put: bucket-jumpbox
     params:
