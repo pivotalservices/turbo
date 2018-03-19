@@ -9,4 +9,4 @@ ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 	-i ./id_rsa \
 	-o "IdentitiesOnly=true" \
 	-o "StrictHostKeyChecking=no" \
-	"cd ${BOSH_STATE_FOLDER}; tar czf - /data/bosh-state/" >backups/jumpbox-backup-$(date -u +%Y%m%d%H%M%S).tgz
+	"cd ${BOSH_STATE_FOLDER} && tar czf - *" >backups/jumpbox-backup-$(date -u +%Y%m%d%H%M%S).tgz
