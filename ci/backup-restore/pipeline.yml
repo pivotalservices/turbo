@@ -14,6 +14,11 @@ resources:
     start: 2:00 AM
     stop: 3:00 AM
 
+- name: manualtrigger
+  type: time           # technique to trigger and propagate manual execution through pipeline
+  source:
+    interval: 1m
+
 - name: bucket-jumpbox
   type: gcs-bucket
   source:
@@ -28,9 +33,18 @@ resource_types:
       repository: frodenas/gcs-resource
 
 jobs:
+- name: Manual Trigger
+  plan:
+  - get: manualtrigger
+    trigger: false
+
 - name: backup-jumpbox
   plan:
   - aggregate:
+    - get: manualtrigger
+      trigger: true
+      passed:
+      - Manual Trigger
     - get: turbo-ci
     - get: night-2am
   - task: download-bbr
