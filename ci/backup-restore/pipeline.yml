@@ -56,6 +56,7 @@ jobs:
     input_mapping:
       turbo: turbo-ci
     params:
+      JUMPBOX_HOST: ((jumpbox_host))
       JUMPBOX_SSH_KEY: ((jumpbox_ssh_key.private_key))
       JUMPBOX_SSH_USER: ((jumpbox_user))
       BOSH_STATE_FOLDER: /data/bosh-state/

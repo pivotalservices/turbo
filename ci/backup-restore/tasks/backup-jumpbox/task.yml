@@ -17,6 +17,7 @@ run:
   path: turbo/ci/backup-restore/tasks/backup-jumpbox/task.sh
 
 params:
+  JUMPBOX_HOST:
   JUMPBOX_SSH_KEY:
   JUMPBOX_SSH_USER:
   BOSH_STATE_FOLDER:
