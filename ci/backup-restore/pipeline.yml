@@ -72,7 +72,7 @@ jobs:
       file: "backups/*.tgz"
     
       
-- name: backup-jumpbox
+- name: backup-director
   plan:
   - aggregate:
     - get: manualtrigger
@@ -92,7 +92,7 @@ jobs:
     params:
       BOSH_DIRECTOR_HOST: ((bosh_host))
       BOSH_SSH_USER: ((bosh_ssh_user))
-      BOSH_SSH_KEY: ((bosh_ssh_key))
-  - put: bucket-jumpbox
+      BOSH_SSH_KEY: ((bosh_ssh_key.private_key))
+  - put: bucket-director
     params:
       file: "backups/*.tar"

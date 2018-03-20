@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-echo "$JUMPBOX_SSH_KEY" >id_rsa && chmod 600 id_rsa
-
 mkdir backups >/dev/null 2>&1 || true
 
 printf -- "$BOSH_SSH_KEY" >id_rsa
