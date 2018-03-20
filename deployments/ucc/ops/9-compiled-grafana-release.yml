@@ -2,6 +2,6 @@
   path: /releases/name=grafana?
   value:
     name: grafana
-    version: 13.1.0
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/grafana-13.1.0-ubuntu-trusty-3468.27-20180317-163359-985254452.tgz
-    sha1: 7388bdba2e0aeaad695175741c1a19bf97c1169f
+    version: 13.2.0
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/grafana-13.2.0-ubuntu-trusty-3468.27-20180320-180210-5911415-20180320180213.tgz
+    sha1: ed383dcf1f51883c1ae596d46f00771ff5c958a3
