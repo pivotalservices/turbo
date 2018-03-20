@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -uo pipefail
+
 ucc_credhub_login() {
 	credhub api "$TF_CREDHUB_URL" --skip-tls-validation || return 1
 	credhub login --client-name=credhub-admin --client-secret="$TF_CREDHUB_ADMIN_PASSWORD" || return 1
