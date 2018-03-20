@@ -11,20 +11,23 @@ BOSH_CLIENT_SECRET="${BOSH_BBR_PASSWORD}"
 pushd backups >/dev/null
 echo "Running pre-backup-checks on deployment '${DEPLOYMENT_NAME}'..."
 ../bbr/bbr deployment -t ${BOSH_DIRECTOR_HOST} \
-	-u ${BOSH_BBR_USERNAME} \
+	-u "${BOSH_BBR_USERNAME}" \
+	-p "${BOSH_BBR_PASSWORD}" \
 	--ca-cert ../ca_cert \
 	-d "$DEPLOYMENT_NAME" \
 	pre-backup-check
 
 echo "Backing up deployment '${DEPLOYMENT_NAME}'..."
 if ! ../bbr/bbr deployment -t ${BOSH_DIRECTOR_HOST} \
-	-u ${BOSH_BBR_USERNAME} \
+	-u "${BOSH_BBR_USERNAME}" \
+	-p "${BOSH_BBR_PASSWORD}" \
 	--ca-cert ../ca_cert \
 	-d "$DEPLOYMENT_NAME" \
 	backup; then
 	echo "Backup failed, cleaning up..."
 	../bbr/bbr deployment -t ${BOSH_DIRECTOR_HOST} \
-		-u ${BOSH_BBR_USERNAME} \
+		-u "${BOSH_BBR_USERNAME}" \
+		-p "${BOSH_BBR_PASSWORD}" \
 		--ca-cert ../ca_cert \
 		-d "${DEPLOYMENT_NAME}" \
 		backup-cleanup
