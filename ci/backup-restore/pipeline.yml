@@ -80,6 +80,7 @@ jobs:
     
       
 - name: backup-director
+  serial_groups: [use-director]
   plan:
   - aggregate:
     - get: manualtrigger
@@ -105,6 +106,7 @@ jobs:
       file: "backups/*.tar"
 
 - name: backup-ucc
+  serial_groups: [use-director]
   plan:
   - aggregate:
     - get: manualtrigger

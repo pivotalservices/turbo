@@ -27,3 +27,16 @@ if ! ../bbr/bbr director --private-key-path ../id_rsa \
 fi
 
 tar -cvf director-backup-$(date -u +%Y%m%d%H%M%S).tar -- *
+
+echo "Waiting for director to be up again..."
+i=0
+while ! curl -k https://"$BOSH_DIRECTOR_HOST":25555/info; do
+	echo -n "."
+	i=$((i + 1))
+	if [ $i -ge 120 ]; then
+		exit 1
+	fi
+	sleep 1
+done
+echo
+echo "Director up."
