@@ -38,9 +38,6 @@ cleanup() {
 		"cd .ci-backups/${DEPLOYMENT_NAME} && rm -rf *"
 }
 
-bbr() {
-
-}
 echo "Running pre-backup-checks on deployment '${DEPLOYMENT_NAME}'..."
 if ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 	-i ./id_rsa \
