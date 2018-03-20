@@ -216,20 +216,6 @@ jobs:
       get_params:
         action: destroy
 
-terraform-vars-gcp: &terraform-vars-gcp
-  env_name: ci-gcp
-  gcp_project_name: 'fe-jwiedemann'
-  gcp_region: 'europe-west1'
-  gcp_zones: ["europe-west1-b"]
-  master_dns_zone_name: 'gcp-wnetworks'
-  dns_domain_name: 'ci.gcp.pcf.wnetworks.org'
-  bootstrap_subnet: '10.0.0.0/24'
-  source_admin_networks: ["83.202.25.187/32", "35.187.160.72/32"]
-  concourse_web_vm_count: 1
-  credhub_uaa_vm_count: 1
-  deploy_metrics: "true"
-  gcp_key: '((gcp_key))'
-
 terraform-vars-gcp-devel: &terraform-vars-gcp-devel
   env_name: gcp-devel
   gcp_project_name: 'fe-jwiedemann'
@@ -243,20 +229,6 @@ terraform-vars-gcp-devel: &terraform-vars-gcp-devel
   credhub_uaa_vm_count: 1
   deploy_metrics: "true"
   gcp_key: '((gcp_key))'
-
-terraform-vars-aws: &terraform-vars-aws
-  env_name: ci-aws
-  aws_region: "eu-west-2"
-  aws_azs: ["eu-west-2a"]
-  bootstrap_subnet: "10.0.0.0/22"
-  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
-  master_dns_domain_name: "aws.pcf.wnetworks.org"
-  dns_domain_name: "ci.aws.pcf.wnetworks.org"
-  concourse_web_vm_count: 1
-  credhub_uaa_vm_count: 1
-  deploy_metrics: "true"
-  aws_access_key: ((aws_access_key))
-  aws_secret_key: ((aws_secret_key))
 
 terraform-vars-aws-devel: &terraform-vars-aws-devel
   env_name: aws-devel
