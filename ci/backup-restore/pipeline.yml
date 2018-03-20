@@ -26,6 +26,13 @@ resources:
     json_key: ((gcp_key))
     regexp: "jumpbox-backup-.*.tgz"
 
+- name: bucket-director
+  type: gcs-bucket
+  source:
+    bucket: ((backups_bucket_name))
+    json_key: ((gcp_key))
+    regexp: "director-backup-.*.tar"
+
 resource_types:
   - name: gcs-bucket
     type: docker-image
@@ -65,3 +72,27 @@ jobs:
       file: "backups/*.tgz"
     
       
+- name: backup-jumpbox
+  plan:
+  - aggregate:
+    - get: manualtrigger
+      trigger: true
+      passed:
+      - Manual Trigger
+    - get: turbo-ci
+    - get: night-2am
+  - task: download-bbr
+    file: turbo-ci/ci/backup-restore/tasks/download-bbr/task.yml
+    input_mapping:
+      turbo: turbo-ci
+  - task: backup-director
+    file: turbo-ci/ci/backup-restore/tasks/backup-director/task.yml
+    input_mapping:
+      turbo: turbo-ci
+    params:
+      BOSH_DIRECTOR_HOST: ((bosh_host))
+      BOSH_SSH_USER: ((bosh_ssh_user))
+      BOSH_SSH_KEY: ((bosh_ssh_key))
+  - put: bucket-jumpbox
+    params:
+      file: "backups/*.tar"
