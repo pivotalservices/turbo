@@ -33,6 +33,13 @@ resources:
     json_key: ((gcp_key))
     regexp: "director-backup-.*.tar"
 
+- name: bucket-deployment
+  type: gcs-bucket
+  source:
+    bucket: ((backups_bucket_name))
+    json_key: ((gcp_key))
+    regexp: ".*-backup-.*.tar"
+
 resource_types:
   - name: gcs-bucket
     type: docker-image
@@ -94,5 +101,32 @@ jobs:
       BOSH_SSH_USER: ((bosh_ssh_user))
       BOSH_SSH_KEY: ((bosh_ssh_key.private_key))
   - put: bucket-director
+    params:
+      file: "backups/*.tar"
+
+- name: backup-ucc
+  plan:
+  - aggregate:
+    - get: manualtrigger
+      trigger: true
+      passed:
+      - Manual Trigger
+    - get: turbo-ci
+    - get: night-2am
+  - task: download-bbr
+    file: turbo-ci/ci/backup-restore/tasks/download-bbr/task.yml
+    input_mapping:
+      turbo: turbo-ci
+  - task: backup-deployment
+    file: turbo-ci/ci/backup-restore/tasks/backup-deployment/task.yml
+    input_mapping:
+      turbo: turbo-ci
+    params:
+      BOSH_DIRECTOR_HOST: ((bosh_host))
+      BOSH_BBR_USERNAME: ((bosh_admin.username))
+      BOSH_BBR_PASSWORD: ((bosh_admin.password))
+      BOSH_CA_CERT: ((bosh_ca_cert.certificate))
+      DEPLOYMENT_NAME: ((env_name))-ucc
+  - put: bucket-deployment
     params:
       file: "backups/*.tar"

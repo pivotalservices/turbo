@@ -7,7 +7,7 @@ mkdir backups >/dev/null 2>&1 || true
 printf -- "$BOSH_SSH_KEY" >id_rsa
 chmod 600 id_rsa
 
-pushd backups
+pushd backups >/dev/null
 echo "Running pre-backup-checks on director..."
 ../bbr/bbr director --private-key-path ../id_rsa \
 	--username "$BOSH_SSH_USER" \

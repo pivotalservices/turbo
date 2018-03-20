@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: czero/rootfs
+
+inputs:
+- name: turbo
+- name: bbr
+
+outputs:
+- name: backups
+
+run:
+  path: turbo/ci/backup-restore/tasks/backup-deployment/task.sh
+
+params:
+  BOSH_DIRECTOR_HOST:
+  BOSH_BBR_USERNAME:
+  BOSH_BBR_PASSWORD:
+  BOSH_CA_CERT:
+  DEPLOYMENT_NAME:
