@@ -35,7 +35,7 @@ cleanup() {
 		-i ./id_rsa \
 		-o "IdentitiesOnly=true" \
 		-o "StrictHostKeyChecking=no" \
-		"cd .ci-backups/${DEPLOYMENT_NAME} && rm -rf *"
+		"cd .ci-backups/${DEPLOYMENT_NAME} && rm -rf * ../ca_cert"
 }
 
 echo "Running pre-backup-checks on deployment '${DEPLOYMENT_NAME}'..."
@@ -45,11 +45,12 @@ if ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 	-o "StrictHostKeyChecking=no" \
 	"mkdir -p .ci-backups/${DEPLOYMENT_NAME} && \
 		cd .ci-backups/${DEPLOYMENT_NAME} && \
+		echo \"${BOSH_CA_CERT}\" > ../ca_cert && \
 		rm -rf * && \
 		bbr deployment -t ${BOSH_DIRECTOR_HOST} \
 		-u ${BOSH_BBR_USERNAME} \
 		-p \"${BOSH_BBR_PASSWORD}\" \
-		--ca-cert \"${BOSH_CA_CERT}\" \
+		--ca-cert ../ca_cert \
 		-d \"${DEPLOYMENT_NAME}\" pre-backup-check || exit 1"; then
 
 	echo "Backing up deployment '${DEPLOYMENT_NAME}'..."
@@ -61,7 +62,7 @@ if ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 			bbr deployment -t ${BOSH_DIRECTOR_HOST} \
 			-u ${BOSH_BBR_USERNAME} \
 			-p \"${BOSH_BBR_PASSWORD}\" \
-			--ca-cert \"${BOSH_CA_CERT}\" \
+			--ca-cert ../ca_cert \
 			-d \"${DEPLOYMENT_NAME}\" backup || exit 1"; then
 
 		echo "Downloading backup for deployment '${DEPLOYMENT_NAME}'..."
@@ -82,9 +83,10 @@ if ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 				bbr deployment -t ${BOSH_DIRECTOR_HOST} \
 				-u ${BOSH_BBR_USERNAME} \
 				-p \"${BOSH_BBR_PASSWORD}\" \
-				--ca-cert \"${BOSH_CA_CERT}\" \
-				-d \"${DEPLOYMENT_NAME}\" backup-cleanup || exit 1"
-		cleanup
+				--ca-cert ../ca_cert \
+				-d \"${DEPLOYMENT_NAME}\" backup-cleanup || true"
+		cleanup || true
+		exit 1
 	fi
 else
 	echo "pre-backup-check failed, cleaning up..."
