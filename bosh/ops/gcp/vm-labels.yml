@@ -1,0 +1,5 @@
+---
+- type: replace
+  path: /resource_pools/name=vms/cloud_properties?/labels?
+  value:
+    turbo: ((env_name))

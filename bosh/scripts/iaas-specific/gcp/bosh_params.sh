@@ -5,7 +5,9 @@ bosh_create_env() {
 		--state="$BOSH_STATE_FOLDER/state.json" \
 		--vars-store="$BOSH_VAR_STORE" \
 		$BOSH_OPS_FILES \
+		-o "$BOSH_FOLDER/ops/gcp/vm-labels.yml" \
 		--var-file gcp_credentials_json=<(echo "$GCP_CREDENTIALS_JSON") \
+		--var env_name="$TF_ENV_NAME" \
 		--var director_name="$TF_DIRECTOR_NAME" \
 		--var internal_cidr="$TF_INTERNAL_CIDR" \
 		--var internal_gw="$TF_INTERNAL_GW" \
@@ -22,7 +24,9 @@ bosh_delete_env() {
 		--state="$BOSH_STATE_FOLDER/state.json" \
 		--vars-store="$BOSH_VAR_STORE" \
 		$BOSH_OPS_FILES \
+		-o "$BOSH_FOLDER/ops/gcp/vm-labels.yml" \
 		--var-file gcp_credentials_json=<(echo "$GCP_CREDENTIALS_JSON") \
+		--var env_name="$TF_ENV_NAME" \
 		--var director_name="$TF_DIRECTOR_NAME" \
 		--var internal_cidr="$TF_INTERNAL_CIDR" \
 		--var internal_gw="$TF_INTERNAL_GW" \
