@@ -58,6 +58,7 @@ bosh_update_cloud_config() {
 			echo -o "$BOSH_CLOUD_CONFIG_FOLDER/3azs.yml" --var gcp_zone_3="$TF_GCP_ZONE_3"
 		fi) \
 		--var az_list="$TF_AZ_LIST" \
+		--var env_name="$TF_ENV_NAME" \
 		--var concourse_subnet_range="$TF_CONCOURSE_SUBNET_RANGE" \
 		--var concourse_subnet_gateway="$TF_CONCOURSE_SUBNET_GATEWAY" \
 		--var bootstrap_network_name="$TF_BOOTSTRAP_NETWORK_NAME" \

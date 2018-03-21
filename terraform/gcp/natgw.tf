@@ -21,6 +21,10 @@ resource "google_compute_instance" "nat-gateway-pri" {
     }
   }
 
+  labels {
+    turbo = "${var.env_name}"
+  }
+
   metadata_startup_script = <<EOF
 #!/usr/bin/env bash
 sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'

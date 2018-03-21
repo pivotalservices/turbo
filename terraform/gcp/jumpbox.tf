@@ -17,6 +17,10 @@ resource "google_compute_disk" "jumpbox_data" {
   type = "pd-standard"
   size = "10"
   zone = "${element(var.gcp_zones,0)}"
+
+  labels {
+    turbo = "${var.env_name}"
+  }
 }
 
 resource "google_compute_instance" "jumpbox" {
@@ -43,6 +47,10 @@ resource "google_compute_instance" "jumpbox" {
     access_config {
       nat_ip = "${local.ssh_host}"
     }
+  }
+
+  labels {
+    turbo = "${var.env_name}"
   }
 
   metadata_startup_script = <<EOF
