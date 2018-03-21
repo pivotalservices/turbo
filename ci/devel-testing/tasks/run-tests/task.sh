@@ -86,8 +86,8 @@ scp -i id_rsa \
 ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-i id_rsa \
 	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
-	'bosh -d ${ENV_NAME}-ucc scp ~/metadata credhub-uaa:/tmp/ ;\
-    bosh -d ${ENV_NAME}-ucc ssh credhub-uaa "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata" ;'
+	'bosh -d ucc scp ~/metadata credhub-uaa:/tmp/ ;\
+    bosh -d ucc ssh credhub-uaa "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata" ;'
 
 # End Dirty Fix
 echo "${green}Running bbr backup of the deployment${reset}"
@@ -96,7 +96,7 @@ ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
 	'mkdir -p ci-tests && \
     cd ci-tests && \
-    ~/automation/bosh/scripts/generic/bbr-backup.sh deployment ${ENV_NAME}-ucc'
+    ~/automation/bosh/scripts/generic/bbr-backup.sh deployment ucc'
 
 echo "${green}Waiting 2min for everything to be running again${reset}"
 sleep 120
@@ -111,7 +111,7 @@ ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
 	'mkdir -p ci-tests && \
     pushd ci-tests ; \
-    ~/automation/bosh/scripts/generic/bbr-restore.sh deployment ${ENV_NAME}-ucc "$(pwd)/$(ls -1t -d ${ENV_NAME}-ucc* | head -n 1)";\
+    ~/automation/bosh/scripts/generic/bbr-restore.sh deployment ucc "$(pwd)/$(ls -1t -d ucc* | head -n 1)";\
     rc=$?;
     popd; \
     rm -rf ci-tests metadata;\

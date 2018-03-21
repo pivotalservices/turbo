@@ -20,9 +20,7 @@ locals {
     TF_STEMCELL_TYPE = "${local.stemcell}"
 
     # BOSH
-    TF_DIRECTOR_NAME = "${var.env_name}-bosh1"
     TF_SSH_USER      = "${var.ssh_user}"
-    TF_ENV_NAME      = "${var.env_name}"
     TF_CPI           = "${local.iaas_type}"
     TF_INTERNAL_IP   = "${cidrhost(aws_subnet.bosh.0.cidr_block, 6)}"
     TF_INTERNAL_CIDR = "${aws_subnet.bosh.0.cidr_block}"

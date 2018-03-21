@@ -26,8 +26,6 @@ locals {
     # Bosh
     GCP_CREDENTIALS_JSON = "${var.gcp_key}"
     TF_SSH_USER          = "${var.ssh_user}"
-    TF_ENV_NAME          = "${var.env_name}"
-    TF_DIRECTOR_NAME     = "${var.env_name}-bosh1"
     TF_INTERNAL_CIDR     = "${google_compute_subnetwork.bosh.ip_cidr_range}"
     TF_INTERNAL_GW       = "${google_compute_subnetwork.bosh.gateway_address}"
     TF_INTERNAL_IP       = "${cidrhost(google_compute_subnetwork.bosh.ip_cidr_range, 6)}"

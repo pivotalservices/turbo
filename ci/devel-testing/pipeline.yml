@@ -131,7 +131,7 @@ jobs:
         passed: [testing-gcp-devel]
     - put: terraform
       params:
-        terraform_source: turbo-devel/terraform/gcp/
+        terraform_source: turbo-devel-gcp/terraform/gcp/
         env_name: gcp-devel
         action: destroy
         vars:
@@ -212,7 +212,7 @@ jobs:
         env_name: aws-devel
         action: destroy
         vars:
-          <<: *terraform-vars-aws
+          <<: *terraform-vars-aws-devel
       get_params:
         action: destroy
 
