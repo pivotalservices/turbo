@@ -1,17 +1,6 @@
 resource "null_resource" "cloud-config-update" {
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/${var.ssh_user}/automation/bosh/cloud-config",
-    ]
-  }
-
-  provisioner "file" {
-    source      = "../../cloud-config/${local.iaas_type}/"
-    destination = "/home/${var.ssh_user}/automation/bosh/cloud-config/"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
       "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-cloud-config.sh",
     ]
