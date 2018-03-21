@@ -118,8 +118,8 @@ resource "google_compute_backend_service" "metrics_lb_https_backend_service_3az"
   count = "${length(var.gcp_zones) == 3 ? 1 : 0}"
 }
 
-resource "google_compute_url_map" "concourse_web_https_lb_url_map_3az" {
-  name = "${var.env_name}-concourse-web-https-3az"
+resource "google_compute_url_map" "turbo_https_lb_url_map_3az" {
+  name = "${var.env_name}-turbo-https-3az"
 
   default_service = "${google_compute_backend_service.concourse_web_lb_https_backend_service_3az.self_link}"
 
@@ -159,18 +159,18 @@ resource "google_compute_url_map" "concourse_web_https_lb_url_map_3az" {
   count = "${length(var.gcp_zones) == 3 ? 1 : 0}"
 }
 
-resource "google_compute_target_https_proxy" "concourse_web_https_lb_proxy_3az" {
-  name             = "${var.env_name}-concourse-web-https-proxy-3az"
+resource "google_compute_target_https_proxy" "turbo_https_lb_proxy_3az" {
+  name             = "${var.env_name}-turbo-https-proxy-3az"
   description      = "Load balancing front end https"
-  url_map          = "${google_compute_url_map.concourse_web_https_lb_url_map_3az.self_link}"
-  ssl_certificates = ["${google_compute_ssl_certificate.concourse_web.self_link}"]
+  url_map          = "${google_compute_url_map.turbo_https_lb_url_map_3az.self_link}"
+  ssl_certificates = ["${google_compute_ssl_certificate.turbo_ssl.self_link}"]
   count            = "${length(var.gcp_zones) == 3 ? 1 : 0}"
 }
 
-resource "google_compute_global_forwarding_rule" "concourse_web_https_3az" {
-  name       = "${var.env_name}-concourse-web-lb-https-3az"
-  ip_address = "${google_compute_global_address.concourse_web_lb.address}"
-  target     = "${google_compute_target_https_proxy.concourse_web_https_lb_proxy_3az.self_link}"
+resource "google_compute_global_forwarding_rule" "turbo_https_3az" {
+  name       = "${var.env_name}-turbo-lb-https-3az"
+  ip_address = "${google_compute_global_address.turbo_lb.address}"
+  target     = "${google_compute_target_https_proxy.turbo_https_lb_proxy_3az.self_link}"
   port_range = "443"
   count      = "${length(var.gcp_zones) == 3 ? 1 : 0}"
 }

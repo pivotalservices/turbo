@@ -1,5 +1,5 @@
 #### Concourse Web LB
-resource "google_compute_ssl_certificate" "concourse_web" {
+resource "google_compute_ssl_certificate" "turbo_ssl" {
   name_prefix = "bootstrap-certificate-"
   description = "${var.env_name} - Bootstrap Concourse Certificate"
   private_key = "${tls_private_key.ssl_private_key.private_key_pem}"
@@ -10,8 +10,8 @@ resource "google_compute_ssl_certificate" "concourse_web" {
   }
 }
 
-resource "google_compute_global_address" "concourse_web_lb" {
-  name = "${var.env_name}-concourse-web-lb"
+resource "google_compute_global_address" "turbo_lb" {
+  name = "${var.env_name}-turbo-lb"
 }
 
 resource "google_dns_record_set" "concourse-lb" {
@@ -21,7 +21,7 @@ resource "google_dns_record_set" "concourse-lb" {
 
   managed_zone = "${google_dns_managed_zone.bootstrap.name}"
 
-  rrdatas = ["${google_compute_global_address.concourse_web_lb.address}"]
+  rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
 }
 
 resource "google_compute_instance_group" "concourse_web_lb" {
@@ -56,7 +56,7 @@ resource "google_dns_record_set" "credhub-lb" {
 
   managed_zone = "${google_dns_managed_zone.bootstrap.name}"
 
-  rrdatas = ["${google_compute_global_address.concourse_web_lb.address}"]
+  rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
 }
 
 resource "google_dns_record_set" "uaa-lb" {
@@ -66,7 +66,7 @@ resource "google_dns_record_set" "uaa-lb" {
 
   managed_zone = "${google_dns_managed_zone.bootstrap.name}"
 
-  rrdatas = ["${google_compute_global_address.concourse_web_lb.address}"]
+  rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
 }
 
 # Credhub
@@ -118,7 +118,7 @@ resource "google_dns_record_set" "metrics-lb" {
 
   managed_zone = "${google_dns_managed_zone.bootstrap.name}"
 
-  rrdatas = ["${google_compute_global_address.concourse_web_lb.address}"]
+  rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
 }

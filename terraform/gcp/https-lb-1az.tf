@@ -70,8 +70,8 @@ resource "google_compute_backend_service" "metrics_lb_https_backend_service_1az"
   count = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }
 
-resource "google_compute_url_map" "concourse_web_https_lb_url_map_1az" {
-  name = "${var.env_name}-concourse-web-https-1az"
+resource "google_compute_url_map" "turbo_https_lb_url_map_1az" {
+  name = "${var.env_name}-turbo-https-1az"
 
   default_service = "${google_compute_backend_service.concourse_web_lb_https_backend_service_1az.self_link}"
 
@@ -111,18 +111,18 @@ resource "google_compute_url_map" "concourse_web_https_lb_url_map_1az" {
   count = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }
 
-resource "google_compute_target_https_proxy" "concourse_web_https_lb_proxy_1az" {
-  name             = "${var.env_name}-concourse-web-https-proxy-1az"
+resource "google_compute_target_https_proxy" "turbo_https_lb_proxy_1az" {
+  name             = "${var.env_name}-turbo-https-proxy-1az"
   description      = "Load balancing front end https"
-  url_map          = "${google_compute_url_map.concourse_web_https_lb_url_map_1az.self_link}"
-  ssl_certificates = ["${google_compute_ssl_certificate.concourse_web.self_link}"]
+  url_map          = "${google_compute_url_map.turbo_https_lb_url_map_1az.self_link}"
+  ssl_certificates = ["${google_compute_ssl_certificate.turbo_ssl.self_link}"]
   count            = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }
 
 resource "google_compute_global_forwarding_rule" "concourse_web_https_1az" {
-  name       = "${var.env_name}-concourse-web-lb-https-1az"
-  ip_address = "${google_compute_global_address.concourse_web_lb.address}"
-  target     = "${google_compute_target_https_proxy.concourse_web_https_lb_proxy_1az.self_link}"
+  name       = "${var.env_name}-turbo-lb-https-1az"
+  ip_address = "${google_compute_global_address.turbo_lb.address}"
+  target     = "${google_compute_target_https_proxy.turbo_https_lb_proxy_1az.self_link}"
   port_range = "443"
   count      = "${length(var.gcp_zones) == 1 ? 1 : 0}"
 }
