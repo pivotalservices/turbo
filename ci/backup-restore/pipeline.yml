@@ -61,6 +61,7 @@ jobs:
       - Manual Trigger
     - get: turbo-ci
     - get: night-2am
+      trigger: true
   - task: download-bbr
     file: turbo-ci/ci/backup-restore/tasks/download-bbr/task.yml
     input_mapping:
@@ -89,6 +90,7 @@ jobs:
       - Manual Trigger
     - get: turbo-ci
     - get: night-2am
+      trigger: true
   - task: download-bbr
     file: turbo-ci/ci/backup-restore/tasks/download-bbr/task.yml
     input_mapping:
@@ -115,6 +117,7 @@ jobs:
       - Manual Trigger
     - get: turbo-ci
     - get: night-2am
+      trigger: true
   - task: download-bbr
     file: turbo-ci/ci/backup-restore/tasks/download-bbr/task.yml
     input_mapping:

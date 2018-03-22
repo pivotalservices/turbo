@@ -35,7 +35,7 @@ cleanup() {
 		-i ./id_rsa \
 		-o "IdentitiesOnly=true" \
 		-o "StrictHostKeyChecking=no" \
-		"cd .ci-backups/${DEPLOYMENT_NAME} && rm -rf * ../ca_cert"
+		"cd .ci-backups && rm -rf * ../ca_cert"
 }
 
 echo "Running pre-backup-checks on deployment '${DEPLOYMENT_NAME}'..."
@@ -66,13 +66,17 @@ if ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 			-d \"${DEPLOYMENT_NAME}\" backup || exit 1"; then
 
 		echo "Downloading backup for deployment '${DEPLOYMENT_NAME}'..."
-		ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
+		if ! ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 			-i ./id_rsa \
 			-o "IdentitiesOnly=true" \
 			-o "StrictHostKeyChecking=no" \
 			"cd .ci-backups/${DEPLOYMENT_NAME} && \
-				tar czf - *" >backups/${DEPLOYMENT_NAME}-backup-$(date -u +%Y%m%d%H%M%S).tgz
-		cleanup
+					tar czf - *" >backups/${DEPLOYMENT_NAME}-backup-$(date -u +%Y%m%d%H%M%S).tgz; then
+			cleanup
+			exit 1
+		else
+			cleanup
+		fi
 	else
 		echo "Backup failed... Cleaning up..."
 		ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
@@ -85,7 +89,7 @@ if ssh "${JUMPBOX_SSH_USER}"@"${JUMPBOX_HOST}" \
 				-p \"${BOSH_BBR_PASSWORD}\" \
 				--ca-cert ../ca_cert \
 				-d \"${DEPLOYMENT_NAME}\" backup-cleanup || true"
-		cleanup || true
+		cleanup
 		exit 1
 	fi
 else

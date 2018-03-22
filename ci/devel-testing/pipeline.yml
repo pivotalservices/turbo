@@ -13,7 +13,7 @@ resources:
     - 'README.md'
     - '.gitignore'
     - '**/.gitignore'
-    - '**/aws'
+    - '**/aws/**'
 
 - name: turbo-devel-aws
   type: git
@@ -28,7 +28,7 @@ resources:
     - 'README.md'
     - '.gitignore'
     - '**/.gitignore'
-    - '**/gcp'
+    - '**/gcp/**'
 
 - name: turbo-ci
   type: git
@@ -54,7 +54,17 @@ resources:
     pool: aws
     private_key: ((ssh_key_gitlab))
 
-- name: terraform
+- name: terraform-gcp-devel
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: tfstate-storage
+      prefix: terraform/state/bootstrap-concourse/
+    env:
+      GOOGLE_CREDENTIALS: ((gcp_key))
+
+- name: terraform-aws-devel
   type: terraform
   source:
     backend_type: gcs
@@ -82,7 +92,7 @@ jobs:
         trigger: true
       - put: gcp-environments
         params: {claim: gcp-devel}
-    - put: terraform
+    - put: terraform-gcp-devel
       params:
         terraform_source: turbo-devel-gcp/terraform/gcp/
         env_name: gcp-devel
@@ -104,7 +114,7 @@ jobs:
         passed: [deploy-gcp-devel]
       - get: turbo-devel-gcp
         passed: [deploy-gcp-devel]
-      - get: terraform
+      - get: terraform-gcp-devel
         passed: [deploy-gcp-devel]
         trigger: true
     - task: testing-gcp-devel
@@ -112,6 +122,7 @@ jobs:
       input_mapping:
         turbo-devel-ci: turbo-ci
         turbo-devel: turbo-devel-gcp
+        terraform: terraform-gcp-devel
       on_failure:
         put: gcp-environments
         params: {release: gcp-environments}
@@ -126,10 +137,10 @@ jobs:
   plan:
     - aggregate:
       - get: turbo-devel-gcp
-      - get: terraform
+      - get: terraform-gcp-devel
         trigger: false
         passed: [testing-gcp-devel]
-    - put: terraform
+    - put: terraform-gcp-devel
       params:
         terraform_source: turbo-devel-gcp/terraform/gcp/
         env_name: gcp-devel
@@ -147,7 +158,7 @@ jobs:
         params: {claim: aws-devel}
       - get: turbo-devel-aws
         trigger: true
-    - put: terraform
+    - put: terraform-aws-devel
       params:
         terraform_source: turbo-devel-aws/terraform/aws/
         env_name: aws-devel
@@ -169,7 +180,7 @@ jobs:
         passed: [deploy-aws-devel]
       - get: turbo-devel-aws
         passed: [deploy-aws-devel]
-      - get: terraform
+      - get: terraform-aws-devel
         passed: [deploy-aws-devel]
         trigger: true
     - task: testing-aws
@@ -177,6 +188,7 @@ jobs:
       input_mapping:
         turbo-devel-ci: turbo-ci
         turbo-devel: turbo-devel-aws
+        terraform: terraform-aws-devel
       on_failure:
         put: aws-environments
         params: {release: aws-environments}
@@ -203,10 +215,10 @@ jobs:
   plan:
     - aggregate:
       - get: turbo-devel-aws
-      - get: terraform
+      - get: terraform-aws-devel
         trigger: false
         passed: [testing-aws-devel]
-    - put: terraform
+    - put: terraform-aws-devel
       params:
         terraform_source: turbo-devel-aws/terraform/aws/
         env_name: aws-devel

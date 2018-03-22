@@ -428,6 +428,7 @@ jobs:
         trigger: true
       - get: backup-and-restore-sdk-bosh-compiled-releases
         passed: [compile-backup-and-restore-sdk-release-stemcell-director]
+        trigger: true
     - task: 'generate-bosh-ops-files'
       file: turbo-devel/ci/compiled-releases/tasks/update-bosh-director-ops-file/task.yml
       input_mapping:
