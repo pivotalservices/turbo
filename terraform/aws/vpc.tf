@@ -2,7 +2,8 @@ resource "aws_vpc" "bootstrap" {
   cidr_block = "${var.bootstrap_subnet}"
 
   tags {
-    Name = "${var.env_name}-boostrap"
+    Name  = "${var.env_name}-boostrap"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -10,7 +11,8 @@ resource "aws_internet_gateway" "internet_gw" {
   vpc_id = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-internet-gateway"
+    Name  = "${var.env_name}-internet-gateway"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -22,7 +24,8 @@ resource "aws_security_group" "nat_instance_sg" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-NAT intance security group"
+    Name  = "${var.env_name}-NAT intance security group"
+    turbo = "${var.env_name}"
   }
 
   ingress {

@@ -5,7 +5,8 @@ resource "aws_security_group" "credhub-elb" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-Inbound credhub"
+    Name  = "${var.env_name}-Inbound credhub"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -56,6 +57,11 @@ resource "aws_elb" "credhub-elb" {
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
+
+  tags {
+    Name  = "${var.env_name}-credhub-elb"
+    turbo = "${var.env_name}"
+  }
 }
 
 ### UAA
@@ -65,7 +71,8 @@ resource "aws_security_group" "uaa-elb" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-Inbound uaa"
+    Name  = "${var.env_name}-Inbound uaa"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -115,6 +122,11 @@ resource "aws_elb" "uaa-elb" {
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
+
+  tags {
+    Name  = "${var.env_name}-uaa-elb"
+    turbo = "${var.env_name}"
+  }
 }
 
 ### Concourse
@@ -124,7 +136,8 @@ resource "aws_security_group" "concourse-elb" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-Inbound concourse"
+    Name  = "${var.env_name}-Inbound concourse"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -174,6 +187,11 @@ resource "aws_elb" "concourse-elb" {
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
+
+  tags {
+    Name  = "${var.env_name}-concourse-elb"
+    turbo = "${var.env_name}"
+  }
 }
 
 # metrics (grafana)
@@ -183,7 +201,8 @@ resource "aws_security_group" "metrics-elb" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-Inbound metrics"
+    Name  = "${var.env_name}-Inbound metrics"
+    turbo = "${var.env_name}"
   }
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
@@ -238,6 +257,11 @@ resource "aws_elb" "metrics-elb" {
     interval            = 5
     unhealthy_threshold = 3
     healthy_threshold   = 3
+  }
+
+  tags {
+    Name  = "${var.env_name}-metrics-elb"
+    turbo = "${var.env_name}"
   }
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"

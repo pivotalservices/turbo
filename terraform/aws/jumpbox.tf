@@ -21,7 +21,8 @@ resource "aws_ebs_volume" "jumpbox_data" {
   type              = "gp2"
 
   tags {
-    Name = "${var.env_name}-jumpbox-data"
+    Name  = "${var.env_name}-jumpbox-data"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -46,7 +47,8 @@ resource "aws_instance" "jumpbox" {
   key_name = "${aws_key_pair.terraform.key_name}"
 
   tags {
-    Name = "${var.env_name}-jumpbox"
+    Name  = "${var.env_name}-jumpbox"
+    turbo = "${var.env_name}"
   }
 
   user_data = <<EOF
@@ -71,6 +73,11 @@ resource "aws_eip" "jumpbox" {
   depends_on = [
     "aws_internet_gateway.internet_gw",
   ]
+
+  tags {
+    Name  = "${var.env_name}-jumpbox-eip"
+    turbo = "${var.env_name}"
+  }
 }
 
 resource "null_resource" "destroy-all" {

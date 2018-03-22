@@ -7,7 +7,8 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags {
-    Name = "${var.env_name}-Public Subnet Route Table"
+    Name  = "${var.env_name}-Public Subnet Route Table"
+    turbo = "${var.env_name}"
   }
 }
 
@@ -27,7 +28,8 @@ resource "aws_route_table" "no_ip" {
   }
 
   tags {
-    Name = "${var.env_name}-no-ip-route-table"
+    Name  = "${var.env_name}-no-ip-route-table-az${count.index}"
+    turbo = "${var.env_name}"
   }
 
   count = "${length(var.aws_azs)}"

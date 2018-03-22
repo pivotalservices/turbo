@@ -5,6 +5,7 @@ bosh_create_env() {
 		--state="$BOSH_STATE_FOLDER/state.json" \
 		--vars-store="$BOSH_VAR_STORE" \
 		$BOSH_OPS_FILES \
+		-o "$BOSH_FOLDER/ops/aws/director-vm.yml" \
 		--var access_key_id="$AWS_ACCESS_KEY" \
 		--var secret_access_key="$AWS_SECRET_KEY" \
 		--var-file private_key=<(echo "$SSH_PRIVATE_KEY") \

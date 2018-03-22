@@ -4,7 +4,8 @@ resource "aws_security_group" "jumpbox" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-jumpbox"
+    Name  = "${var.env_name}-jumpbox"
+    turbo = "${var.env_name}"
   }
 
   ingress {
@@ -32,7 +33,8 @@ resource "aws_security_group" "bosh_deployed_vms" {
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name = "${var.env_name}-bosh-deployed-vms"
+    Name  = "${var.env_name}-bosh-deployed-vms"
+    turbo = "${var.env_name}"
   }
 
   ingress {
