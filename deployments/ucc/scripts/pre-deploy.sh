@@ -27,6 +27,7 @@ do_deploy() {
 		-l "$DEPLOYMENT_HOME/versions/versions.yml" \
 		$DEPLOYMENT_OPS_FILES_ADD \
 		--var deployment_name="$DEPLOYMENT_NAME" \
+		--var env_name="${TF_ENV_NAME}" \
 		--var az_list="$TF_AZ_LIST" \
 		--var network_name=concourse \
 		--var concourse_external_url="$TF_CONCOURSE_EXTERNAL_URL" \
