@@ -43,6 +43,7 @@ do_deploy() {
 		--var domain_name="$TF_DOMAIN_NAME" \
 		--var credhub_url="$TF_CREDHUB_URL" \
 		--var uaa_dns="$TF_UAA_DNS_ENTRY" \
+		--var uaa_url="$TF_UAA_URL" \
 		--var credhub_dns="$TF_CREDHUB_DNS_ENTRY" \
 		--var metrics_static_ip="$TF_METRICS_STATIC_IP" \
 		--var concourse_admin_password="$TF_CONCOURSE_ADMIN_PASSWORD" \

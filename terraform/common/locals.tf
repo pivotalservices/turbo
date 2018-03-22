@@ -15,6 +15,9 @@ locals {
     TF_DEBUG         = "${var.debug}"
     TF_DIRECTOR_NAME = "turbo-director"
     TF_ENV_NAME      = "${var.env_name}"
+    TF_FLAGS         = "${jsonencode(local.flags)}"
+    TF_CPI           = "${local.iaas_type}"
+    TF_STEMCELL_TYPE = "${local.stemcell}"
 
     TF_CONCOURSE_WEB_VM_TYPE     = "${var.concourse_web_vm_type}"
     TF_CONCOURSE_WEB_VM_COUNT    = "${var.concourse_web_vm_count}"

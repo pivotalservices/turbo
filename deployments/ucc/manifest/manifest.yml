@@ -72,7 +72,7 @@ instance_groups:
       bpm:
         enabled: false
       uaa:
-        url: &uaa-url https://((uaa_dns))
+        url: &uaa-url ((uaa_url))
         catalina_opts: -Djava.security.egd=file:/dev/./urandom -Xmx768m -XX:MaxMetaspaceSize=256m
         scim:
           users:

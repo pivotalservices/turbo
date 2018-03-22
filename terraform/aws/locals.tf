@@ -12,16 +12,12 @@ locals {
 
 locals {
   iaas_env = {
-    TF_FLAGS = "${jsonencode(local.flags)}"
-
-    AWS_SECRET_KEY   = "${var.aws_secret_key}"
-    AWS_ACCESS_KEY   = "${var.aws_access_key}"
-    SSH_PRIVATE_KEY  = "${tls_private_key.bosh_ssh_private_key.private_key_pem}"
-    TF_STEMCELL_TYPE = "${local.stemcell}"
+    AWS_SECRET_KEY  = "${var.aws_secret_key}"
+    AWS_ACCESS_KEY  = "${var.aws_access_key}"
+    SSH_PRIVATE_KEY = "${tls_private_key.bosh_ssh_private_key.private_key_pem}"
 
     # BOSH
     TF_SSH_USER      = "${var.ssh_user}"
-    TF_CPI           = "${local.iaas_type}"
     TF_INTERNAL_IP   = "${cidrhost(aws_subnet.bosh.0.cidr_block, 6)}"
     TF_INTERNAL_CIDR = "${aws_subnet.bosh.0.cidr_block}"
     TF_INTERNAL_GW   = "${cidrhost(aws_subnet.bosh.0.cidr_block,1)}"
@@ -72,6 +68,7 @@ locals {
     # Credhub UAA
     TF_CREDHUB_DNS_ENTRY = "${aws_route53_record.credhub.name}.${var.dns_domain_name}"
     TF_UAA_DNS_ENTRY     = "${aws_route53_record.uaa.name}.${var.dns_domain_name}"
+    TF_UAA_URL           = "https://${aws_route53_record.uaa.name}.${var.dns_domain_name}"
 
     # Concourse
     TF_CONCOURSE_EXTERNAL_URL = "https://${aws_route53_record.concourse.name}.${var.dns_domain_name}"

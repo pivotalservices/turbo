@@ -21,8 +21,6 @@ locals {
 
 locals {
   iaas_env = {
-    TF_FLAGS = "${jsonencode(local.flags)}"
-
     # Bosh
     GCP_CREDENTIALS_JSON = "${var.gcp_key}"
     TF_SSH_USER          = "${var.ssh_user}"
@@ -34,14 +32,12 @@ locals {
     TF_AZ_LIST           = "${length(var.gcp_zones) == 1 ? "[z1]" :
                               length(var.gcp_zones) == 2 ? "[z1,z2]" : "[z1,z2,z3]"}"
 
-    TF_GCP_ZONE_1    = "${var.gcp_zones[0]}"
-    TF_GCP_ZONE_2    = "${length(var.gcp_zones) >= 2 ? element(var.gcp_zones,1) : ""}"
-    TF_GCP_ZONE_3    = "${length(var.gcp_zones) == 3 ? element(var.gcp_zones,2) : ""}"
-    TF_VM_TAGS       = "[${var.env_name}-internal,${var.env_name}-nat]"
-    TF_NETWORK       = "${google_compute_network.bootstrap.name}"
-    TF_SUBNETWORK    = "${google_compute_subnetwork.bosh.name}"
-    TF_CPI           = "${local.iaas_type}"
-    TF_STEMCELL_TYPE = "${local.stemcell}"
+    TF_GCP_ZONE_1 = "${var.gcp_zones[0]}"
+    TF_GCP_ZONE_2 = "${length(var.gcp_zones) >= 2 ? element(var.gcp_zones,1) : ""}"
+    TF_GCP_ZONE_3 = "${length(var.gcp_zones) == 3 ? element(var.gcp_zones,2) : ""}"
+    TF_VM_TAGS    = "[${var.env_name}-internal,${var.env_name}-nat]"
+    TF_NETWORK    = "${google_compute_network.bootstrap.name}"
+    TF_SUBNETWORK = "${google_compute_subnetwork.bosh.name}"
 
     # Cloud-Config
     TF_CONCOURSE_SUBNET_RANGE         = "${google_compute_subnetwork.concourse.ip_cidr_range}"
@@ -65,6 +61,7 @@ locals {
     #Credhub Deployment
     TF_CREDHUB_DNS_ENTRY = "${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
     TF_UAA_DNS_ENTRY     = "${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
+    TF_UAA_URL           = "https://${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
 
     #Concourse Deployment
     TF_CONCOURSE_WEB_IP       = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,5)}"
