@@ -147,11 +147,23 @@ resources:
     json_key: ((gcp_key))
     regexp: "riemann.*-(\\d+).tgz"
 
+- name: notify
+  type: slack-notification
+  source:
+    url: ((slack_hook))
+
 resource_types:
-  - name: gcs-bucket
-    type: docker-image
-    source:
-      repository: frodenas/gcs-resource
+- name: gcs-bucket
+  type: docker-image
+  source:
+    repository: frodenas/gcs-resource
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
 
 jobs:
   - name: compile-uaa-release
@@ -170,10 +182,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: uaa-release
+        on_failure:
+          <<: *on_failure_notify
       - put: uaa-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: uaa-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-credhub-release
     serial_groups: [compile-release]
@@ -191,10 +214,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: credhub-release
+        on_failure:
+          <<: *on_failure_notify
       - put: credhub-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: credhub-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-backup-and-restore-sdk-release
     serial_groups: [compile-release]
@@ -212,10 +246,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: backup-and-restore-sdk-release
+        on_failure:
+          <<: *on_failure_notify
       - put: backup-and-restore-sdk-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: backup-and-restore-sdk-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-backup-and-restore-sdk-release-stemcell-director
     serial_groups: [compile-release]
@@ -235,10 +280,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: backup-and-restore-sdk-release
+        on_failure:
+          <<: *on_failure_notify
       - put: backup-and-restore-sdk-bosh-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: backup-and-restore-sdk-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-garden-runc-release
     serial_groups: [compile-release]
@@ -256,10 +312,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: garden-runc-release
+        on_failure:
+          <<: *on_failure_notify
       - put: garden-runc-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: garden-runc-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-postgres-release
     serial_groups: [compile-release]
@@ -277,10 +344,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: postgres-release
+        on_failure:
+          <<: *on_failure_notify
       - put: postgres-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: postgres-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-concourse-release
     serial_groups: [compile-release]
@@ -298,10 +376,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: concourse-release
+        on_failure:
+          <<: *on_failure_notify
       - put: concourse-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: concourse-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-grafana-release
     serial_groups: [compile-release]
@@ -319,10 +408,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: grafana-release
+        on_failure:
+          <<: *on_failure_notify
       - put: grafana-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: grafana-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-influxdb-release
     serial_groups: [compile-release]
@@ -340,10 +440,21 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: influxdb-release
+        on_failure:
+          <<: *on_failure_notify
       - put: influxdb-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
+      - try:
+          put: notify
+          params:
+            text_file: influxdb-release/version
+            text: |
+              $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME new version: $TEXT_FILE_CONTENT
+              See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-riemann-release
     serial_groups: [compile-release]
@@ -361,10 +472,14 @@ jobs:
         input_mapping:
           stemcell: ubuntu-trusty-stemcell
           release: riemann-release
+        on_failure:
+          <<: *on_failure_notify
       - put: riemann-compiled-releases
         params:
           file: "compiled-release/*.tgz"
           predefined_acl: publicRead
+        on_failure:
+          <<: *on_failure_notify
 
   - name: generate-ops-files
     plan:
@@ -414,10 +529,14 @@ jobs:
       file: turbo-devel/ci/compiled-releases/tasks/update-compiled-release-ops-file/task.yml
       input_mapping:
         turbo: turbo-devel
+      on_failure:
+          <<: *on_failure_notify
     - put: turbo-devel
       params:
         repository: turbo-out
         merge: true
+      on_failure:
+          <<: *on_failure_notify
 
   - name: generate-bosh-ops-files
     plan:
@@ -433,7 +552,18 @@ jobs:
       file: turbo-devel/ci/compiled-releases/tasks/update-bosh-director-ops-file/task.yml
       input_mapping:
         turbo: turbo-devel
+      on_failure:
+          <<: *on_failure_notify
     - put: turbo-devel
       params:
         repository: turbo-out
         merge: true
+      on_failure:
+          <<: *on_failure_notify
+
+on_failure_notify: &on_failure_notify
+  put: notify
+  params:
+    text: |
+      $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
+      See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
