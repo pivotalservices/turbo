@@ -35,19 +35,19 @@ vm_types:
       size: 10240
 - name: db-4xlarge
   cloud_properties:
-    instance_type: Standard_A6
+    instance_type: Standard_D32s_v3
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 10240
 - name: db-10xlarge
   cloud_properties:
-    instance_type: Standard_A7
+    instance_type: Standard_D64s_v3
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 10240
 - name: db-16xlarge
   cloud_properties:
-    instance_type: Standard_E16s_v3
+    instance_type: Standard_D64s_v3
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 10240
@@ -133,28 +133,28 @@ vm_types:
     
 - name: worker-4xlarge
   cloud_properties:
-    instance_type: Standard_A6
+    instance_type: Standard_D32s_v3
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 204800
 
 - name: worker-10xlarge
   cloud_properties:
-    instance_type: Standard_A7
+    instance_type: Standard_D64s_v3
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 204800
 
 - name: worker-16xlarge
   cloud_properties:
-    instance_type: Standard_E16s_v3
+    instance_type: Standard_D64s_v3
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 204800
 
 - name: compilation
   cloud_properties:
-    instance_type: Standard_A2
+    instance_type: Standard_DS1_v2
     storage_account_type: Premium_LRS
     ephemeral_disk:
       size: 10240
