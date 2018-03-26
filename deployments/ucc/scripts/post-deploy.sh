@@ -11,6 +11,16 @@ unset CREDHUB_SECRET
 unset CREDHUB_CLIENT
 unset CREDHUB_SERVER
 
+echo "Waiting max 120sec for load balancers health checks to be valid..."
+i=0
+while ! curl -k -f "$TF_CREDHUB_URL" >/dev/null 2>&1; do
+	sleep 1
+	i=$((i + 1))
+	if [ $i -ge 120 ]; then
+		clean_exit 1
+	fi
+done
+
 ucc_credhub_login || clean_exit 1
 
 credhub set -n /concourse/main/bosh_ca_cert -t certificate -c "$BOSH_CA_CERT" >/dev/null || clean_exit 1
