@@ -1,0 +1,239 @@
+---
+azs:
+- name: z1
+
+vm_types:
+- name: db-small
+  cloud_properties:
+    instance_type: Standard_DS1_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-medium
+  cloud_properties:
+    instance_type: Standard_DS2_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-large
+  cloud_properties:
+    instance_type: Standard_DS3_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-xlarge
+  cloud_properties:
+    instance_type: Standard_DS4_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-2xlarge
+  cloud_properties:
+    instance_type: Standard_DS5_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-4xlarge
+  cloud_properties:
+    instance_type: Standard_A6
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-10xlarge
+  cloud_properties:
+    instance_type: Standard_A7
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+- name: db-16xlarge
+  cloud_properties:
+    instance_type: Standard_E16s_v3
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+
+- name: credhub
+  cloud_properties:
+    instance_type: Standard_DS1_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+
+- name: metrics
+  cloud_properties:
+    instance_type: Standard_DS1_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+
+# Concourse Web
+- name: concourse-web-small
+  cloud_properties:
+    instance_type: Standard_DS1_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 20480
+
+- name: concourse-web-medium
+  cloud_properties:
+    instance_type: Standard_DS2_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 20480
+
+- name: concourse-web-large
+  cloud_properties:
+    instance_type: Standard_DS3_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 20480
+
+- name: concourse-web-xlarge
+  cloud_properties:
+    instance_type: Standard_DS4_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 20480
+
+- name: concourse-web-2xlarge
+  cloud_properties:
+    instance_type: Standard_DS5_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 20480
+
+# Concourse Workers
+- name: worker-medium
+  cloud_properties:
+    instance_type: Standard_DS2_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+
+- name: worker-large
+  cloud_properties:
+    instance_type: Standard_DS3_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+
+- name: worker-xlarge
+  cloud_properties:
+    instance_type: Standard_DS4_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+
+- name: worker-2xlarge
+  cloud_properties:
+    instance_type: Standard_DS5_v2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+    
+- name: worker-4xlarge
+  cloud_properties:
+    instance_type: Standard_A6
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+
+- name: worker-10xlarge
+  cloud_properties:
+    instance_type: Standard_A7
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+
+- name: worker-16xlarge
+  cloud_properties:
+    instance_type: Standard_E16s_v3
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 204800
+
+- name: compilation
+  cloud_properties:
+    instance_type: Standard_A2
+    storage_account_type: Premium_LRS
+    ephemeral_disk:
+      size: 10240
+
+disk_types:
+- name: 10G
+  disk_size: 10240
+  cloud_properties:
+    storage_account_type: Premium_LRS
+- name: 25G
+  disk_size: 25600
+  cloud_properties:
+    storage_account_type: Premium_LRS
+- name: 50G
+  disk_size: 51200
+  cloud_properties:
+    storage_account_type: Premium_LRS
+- name: 100G
+  disk_size: 102400
+  cloud_properties:
+    storage_account_type: Premium_LRS
+- name: 250G
+  disk_size: 256000
+  cloud_properties:
+    storage_account_type: Premium_LRS
+- name: 500G
+  disk_size: 512000
+  cloud_properties:
+    storage_account_type: Premium_LRS
+- name: 1000G
+  disk_size: 1024000
+  cloud_properties:
+    storage_account_type: Premium_LRS
+
+networks:
+- name: bosh
+  type: manual
+  subnets:
+  - range:   ((bosh_subnet_range))
+    gateway: ((bosh_subnet_gateway))
+    dns:     [168.63.129.16]
+    static: ((bosh_network_static_ips))
+    reserved: ((bosh_network_reserved_ips))
+    azs:     ((az_list))
+    cloud_properties:
+      resource_group_name: ((resource_group_name))
+      virtual_network_name: ((vnet_name))
+      subnet_name: ((bosh_subnet_name))
+- name: concourse
+  type: manual
+  subnets:
+  - range:   ((concourse_subnet_range))
+    gateway: ((concourse_subnet_gateway))
+    dns:     [168.63.129.16]
+    static: ((concourse_network_static_ips))
+    reserved: ((concourse_network_reserved_ips))
+    azs:     ((az_list))
+    cloud_properties:
+      resource_group_name: ((resource_group_name))
+      virtual_network_name: ((vnet_name))
+      subnet_name: ((concourse_subnet_name))
+
+vm_extensions:
+- name: concourse-web
+  cloud_properties:
+    load_balancer: ((concourse_web_lb))
+    security_group: ((concourse_web_sg))
+- name: credhub
+  cloud_properties:
+    load_balancer: ((credhub_lb))
+    security_group: ((credhub_sg))
+- name: metrics
+  cloud_properties:
+    load_balancer: ((metrics_lb))
+    security_group: ((metrics_sg))
+
+compilation:
+  workers: 3
+  reuse_compilation_vms: true
+  az: z1
+  vm_type: compilation
+  network: bosh

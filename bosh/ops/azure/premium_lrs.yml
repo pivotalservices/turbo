@@ -1,0 +1,12 @@
+---
+- type: replace
+  path: /disk_pools/name=disks/cloud_properties?/storage_account_type?
+  value: Premium_LRS
+
+- type: replace
+  path: /resource_pools/name=vms/cloud_properties?/storage_account_type?
+  value: Premium_LRS
+
+- type: replace
+  path: /resource_pools/name=vms/cloud_properties?/instance_type?
+  value: Standard_DS1_v2
