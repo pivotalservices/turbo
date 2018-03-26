@@ -26,7 +26,7 @@ export BOSH_CA_CERT="$BOSH_STATE_FOLDER/ca.pem"
 export BOSH_CLIENT=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client)
 export BOSH_CLIENT_SECRET=$(bosh int "$BOSH_VAR_CACHE" --path /bosh_client_secret)
 
-credhub api https://$(bosh int "$BOSH_VAR_CACHE" --path /bosh_target):8844 --skip-tls-validation >/dev/null 2>&1
-credhub login --client-name=credhub-admin --client-secret=$(bosh int "$BOSH_VAR_CACHE" --path /credhub_admin_client_secret) >/dev/null 2>&1
-bosh -e "$BOSH_ENVIRONMENT" log-in >/dev/null 2>&1
+# credhub api https://$(bosh int "$BOSH_VAR_CACHE" --path /bosh_target):8844 --skip-tls-validation >/dev/null 2>&1
+# credhub login --client-name=credhub-admin --client-secret=$(bosh int "$BOSH_VAR_CACHE" --path /credhub_admin_client_secret) >/dev/null 2>&1
+# bosh -e "$BOSH_ENVIRONMENT" log-in >/dev/null 2>&1
 EOF
