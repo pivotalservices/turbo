@@ -3,5 +3,5 @@
   value:
     name: postgres
     version: 28
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/postgres-28-ubuntu-trusty-3468.27-20180320-081818-647699373-20180320081819.tgz
-    sha1: 207a0a0b0480a72768df9c5097c89461681ad107
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/postgres-28-ubuntu-trusty-3468.28-20180327-194002-139474097-20180327194002.tgz
+    sha1: 80254e2ef9eaaab47cbbd9fb8b490c89905d98f8
