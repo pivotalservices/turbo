@@ -3,5 +3,5 @@
   value:
     name: uaa
     version: 56
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-56-ubuntu-trusty-3468.27-20180317-184638-845054128.tgz
-    sha1: 4e2a14629385d816593031ec3ab7bdb5de165e11
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-56-ubuntu-trusty-3468.28-20180327-181922-536860563-20180327181932.tgz
+    sha1: 62e0c808e4d15204761f280f480570a1b90734aa
