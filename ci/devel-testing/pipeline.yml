@@ -14,6 +14,7 @@ resources:
     - '.gitignore'
     - '**/.gitignore'
     - '**/aws/**'
+    - '**/azure/**'
 
 - name: turbo-devel-aws
   type: git
@@ -29,6 +30,23 @@ resources:
     - '.gitignore'
     - '**/.gitignore'
     - '**/gcp/**'
+    - '**/azure/**'
+
+- name: turbo-devel-azure
+  type: git
+  source:
+    uri: git@gitlab.com:RomRider/turbo.git
+    branch: devel
+    private_key: ((ssh_key_gitlab))
+    ignore_paths:
+    - 'ci/*'
+    - 'bin/*'
+    - 'docs/*'
+    - 'README.md'
+    - '.gitignore'
+    - '**/.gitignore'
+    - '**/gcp/**'
+    - '**/aws/**'
 
 - name: turbo-ci
   type: git
@@ -54,6 +72,14 @@ resources:
     pool: aws
     private_key: ((ssh_key_gitlab))
 
+- name: azure-environments
+  type: pool
+  source:
+    uri: git@gitlab.com:RomRider/turbo-pools.git
+    branch: master
+    pool: azure
+    private_key: ((ssh_key_gitlab))
+
 - name: terraform-gcp-devel
   type: terraform
   source:
@@ -74,6 +100,21 @@ resources:
     env:
       GOOGLE_CREDENTIALS: ((gcp_key))
 
+- name: terraform-azure-devel
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: tfstate-storage
+      prefix: terraform/state/bootstrap-concourse/
+    env:
+      GOOGLE_CREDENTIALS: ((gcp_key))
+
+- name: notify
+  type: slack-notification
+  source:
+    url: ((slack_hook))
+
 resource_types:
 - name: terraform
   type: docker-image
@@ -81,17 +122,21 @@ resource_types:
     repository: ljfranklin/terraform-resource
     tag: beta-backend
 
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
 
 jobs:
-
+## GCP
 - name: deploy-gcp-devel
-  max_in_flight: 1
+  serial_groups:
+  - testing-gcp
   plan:
     - aggregate:
       - get: turbo-devel-gcp
         trigger: true
-      - put: gcp-environments
-        params: {claim: gcp-devel}
     - put: terraform-gcp-devel
       params:
         terraform_source: turbo-devel-gcp/terraform/gcp/
@@ -99,19 +144,16 @@ jobs:
         vars:
           <<: *terraform-vars-gcp-devel
       on_failure:
-        put: gcp-environments
-        params: {release: gcp-environments}
-      on_abort:
-        put: gcp-environments
-        params: {release: gcp-environments}
+        put: notify
+        params:
+          text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
 
 - name: testing-gcp-devel
-  max_in_flight: 1
+  serial_groups:
+  - testing-gcp
   plan:
     - aggregate:
       - get: turbo-ci
-      - get: gcp-environments
-        passed: [deploy-gcp-devel]
       - get: turbo-devel-gcp
         passed: [deploy-gcp-devel]
       - get: terraform-gcp-devel
@@ -124,16 +166,13 @@ jobs:
         turbo-devel: turbo-devel-gcp
         terraform: terraform-gcp-devel
       on_failure:
-        put: gcp-environments
-        params: {release: gcp-environments}
-      on_abort:
-        put: gcp-environments
-        params: {release: gcp-environments}
-    - put: gcp-environments
-      params: {release: gcp-environments}
-
+        put: notify
+        params:
+          text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
 
 - name: destroy-gcp-devel
+  serial_groups:
+  - testing-gcp
   plan:
     - aggregate:
       - get: turbo-devel-gcp
@@ -150,12 +189,12 @@ jobs:
       get_params:
         action: destroy
 
+## AWS
 - name: deploy-aws-devel
-  max_in_flight: 1
+  serial_groups:
+  - testing-aws
   plan:
     - aggregate:
-      - put: aws-environments
-        params: {claim: aws-devel}
       - get: turbo-devel-aws
         trigger: true
     - put: terraform-aws-devel
@@ -165,19 +204,16 @@ jobs:
         vars:
           <<: *terraform-vars-aws-devel
       on_failure:
-        put: aws-environments
-        params: {release: aws-environments}
-      on_abort:
-        put: aws-environments
-        params: {release: aws-environments}
+        put: notify
+        params:
+          text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
 
 - name: testing-aws-devel
-  max_in_flight: 1
+  serial_groups:
+  - testing-aws
   plan:
     - aggregate:
       - get: turbo-ci
-      - get: aws-environments
-        passed: [deploy-aws-devel]
       - get: turbo-devel-aws
         passed: [deploy-aws-devel]
       - get: terraform-aws-devel
@@ -190,28 +226,13 @@ jobs:
         turbo-devel: turbo-devel-aws
         terraform: terraform-aws-devel
       on_failure:
-        put: aws-environments
-        params: {release: aws-environments}
-      on_abort:
-        put: aws-environments
-        params: {release: aws-environments}
-    - put: aws-environments
-      params: {release: aws-environments}
-
-- name: unlock-aws-devel
-  plan:
-    - get: aws-environments
-    - put: aws-environments
-      params: {release: aws-environments}
-
-- name: unlock-gcp-devel
-  plan:
-    - get: gcp-environments
-    - put: gcp-environments
-      params: {release: gcp-environments}
-
+        put: notify
+        params:
+          text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
 
 - name: destroy-aws-devel
+  serial_groups:
+  - testing-aws
   plan:
     - aggregate:
       - get: turbo-devel-aws
@@ -227,6 +248,85 @@ jobs:
           <<: *terraform-vars-aws-devel
       get_params:
         action: destroy
+
+#Azure
+- name: deploy-azure-devel
+  serial_groups:
+  - testing-azure
+  plan:
+    - aggregate:
+      - get: turbo-devel-azure
+        trigger: true
+    - put: terraform-azure-devel
+      params:
+        terraform_source: turbo-devel-azure/terraform/azure/
+        env_name: azure-devel
+        vars:
+          <<: *terraform-vars-azure-devel
+      on_failure:
+        put: notify
+        params:
+          text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
+
+- name: testing-azure-devel
+  serial_groups:
+  - testing-azure
+  plan:
+    - aggregate:
+      - get: turbo-ci
+      - get: turbo-devel-azure
+        passed: [deploy-azure-devel]
+      - get: terraform-azure-devel
+        passed: [deploy-azure-devel]
+        trigger: true
+    - task: testing-azure-devel
+      file: turbo-ci/ci/devel-testing/tasks/run-tests/task.yml
+      input_mapping:
+        turbo-devel-ci: turbo-ci
+        turbo-devel: turbo-devel-azure
+        terraform: terraform-azure-devel
+      on_failure:
+        put: notify
+        params:
+          text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
+
+- name: destroy-azure-devel
+  serial_groups:
+  - testing-azure
+  plan:
+    - aggregate:
+      - get: turbo-devel-azure
+      - get: terraform-azure-devel
+        trigger: false
+        passed: [testing-azure-devel]
+    - put: terraform-azure-devel
+      params:
+        terraform_source: turbo-devel-azure/terraform/azure/
+        env_name: azure-devel
+        action: destroy
+        vars:
+          <<: *terraform-vars-azure-devel
+      get_params:
+        action: destroy
+
+- name: unlock-aws-devel
+  plan:
+    - get: aws-environments
+    - put: aws-environments
+      params: {release: aws-environments}
+
+- name: unlock-gcp-devel
+  plan:
+    - get: gcp-environments
+    - put: gcp-environments
+      params: {release: gcp-environments}
+
+- name: unlock-azure-devel
+  plan:
+    - get: azure-environments
+    - put: azure-environments
+      params: {release: azure-environments}
+
 
 terraform-vars-gcp-devel: &terraform-vars-gcp-devel
   env_name: gcp-devel
@@ -255,3 +355,19 @@ terraform-vars-aws-devel: &terraform-vars-aws-devel
   deploy_metrics: "true"
   aws_access_key: ((aws_access_key))
   aws_secret_key: ((aws_secret_key))
+
+terraform-vars-azure-devel: &terraform-vars-azure-devel
+  env_name: azure-devel
+  arm_tenant_id: ((arm_tenant_id))
+  arm_subscription_id: ((arm_subscription_id))
+  arm_client_id: ((arm_client_id))
+  arm_client_secret: ((arm_client_secret))
+  arm_location: "West Europe"
+  master_dns_domain_name: "azure.pcf.wnetworks.org"
+  master_dns_domain_name_rg: "dns-rg"
+  dns_domain_name: "azure-dev.azure.pcf.wnetworks.org"
+  bootstrap_subnet: "10.0.0.0/24"
+  source_admin_networks: ["0.0.0.0/0"]
+  concourse_web_vm_count: 1
+  credhub_uaa_vm_count: 1
+  deploy_metrics: "true"
