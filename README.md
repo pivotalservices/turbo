@@ -26,6 +26,7 @@ Follow documentation [here](docs/aws/README.md)
 
 ## Azure
 Follow documentation [here](docs/azure/README.md)
+
 ---
 # Usage
 For every command below, we assume that you're in the terraform folder of your iaas provider, and that a terraform apply has finished succesfully
