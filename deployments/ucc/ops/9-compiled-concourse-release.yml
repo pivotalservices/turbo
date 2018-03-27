@@ -3,5 +3,5 @@
   value:
     name: concourse
     version: 3.9.2
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/concourse-3.9.2-ubuntu-trusty-3468.27-20180317-180844-96437148.tgz
-    sha1: 21550125b97e19ad943d029ff185be050aae09f8
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/concourse-3.9.2-ubuntu-trusty-3468.28-20180327-195412-898837387-20180327195437.tgz
+    sha1: abeb26d5408f278cbeb70c46ba017c6c01989e2f
