@@ -3,7 +3,7 @@ resources:
 - name: turbo-ci
   type: git
   source:
-    uri: git@gitlab.com:RomRider/turbo.git
+    uri: git@github.com:pivotalservices/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
     paths: [ci/*]
@@ -40,11 +40,23 @@ resources:
     json_key: ((gcp_key))
     regexp: ".*-backup-.*.tar"
 
+- name: notify
+  type: slack-notification
+  source:
+    url: ((slack_hook))
+
 resource_types:
-  - name: gcs-bucket
-    type: docker-image
-    source:
-      repository: frodenas/gcs-resource
+- name: gcs-bucket
+  type: docker-image
+  source:
+    repository: frodenas/gcs-resource
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
 
 jobs:
 - name: Manual Trigger
@@ -75,9 +87,17 @@ jobs:
       JUMPBOX_SSH_KEY: ((jumpbox_ssh_key.private_key))
       JUMPBOX_SSH_USER: ((jumpbox_user))
       BOSH_STATE_FOLDER: /data/bosh-state/
+    on_failure:
+      put: notify
+      params:
+        text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
   - put: bucket-jumpbox
     params:
       file: "backups/*.tgz"
+    on_failure:
+      put: notify
+      params:
+        text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
     
       
 - name: backup-director
@@ -103,9 +123,17 @@ jobs:
       BOSH_DIRECTOR_HOST: ((bosh_host))
       BOSH_SSH_USER: ((bosh_ssh_user))
       BOSH_SSH_KEY: ((bosh_ssh_key.private_key))
+    on_failure:
+      put: notify
+      params:
+        text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
   - put: bucket-director
     params:
       file: "backups/*.tar"
+    on_failure:
+      put: notify
+      params:
+        text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
 
 - name: backup-ucc
   serial_groups: [use-director]
@@ -135,6 +163,14 @@ jobs:
       JUMPBOX_HOST: ((jumpbox_host))
       JUMPBOX_SSH_KEY: ((jumpbox_ssh_key.private_key))
       JUMPBOX_SSH_USER: ((jumpbox_user))
+    on_failure:
+      put: notify
+      params:
+        text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!
   - put: bucket-deployment
     params:
       file: "backups/*.tgz"
+    on_failure:
+      put: notify
+      params:
+        text: $BUILD_PIPELINE_NAME - $BUILD_JOB_NAME failed!

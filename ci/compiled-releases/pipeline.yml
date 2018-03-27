@@ -3,14 +3,14 @@ resources:
 - name: turbo-devel
   type: git
   source:
-    uri: git@gitlab.com:RomRider/turbo.git
+    uri: git@github.com:pivotalservices/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
 
 # - name: turbo-compiled-release
 #   type: git
 #   source:
-#     uri: git@gitlab.com:RomRider/turbo.git
+#     uri: git@github.com:pivotalservices/turbo.git
 #     branch: compiled-release
 #     private_key: ((ssh_key_gitlab))
 

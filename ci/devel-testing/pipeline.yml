@@ -3,7 +3,7 @@ resources:
 - name: turbo-devel-gcp
   type: git
   source:
-    uri: git@gitlab.com:RomRider/turbo.git
+    uri: git@github.com:pivotalservices/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
@@ -19,7 +19,7 @@ resources:
 - name: turbo-devel-aws
   type: git
   source:
-    uri: git@gitlab.com:RomRider/turbo.git
+    uri: git@github.com:pivotalservices/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
@@ -35,7 +35,7 @@ resources:
 - name: turbo-devel-azure
   type: git
   source:
-    uri: git@gitlab.com:RomRider/turbo.git
+    uri: git@github.com:pivotalservices/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
     ignore_paths:
@@ -51,7 +51,7 @@ resources:
 - name: turbo-ci
   type: git
   source:
-    uri: git@gitlab.com:RomRider/turbo.git
+    uri: git@github.com:pivotalservices/turbo.git
     branch: devel
     private_key: ((ssh_key_gitlab))
     paths: [ci/*]
