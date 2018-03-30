@@ -152,7 +152,7 @@ resource "azurerm_lb_backend_address_pool" "credhub" {
 
 resource "azurerm_network_security_rule" "credhub_https_in" {
   name                        = "${var.env_name}-credhub-https-in-${count.index}"
-  priority                    = "${100 + count.index}"
+  priority                    = "${200 + count.index}"
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "TCP"
@@ -168,7 +168,7 @@ resource "azurerm_network_security_rule" "credhub_https_in" {
 
 resource "azurerm_network_security_rule" "uaa_https_in" {
   name                        = "${var.env_name}-uaa-https-in-${count.index}"
-  priority                    = "${200 + count.index}"
+  priority                    = "${300 + count.index}"
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "TCP"
