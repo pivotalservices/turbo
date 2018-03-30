@@ -336,7 +336,6 @@ terraform-vars-gcp-devel: &terraform-vars-gcp-devel
   master_dns_zone_name: 'gcp-wnetworks'
   dns_domain_name: 'gcp-devel.gcp.pcf.wnetworks.org'
   bootstrap_subnet: '10.0.0.0/24'
-  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
   concourse_web_vm_count: 1
   deploy_metrics: "true"
   gcp_key: '((gcp_key))'
@@ -346,7 +345,6 @@ terraform-vars-aws-devel: &terraform-vars-aws-devel
   aws_region: "eu-west-2"
   aws_azs: ["eu-west-2a"]
   bootstrap_subnet: "10.0.0.0/22"
-  source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
   master_dns_domain_name: "aws.pcf.wnetworks.org"
   dns_domain_name: "aws-devel.aws.pcf.wnetworks.org"
   concourse_web_vm_count: 1
@@ -365,6 +363,5 @@ terraform-vars-azure-devel: &terraform-vars-azure-devel
   master_dns_domain_name_rg: "dns-rg"
   dns_domain_name: "azure-dev.azure.pcf.wnetworks.org"
   bootstrap_subnet: "10.0.0.0/24"
-  source_admin_networks: ["0.0.0.0/0"]
   concourse_web_vm_count: 1
   deploy_metrics: "true"
