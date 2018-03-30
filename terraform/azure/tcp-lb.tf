@@ -30,7 +30,7 @@ resource "azurerm_lb" "web_lb" {
 }
 
 resource "azurerm_lb_backend_address_pool" "web" {
-  name                = "${var.env_name}-concourse-web-backend-pool"
+  name                = "${var.env_name}-ucc-backend-pool"
   resource_group_name = "${azurerm_resource_group.turbo.name}"
   loadbalancer_id     = "${azurerm_lb.web_lb.id}"
 }
@@ -142,12 +142,6 @@ resource "azurerm_lb_probe" "uaa_https" {
   loadbalancer_id     = "${azurerm_lb.web_lb.id}"
   protocol            = "TCP"
   port                = 8443
-}
-
-resource "azurerm_lb_backend_address_pool" "credhub" {
-  name                = "${var.env_name}-credhub-backend-pool"
-  resource_group_name = "${azurerm_resource_group.turbo.name}"
-  loadbalancer_id     = "${azurerm_lb.web_lb.id}"
 }
 
 resource "azurerm_network_security_rule" "credhub_https_in" {
