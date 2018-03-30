@@ -81,10 +81,8 @@ resource "aws_lb_target_group" "concourse" {
   vpc_id   = "${aws_vpc.bootstrap.id}"
 
   health_check {
-    protocol = "TCP"
-    port     = "443"
-
-    timeout             = 4
+    protocol            = "TCP"
+    port                = "443"
     interval            = 5
     unhealthy_threshold = 3
     healthy_threshold   = 3
@@ -185,7 +183,6 @@ resource "aws_lb_target_group" "metrics" {
   health_check {
     protocol            = "TCP"
     port                = "3000"
-    timeout             = 4
     interval            = 5
     unhealthy_threshold = 3
     healthy_threshold   = 3
