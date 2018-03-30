@@ -41,7 +41,7 @@ YML
 
 	if [[ -n $(git status -s) ]]; then
 		git add "${OPS_FILE_PATH}"
-		git commit -m "Compiled releases updated: ${release_name}/${release_version}"
+		git commit -m "Compiled releases updated: ${release_name}/${release_version} - stemcell: ${stemcell_version}"
 	fi
 
 	popd >/dev/null
