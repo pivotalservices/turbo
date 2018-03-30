@@ -181,7 +181,7 @@ resource "aws_elb" "concourse-elb" {
   }
 
   health_check {
-    target              = "HTTPS:443/health"
+    target              = "TCP:443"
     timeout             = 4
     interval            = 5
     unhealthy_threshold = 3
