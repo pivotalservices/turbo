@@ -37,4 +37,4 @@ env_from_terraform() {
 	set +e
 }
 
-source "${TF_TURBO_HOME}/bosh/scripts/generic/bosh-helper.sh"
+source "${TURBO_HOME}/bosh/scripts/generic/bosh-helper.sh"
