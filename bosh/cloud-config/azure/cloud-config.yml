@@ -218,14 +218,14 @@ networks:
       subnet_name: ((concourse_subnet_name))
 
 vm_extensions:
-- name: concourse-web
+- name: web
   cloud_properties:
-    load_balancer: ((concourse_web_lb))
-    security_group: ((concourse_web_sg))
-- name: credhub
-  cloud_properties:
-    load_balancer: ((credhub_lb))
-    security_group: ((credhub_sg))
+    load_balancer: ((web_lb))
+    security_group: ((web_sg))
+# - name: credhub
+#   cloud_properties:
+#     load_balancer: ((credhub_lb))
+#     security_group: ((credhub_sg))
 - name: metrics
   cloud_properties:
     load_balancer: ((metrics_lb))

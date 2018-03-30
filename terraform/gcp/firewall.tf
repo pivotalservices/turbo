@@ -36,7 +36,7 @@ resource "google_compute_firewall" "internal-all" {
 }
 
 resource "google_compute_firewall" "concourse_web" {
-  name    = "${var.env_name}-allow-http-web"
+  name    = "${var.env_name}-allow-concourse-https"
   network = "${google_compute_network.bootstrap.name}"
 
   allow {
@@ -58,7 +58,7 @@ resource "google_compute_firewall" "credhub" {
   }
 
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
-  target_tags   = ["ucc-credhub-uaa"]
+  target_tags   = ["ucc-web"]
 }
 
 resource "google_compute_firewall" "uaa" {
@@ -71,7 +71,7 @@ resource "google_compute_firewall" "uaa" {
   }
 
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
-  target_tags   = ["ucc-credhub-uaa"]
+  target_tags   = ["ucc-web"]
 }
 
 resource "google_compute_firewall" "metrics" {

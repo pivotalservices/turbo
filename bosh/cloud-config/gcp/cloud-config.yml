@@ -231,14 +231,10 @@ networks:
       tags: ((concourse_network_vm_tags))
 
 vm_extensions:
-- name: concourse-web
+- name: web
   cloud_properties:
     backend_service:
-      name: ((concourse_web_backend_group))
-- name: credhub
-  cloud_properties:
-    backend_service:
-      name: ((credhub_backend_group))
+      name: ((web_backend_group))
 - name: metrics
   cloud_properties:
     backend_service:

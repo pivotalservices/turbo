@@ -51,16 +51,58 @@ instance_groups:
           certificate: ((/database-tls.certificate))
           private_key: ((/database-tls.private_key))
 
-- name: credhub-uaa
-  instances: ((credhub_uaa_vm_count))
-  vm_type: ((credhub_uaa_vm_type))
-  vm_extensions:
-    - credhub
+- name: web
+  instances: ((web_vm_count))
   azs: ((az_list))
-  stemcell: trusty
   networks: [{name: ((network_name))}]
-
+  stemcell: trusty
+  vm_type: ((web_vm_type))
+  vm_extensions:
+  - web
   jobs:
+  - release: concourse
+    name: atc
+    consumes:
+      postgres: {from: db}
+    properties:
+      credhub:
+        path_prefix: /concourse
+        url: ((credhub_url))
+        tls:
+          ca_cert:
+            certificate: ((/default_ca.certificate))
+          insecure_skip_verify: false
+        client_id: *concourse_client_username
+        client_secret: *concourse_client_password
+      tls_cert: ((/concourse_ssl.certificate))
+      tls_key: ((/concourse_ssl.private_key))
+      bind_port: 80
+      tls_bind_port: 443
+      basic_auth_username: admin
+      basic_auth_password: ((concourse_admin_password))
+      log_level: debug
+
+      token_signing_key: ((token_signing_key))
+
+      external_url: ((concourse_external_url))
+      encryption_key: ((concourse_encryption_key))
+
+      postgresql:
+        sslmode: verify-ca
+        ca_cert: ((/database-tls.ca))
+        database: &concourse_db_name atc
+        role: &concourse_db_role
+          name: concourse
+          password: ((postgres_concourse_password))
+
+  - release: concourse
+    name: tsa
+    properties:
+      log_level: debug
+      host_key: ((tsa_host_key))
+      token_signing_key: ((token_signing_key))
+      authorized_keys: [((worker_key.public_key))]
+
   - name: uaa
     release: uaa
     consumes:
@@ -173,58 +215,6 @@ instance_groups:
   - name: database-backup-restorer
     release: backup-and-restore-sdk
 
-- name: web
-  instances: ((web_vm_count))
-  azs: ((az_list))
-  networks: [{name: ((network_name))}]
-  stemcell: trusty
-  vm_type: ((web_vm_type))
-  vm_extensions:
-  - concourse-web
-  jobs:
-  - release: concourse
-    name: atc
-    consumes:
-      postgres: {from: db}
-    properties:
-      credhub:
-        path_prefix: /concourse
-        url: ((credhub_url))
-        tls:
-          ca_cert:
-            certificate: ((/default_ca.certificate))
-          insecure_skip_verify: false
-        client_id: *concourse_client_username
-        client_secret: *concourse_client_password
-      tls_cert: ((/concourse_ssl.certificate))
-      tls_key: ((/concourse_ssl.private_key))
-      bind_port: 80
-      tls_bind_port: 443
-      basic_auth_username: admin
-      basic_auth_password: ((concourse_admin_password))
-      log_level: debug
-
-      token_signing_key: ((token_signing_key))
-
-      external_url: ((concourse_external_url))
-      encryption_key: ((concourse_encryption_key))
-
-      postgresql:
-        sslmode: verify-ca
-        ca_cert: ((/database-tls.ca))
-        database: &concourse_db_name atc
-        role: &concourse_db_role
-          name: concourse
-          password: ((postgres_concourse_password))
-
-  - release: concourse
-    name: tsa
-    properties:
-      log_level: debug
-      host_key: ((tsa_host_key))
-      token_signing_key: ((token_signing_key))
-      authorized_keys: [((worker_key.public_key))]
-
 - name: worker
   instances: ((worker_vm_count))
   azs: ((az_list))
@@ -233,7 +223,7 @@ instance_groups:
   vm_type: ((worker_vm_type))
   jobs:
   - release: concourse
-    name: groundcrew
+    name: worker
     consumes: {baggageclaim: {from: worker-baggageclaim}}
     properties:
       drain_timeout: 10m

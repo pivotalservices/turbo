@@ -67,9 +67,6 @@ bosh_update_cloud_config() {
 		--var concourse_subnet_gateway="$TF_CONCOURSE_SUBNET_GATEWAY" \
 		--var bootstrap_network_name="$TF_BOOTSTRAP_NETWORK_NAME" \
 		--var concourse_subnet_name="$TF_CONCOURSE_SUBNET_NAME" \
-		--var concourse_web_backend_group="$TF_CONCOURSE_WEB_BACKEND_GROUP" \
-		--var credhub_backend_group="$TF_CREDHUB_BACKEND_GROUP" \
-		--var uaa_backend_group="$TF_UAA_BACKEND_GROUP" \
 		--var concourse_network_static_ips="$TF_CONCOURSE_NETWORK_STATIC_IPS" \
 		--var concourse_network_reserved_ips="$TF_CONCOURSE_NETWORK_RESERVED_IPS" \
 		--var concourse_network_vm_tags="$TF_CONCOURSE_NETWORK_VM_TAGS" \
@@ -79,6 +76,7 @@ bosh_update_cloud_config() {
 		--var bosh_network_static_ips="$TF_BOSH_NETWORK_STATIC_IPS" \
 		--var bosh_network_reserved_ips="$TF_BOSH_NETWORK_RESERVED_IPS" \
 		--var bosh_network_vm_tags="$TF_BOSH_NETWORK_VM_TAGS" \
+		--var web_backend_group="$TF_WEB_BACKEND_GROUP" \
 		--var metrics_backend_group="$TF_METRICS_BACKEND_GROUP" \
 		-n || exit 1
 }

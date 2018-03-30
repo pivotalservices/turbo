@@ -86,8 +86,8 @@ scp -i id_rsa \
 ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-i id_rsa \
 	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
-	'bosh -d ucc scp ~/metadata credhub-uaa:/tmp/ ;\
-    bosh -d ucc ssh credhub-uaa "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata" ;'
+	'bosh -d ucc scp ~/metadata web:/tmp/ ;\
+    bosh -d ucc ssh web "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata" ;'
 
 # End Dirty Fix
 echo "${green}Running bbr backup of the deployment${reset}"
@@ -129,4 +129,4 @@ echo "${green}Cleaning up the environment${reset}"
 rm -f id_rsa test.yml metadata output
 
 echo
-echo "${green}TESTING OKAY !${reset}"
+echo "${green}TESTING OKAY!${reset}"

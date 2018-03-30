@@ -22,7 +22,7 @@
           password: ((postgres_concourse_password))
 
 - type: replace
-  path: /instance_groups/name=web/jobs/-
+  path: /instance_groups/name=web/jobs/name=database-backup-restorer?
   value:
     name: database-backup-restorer
     release: backup-and-restore-sdk

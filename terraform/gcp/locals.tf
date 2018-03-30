@@ -13,10 +13,8 @@ locals {
 }
 
 locals {
-  concourse_backend_service_name = "${var.env_name}-concourse-https-lb-backend-${length(var.gcp_zones)}az"
-  credhub_backend_service_name   = "${var.env_name}-credhub-https-lb-backend-${length(var.gcp_zones)}az"
-  uaa_backend_service_name       = "${var.env_name}-credhub-https-lb-backend-${length(var.gcp_zones)}az"
-  metrics_backend_service_name   = "${var.env_name}-metrics-https-lb-backend-${length(var.gcp_zones)}az"
+  web_backend_service_name     = "${var.env_name}-concourse-https-lb-backend-${length(var.gcp_zones)}az"
+  metrics_backend_service_name = "${var.env_name}-metrics-https-lb-backend-${length(var.gcp_zones)}az"
 }
 
 locals {
@@ -44,9 +42,7 @@ locals {
     TF_CONCOURSE_SUBNET_GATEWAY       = "${google_compute_subnetwork.concourse.gateway_address}"
     TF_BOOTSTRAP_NETWORK_NAME         = "${google_compute_network.bootstrap.name}"
     TF_CONCOURSE_SUBNET_NAME          = "${google_compute_subnetwork.concourse.name}"
-    TF_CONCOURSE_WEB_BACKEND_GROUP    = "${local.concourse_backend_service_name}"
-    TF_CREDHUB_BACKEND_GROUP          = "${local.credhub_backend_service_name}"
-    TF_UAA_BACKEND_GROUP              = "${local.uaa_backend_service_name}"
+    TF_WEB_BACKEND_GROUP              = "${local.web_backend_service_name}"
     TF_CONCOURSE_NETWORK_STATIC_IPS   = "[${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,5)}-${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,8)}]"
     TF_CONCOURSE_NETWORK_RESERVED_IPS = "[${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,0)}-${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,4)}]"
     TF_CONCOURSE_NETWORK_VM_TAGS      = "[${var.env_name}-internal,${var.env_name}-nat]"

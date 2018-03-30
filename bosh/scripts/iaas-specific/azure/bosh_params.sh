@@ -83,10 +83,8 @@ bosh_update_cloud_config() {
 		--var bosh_subnet_gateway="$TF_BOSH_SUBNET_GATEWAY" \
 		--var bosh_network_static_ips="$TF_BOSH_NETWORK_STATIC_IPS" \
 		--var bosh_network_reserved_ips="$TF_BOSH_NETWORK_RESERVED_IPS" \
-		--var concourse_web_lb="$TF_CONCOURSE_WEB_LB" \
-		--var concourse_web_sg="$TF_CONCOURSE_WEB_SG" \
-		--var credhub_lb="$TF_CREDHUB_LB" \
-		--var credhub_sg="$TF_CREDHUB_SG" \
+		--var web_lb="$TF_WEB_LB" \
+		--var web_sg="$TF_WEB_SG" \
 		--var metrics_lb="$TF_METRICS_LB" \
 		--var metrics_sg="$TF_METRICS_SG" \
 		-n || exit 1

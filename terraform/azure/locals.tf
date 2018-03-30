@@ -70,12 +70,10 @@ locals {
     TF_CONCOURSE_NETWORK_STATIC_IPS   = "[${cidrhost(azurerm_subnet.concourse.address_prefix,5)}-${cidrhost(azurerm_subnet.concourse.address_prefix,8)}]"
     TF_CONCOURSE_NETWORK_RESERVED_IPS = "[${cidrhost(azurerm_subnet.concourse.address_prefix,0)}-${cidrhost(azurerm_subnet.concourse.address_prefix,4)}]"
 
-    TF_CONCOURSE_WEB_LB = "${azurerm_lb.concourse_web_lb.name}"
-    TF_CONCOURSE_WEB_SG = "${azurerm_network_security_group.concourse_web.name}"
-    TF_CREDHUB_LB       = "${azurerm_lb.credhub_uaa_lb.name}"
-    TF_CREDHUB_SG       = "${azurerm_network_security_group.credhub_uaa.name}"
-    TF_METRICS_LB       = "${local.common_flags["metrics"] == "true" ? join(" ", azurerm_lb.metrics_lb.*.name) : "DUMMY"}"
-    TF_METRICS_SG       = "${local.common_flags["metrics"] == "true" ? join(" ", azurerm_network_security_group.metrics.*.name) : "DUMMY"}"
+    TF_WEB_LB     = "${azurerm_lb.web_lb.name}"
+    TF_WEB_SG     = "${azurerm_network_security_group.web.name}"
+    TF_METRICS_LB = "${local.common_flags["metrics"] == "true" ? join(" ", azurerm_lb.metrics_lb.*.name) : "DUMMY"}"
+    TF_METRICS_SG = "${local.common_flags["metrics"] == "true" ? join(" ", azurerm_network_security_group.metrics.*.name) : "DUMMY"}"
 
     # TF_CONCOURSE_WEB_LB = "${local.concourse_backend_service_name}"
     # TF_CREDHUB_LB       = "${local.credhub_backend_service_name}"

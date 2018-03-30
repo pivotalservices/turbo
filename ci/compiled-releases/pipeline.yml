@@ -73,7 +73,7 @@ resources:
   type: bosh-io-stemcell
   source:
     name: bosh-warden-boshlite-ubuntu-trusty-go_agent
-    version_family: "3468"
+    version_family: "3541"
 
 # outputs
 
@@ -263,7 +263,6 @@ jobs:
               See: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: compile-backup-and-restore-sdk-release-stemcell-director
-    serial_groups: [compile-release]
     plan:
       - aggregate:
         - get: turbo-devel
@@ -273,7 +272,7 @@ jobs:
         - get: ubuntu-trusty-stemcell
           trigger: true
           version:
-            version: "3468.21"
+            version: "3541.10"
       - task: export-release
         file: turbo-devel/ci/compiled-releases/tasks/export-release/task.yml
         privileged: true

@@ -246,13 +246,10 @@ networks:
       subnet: ((az1_concourse_subnet_id))
 
 vm_extensions:
-- name: concourse-web
+- name: web
   cloud_properties:
     elbs:
     - ((concourse_web_backend_group))
-- name: credhub
-  cloud_properties:
-    elbs:
     - ((credhub_backend_group))
     - ((uaa_backend_group))
 - name: metrics

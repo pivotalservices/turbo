@@ -24,13 +24,23 @@ resource "google_dns_record_set" "concourse-lb" {
   rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
 }
 
-resource "google_compute_instance_group" "concourse_web_lb" {
-  name = "${var.env_name}-concourse-web-lb"
+resource "google_compute_instance_group" "web_lb" {
+  name = "${var.env_name}-web-lb"
   zone = "${element(var.gcp_zones, count.index)}"
 
   named_port {
     name = "https"
     port = 443
+  }
+
+  named_port {
+    name = "credhub"
+    port = 8844
+  }
+
+  named_port {
+    name = "uaa"
+    port = 8443
   }
 
   count = "${length(var.gcp_zones)}"
@@ -70,23 +80,6 @@ resource "google_dns_record_set" "uaa-lb" {
 }
 
 # Credhub
-resource "google_compute_instance_group" "credhub_lb" {
-  name = "${var.env_name}-credhub-lb"
-  zone = "${element(var.gcp_zones, count.index)}"
-
-  named_port {
-    name = "credhub"
-    port = 8844
-  }
-
-  named_port {
-    name = "uaa"
-    port = 8443
-  }
-
-  count = "${length(var.gcp_zones)}"
-}
-
 resource "google_compute_https_health_check" "credhub_https_hc" {
   name = "${var.env_name}-credhub-https-public"
 

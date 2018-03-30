@@ -6,13 +6,13 @@ resource "google_compute_backend_service" "concourse_web_lb_https_backend_servic
   enable_cdn  = false
 
   backend {
-    group                 = "${google_compute_instance_group.concourse_web_lb.0.self_link}"
+    group                 = "${google_compute_instance_group.web_lb.0.self_link}"
     balancing_mode        = "RATE"
     max_rate_per_instance = "10000"
   }
 
   backend {
-    group                 = "${google_compute_instance_group.concourse_web_lb.1.self_link}"
+    group                 = "${google_compute_instance_group.web_lb.1.self_link}"
     balancing_mode        = "RATE"
     max_rate_per_instance = "10000"
   }
@@ -30,13 +30,13 @@ resource "google_compute_backend_service" "credhub_lb_https_backend_service_2az"
   enable_cdn  = false
 
   backend {
-    group                 = "${google_compute_instance_group.credhub_lb.0.self_link}"
+    group                 = "${google_compute_instance_group.web_lb.0.self_link}"
     balancing_mode        = "RATE"
     max_rate_per_instance = "10000"
   }
 
   backend {
-    group                 = "${google_compute_instance_group.credhub_lb.1.self_link}"
+    group                 = "${google_compute_instance_group.web_lb.1.self_link}"
     balancing_mode        = "RATE"
     max_rate_per_instance = "10000"
   }
@@ -54,13 +54,13 @@ resource "google_compute_backend_service" "uaa_lb_https_backend_service_2az" {
   enable_cdn  = false
 
   backend {
-    group                 = "${google_compute_instance_group.credhub_lb.0.self_link}"
+    group                 = "${google_compute_instance_group.web_lb.0.self_link}"
     balancing_mode        = "RATE"
     max_rate_per_instance = "10000"
   }
 
   backend {
-    group                 = "${google_compute_instance_group.credhub_lb.1.self_link}"
+    group                 = "${google_compute_instance_group.web_lb.1.self_link}"
     balancing_mode        = "RATE"
     max_rate_per_instance = "10000"
   }
