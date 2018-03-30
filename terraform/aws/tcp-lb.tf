@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "credhub_all_out" {
 }
 
 resource "aws_elb" "credhub-elb" {
-  name            = "credhub-elb"
+  name            = "${var.env_name}-credhub-elb"
   subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.credhub-elb.id}"]
   internal        = false
@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "uaa_all_out" {
 }
 
 resource "aws_elb" "uaa-elb" {
-  name            = "uaa-elb"
+  name            = "${var.env_name}-uaa-elb"
   subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.uaa-elb.id}"]
   internal        = false
@@ -165,7 +165,7 @@ resource "aws_security_group_rule" "concourse_all_out" {
 }
 
 resource "aws_elb" "concourse-elb" {
-  name            = "concourse-elb"
+  name            = "${var.env_name}-concourse-elb"
   subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.concourse-elb.id}"]
   internal        = false
@@ -236,7 +236,7 @@ resource "aws_security_group_rule" "metrics_all_out" {
 }
 
 resource "aws_elb" "metrics-elb" {
-  name            = "metrics-elb"
+  name            = "${var.env_name}-metrics-elb"
   subnets         = ["${aws_subnet.jumpbox.*.id}"]
   security_groups = ["${aws_security_group.metrics-elb.id}"]
   internal        = false
