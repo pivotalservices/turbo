@@ -52,19 +52,9 @@ resource "aws_security_group_rule" "uaa_https_in" {
   ]
 }
 
-resource "aws_security_group_rule" "all_out" {
-  security_group_id = "${aws_security_group.ucc-lb.id}"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
 resource "aws_lb" "ucc_lb" {
   name               = "${var.env_name}-ucc-lb"
   internal           = false
-  security_groups    = ["${aws_security_group.ucc-lb.id}"]
   subnets            = ["${aws_subnet.jumpbox.*.id}"]
   load_balancer_type = "network"
 
@@ -117,7 +107,6 @@ resource "aws_lb_target_group" "credhub" {
     protocol            = "HTTPS"
     port                = "8844"
     path                = "/health"
-    timeout             = 4
     interval            = 10
     unhealthy_threshold = 3
     healthy_threshold   = 3
@@ -151,8 +140,7 @@ resource "aws_lb_target_group" "uaa" {
     protocol            = "HTTPS"
     port                = "8443"
     path                = "/healthz"
-    timeout             = 4
-    interval            = 5
+    interval            = 10
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
@@ -210,8 +198,21 @@ resource "aws_lb_listener" "metrics" {
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
 }
 
+resource "aws_security_group" "metrics-lb" {
+  name        = "${var.env_name}-metrics-lb"
+  description = "${var.env_name} metrics LB"
+  vpc_id      = "${aws_vpc.bootstrap.id}"
+
+  tags {
+    Name  = "${var.env_name}-metrics-lb"
+    turbo = "${var.env_name}"
+  }
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}
+
 resource "aws_security_group_rule" "metrics_https_in" {
-  security_group_id = "${aws_security_group.ucc-lb.id}"
+  security_group_id = "${aws_security_group.metrics-lb.id}"
   type              = "ingress"
   from_port         = 3000
   to_port           = 3000

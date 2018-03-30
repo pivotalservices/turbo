@@ -252,10 +252,12 @@ vm_extensions:
     - ((concourse_web_backend_group))
     - ((credhub_backend_group))
     - ((uaa_backend_group))
+    security_groups: ((ucc_security_groups))
 - name: metrics
   cloud_properties:
-    elbs:
+    lb_target_groups:
     - ((metrics_backend_group))
+    security_groups: ((metrics_security_groups))
 
 compilation:
   workers: 3
