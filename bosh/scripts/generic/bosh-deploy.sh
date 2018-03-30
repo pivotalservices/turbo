@@ -11,7 +11,8 @@ fi
 
 DEPLOYMENT=$1
 
-source $HOME/automation/bosh/scripts/generic/helpers.sh
+# shellcheck disable=SC1090
+source "${TURBO_HOME}/bosh/scripts/generic/helpers.sh"
 
 DEPLOYMENT_NAME="$DEPLOYMENT"
 DEPLOYMENT_HOME="$BOSH_DEPLOYMENTS_FOLDER/$DEPLOYMENT"

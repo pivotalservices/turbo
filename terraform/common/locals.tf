@@ -11,7 +11,13 @@ locals {
 }
 
 locals {
+  turbo_home = "/home/${var.ssh_user}/turbo"
+}
+
+locals {
   common_env = {
+    TF_TURBO_HOME = "${local.turbo_home}"
+
     TF_DEBUG         = "${var.debug}"
     TF_DIRECTOR_NAME = "turbo-director"
     TF_ENV_NAME      = "${var.env_name}"

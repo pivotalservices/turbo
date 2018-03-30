@@ -1,26 +1,29 @@
 resource "null_resource" "bosh-create-env" {
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/${var.ssh_user}/automation/bosh/",
+      "rm -rf ${local.turbo_home}/bosh/",
+      "mkdir -p ${local.turbo_home}/bosh/",
     ]
   }
 
   provisioner "file" {
     source      = "../../bosh/"
-    destination = "/home/${var.ssh_user}/automation/bosh/"
+    destination = "${local.turbo_home}/bosh/"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "find /home/${var.ssh_user}/automation/bosh/scripts -name \\*.sh -exec chmod +x {} \\;",
-      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-dependencies.sh",
+      "find ${local.turbo_home}/bosh/scripts -name \\*.sh -exec chmod +x {} \\;",
+      "${local.turbo_home}/bosh/scripts/generic/bosh-dependencies.sh",
     ]
   }
 
   provisioner "remote-exec" {
     inline = [
+      "export TF_DEBUG=\"${var.debug}\"",
+      "export TURBO_HOME=\"${local.turbo_home}\"",
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-create-env.sh",
+      "${local.turbo_home}/bosh/scripts/generic/bosh-create-env.sh",
     ]
   }
 

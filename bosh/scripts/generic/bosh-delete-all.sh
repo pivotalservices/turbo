@@ -3,7 +3,8 @@ if [ "x$TF_DEBUG" == "xtrue" ]; then
 	set -x
 fi
 
-source $HOME/automation/bosh/scripts/generic/helpers.sh
+# shellcheck disable=SC1090
+source "${TURBO_HOME}/bosh/scripts/generic/helpers.sh"
 
 if [ -f "$BOSH_VAR_STORE" ]; then
 	echo "Deleting all deployments, orphaned disks and bosh"

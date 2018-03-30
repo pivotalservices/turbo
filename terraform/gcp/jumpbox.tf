@@ -76,9 +76,11 @@ EOF
 resource "null_resource" "destroy-all" {
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-delete-all.sh",
+      "chmod +x ${local.turbo_home}/bosh/scripts/generic/bosh-delete-all.sh",
+      "export TF_DEBUG=\"${var.debug}\"",
+      "export TURBO_HOME=\"${local.turbo_home}\"",
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-delete-all.sh",
+      "${local.turbo_home}/bosh/scripts/generic/bosh-delete-all.sh",
     ]
 
     when = "destroy"

@@ -18,6 +18,21 @@ Your deployment will be `bbr` ready.
 
 ---
 # Howto
+## Use this repo
+### Checkout this repo
+```sh
+git clone https://github.com/pivotalservices/turbo.git
+git submodule sync
+git submodule update --init --recursive
+```
+
+### Gather updates
+```
+git pull
+git submodule sync
+git submodule update --init --recursive
+```
+
 ## GCP
 Follow documentation [here](docs/gcp/README.md)
 
