@@ -15,12 +15,10 @@ cat terraform/metadata | jq -r '.jumpbox_ssh_private_key' >id_rsa
 chmod 600 id_rsa
 
 credhub_url=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/credhub-cli/releases/latest | jq -r ".assets[] | select(.name | test(\"credhub-linux\")) | .browser_download_url")
-(
-	curl -L -o credhub.tgz $credhub_url >/dev/null &&
-		tar -zxvf credhub.tgz >/dev/null &&
-		chmod 755 credhub >/dev/null &&
-		rm -rf credhub.tgz >/dev/null &&
-) || exit 1
+curl -L -o credhub.tgz $credhub_url >/dev/null &&
+	tar -zxvf credhub.tgz >/dev/null &&
+	chmod 755 credhub >/dev/null &&
+	rm -rf credhub.tgz >/dev/null || exit 1
 
 curl -k -o fly "${concourse_url}/api/v1/cli?arch=amd64&platform=linux" &&
 	chmod +x fly
