@@ -28,9 +28,9 @@ for i in ./*-compiled-releases; do
     version: ${release_version}
     url: ${url}
     sha1: ${sha1}
-	stemcell:
-	  os: ubuntu-trusty
-	  version: ${stemcell_version}
+    stemcell:
+      os: ubuntu-trusty
+      version: ${stemcell_version}
 YML
 	if [[ -z $(git config --global user.email) ]]; then
 		git config --global user.email "ci@wnetworks.org"
