@@ -2,20 +2,22 @@
 resource "null_resource" "bosh_deployments" {
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/${var.ssh_user}/automation/deployments",
+      "mkdir -p ${local.turbo_home}/deployments",
     ]
   }
 
   provisioner "file" {
     source      = "../../deployments/"
-    destination = "/home/${var.ssh_user}/automation/deployments/"
+    destination = "${local.turbo_home}/deployments/"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "find /home/${var.ssh_user}/automation/bosh/scripts/ -name \\*.sh -exec chmod +x {} \\;",
+      "find ${local.turbo_home}/bosh/scripts/ -name \\*.sh -exec chmod +x {} \\;",
+      "export TF_DEBUG=\"${var.debug}\"",
+      "export TURBO_HOME=\"${local.turbo_home}\"",
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "for dep in ${join(" ", local.deployments_list)}; do /home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-deploy.sh $dep || exit 1; done",
+      "for dep in ${join(" ", local.deployments_list)}; do ${local.turbo_home}/bosh/scripts/generic/bosh-deploy.sh $dep || exit 1; done",
     ]
   }
 

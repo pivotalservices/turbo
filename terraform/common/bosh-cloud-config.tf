@@ -1,8 +1,10 @@
 resource "null_resource" "cloud-config-update" {
   provisioner "remote-exec" {
     inline = [
+      "export TF_DEBUG=\"${var.debug}\"",
+      "export TURBO_HOME=\"${local.turbo_home}\"",
       "export TERRAFORM_ENV=\"${local.env_base64}\"",
-      "/home/${var.ssh_user}/automation/bosh/scripts/generic/bosh-cloud-config.sh",
+      "${local.turbo_home}/bosh/scripts/generic/bosh-cloud-config.sh",
     ]
   }
 

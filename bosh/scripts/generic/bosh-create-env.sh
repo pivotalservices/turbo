@@ -3,9 +3,8 @@ if [ "x$TF_DEBUG" == "xtrue" ]; then
 	set -x
 fi
 
-source $HOME/automation/bosh/scripts/generic/helpers.sh
-
-git_clone_or_update "$BOSH_REPO_FOLDER" "$BOSH_REPO"
+# shellcheck disable=SC1090
+source "${TURBO_HOME}/bosh/scripts/generic/helpers.sh"
 
 bosh_create_env || exit 1
 
@@ -14,7 +13,7 @@ bosh_login || exit 1
 cat >~/.bashrc <<EOF
 export ENV_NAME="$TF_ENV_NAME"
 export BOSH_ENVIRONMENT="$BOSH_ENV"
-export BOSH_FOLDER="/home/$TF_SSH_USER/automation/bosh"
+export BOSH_FOLDER="${TF_TURBO_HOME}/bosh"
 export STEMCELL="$TF_STEMCELL_TYPE"
 EOF
 cat >>~/.bashrc <<'EOF'

@@ -27,10 +27,10 @@ export CREDHUB_SERVER=${credhub_url}
 export CREDHUB_CLIENT=credhub-admin
 export CREDHUB_SECRET=${credhub_password}
 
-echo "${green}Connection to the jumpbox and ls the ~/automation folder${reset}"
+echo "${green}Connection to the jumpbox and ls the ~/turbo folder${reset}"
 ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-i id_rsa \
-	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" "ls -la automation"
+	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" "ls -la turbo"
 
 echo "${green}Connecting to credhub on ${credhub_url}${reset}"
 ./credhub api -s ${credhub_url} --skip-tls-validation
@@ -99,7 +99,7 @@ ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
 	'mkdir -p ci-tests && \
     cd ci-tests && \
-    ~/automation/bosh/scripts/generic/bbr-backup.sh deployment ucc'
+    ~/turbo/bosh/scripts/generic/bbr-backup.sh deployment ucc'
 
 echo "${green}Waiting 2min for everything to be running again${reset}"
 sleep 120
@@ -114,7 +114,7 @@ ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
 	'mkdir -p ci-tests && \
     pushd ci-tests ; \
-    ~/automation/bosh/scripts/generic/bbr-restore.sh deployment ucc "$(pwd)/$(ls -1t -d ucc* | head -n 1)";\
+    ~/turbo/bosh/scripts/generic/bbr-restore.sh deployment ucc "$(pwd)/$(ls -1t -d ucc* | head -n 1)";\
     rc=$?;
     popd; \
     rm -rf ci-tests metadata;\
