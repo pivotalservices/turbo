@@ -38,8 +38,6 @@ do_deploy() {
 		--var db_vm_type="db-$TF_DB_VM_TYPE" \
 		--var db_persistent_disk_size="${TF_DB_PERSISTENT_DISK_SIZE}G" \
 		--var db_static_ip="$TF_DB_STATIC_IP" \
-		--var credhub_uaa_vm_type=credhub \
-		--var credhub_uaa_vm_count="$TF_CREDHUB_UAA_VM_COUNT" \
 		--var domain_name="$TF_DOMAIN_NAME" \
 		--var credhub_url="$TF_CREDHUB_URL" \
 		--var uaa_dns="$TF_UAA_DNS_ENTRY" \

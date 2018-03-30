@@ -60,9 +60,6 @@ source_admin_networks = ["x.y.z.t/w", "1.2.3.4/16"]
 # Optional (default is 1): Number of Concourse workers to deploy
 # concourse_worker_vm_count = 1
 
-# Optional (default is 1): Number of Credhub-UAA VMs to deploy
-# credhub_uaa_vm_count = 1
-
 # Optional (default is false): Debug enabled
 # debug = "false"
 

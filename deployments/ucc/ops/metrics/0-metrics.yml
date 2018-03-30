@@ -17,16 +17,6 @@
         port: 5555
 
 - type: replace
-  path: /instance_groups/name=credhub-uaa/jobs/-
-  value:
-    name: riemann-emitter
-    release: riemann
-    properties:
-      riemann_emitter:
-        host: ((metrics_static_ip))
-        port: 5555
-
-- type: replace
   path: /instance_groups/name=db/jobs/-
   value:
     name: riemann-emitter

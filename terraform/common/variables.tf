@@ -28,12 +28,6 @@ variable "concourse_worker_vm_count" {
   description = "Number of concourse worker VMs to deploy"
 }
 
-variable "credhub_uaa_vm_count" {
-  type        = "string"
-  default     = "1"
-  description = "Number of credhub-uaa VMs to deploy"
-}
-
 variable "db_vm_type" {
   type        = "string"
   default     = "small"

@@ -23,7 +23,6 @@ locals {
     TF_CONCOURSE_WEB_VM_COUNT    = "${var.concourse_web_vm_count}"
     TF_CONCOURSE_WORKER_VM_TYPE  = "${var.concourse_worker_vm_type}"
     TF_CONCOURSE_WORKER_VM_COUNT = "${var.concourse_worker_vm_count}"
-    TF_CREDHUB_UAA_VM_COUNT      = "${var.credhub_uaa_vm_count}"
     TF_DB_VM_TYPE                = "${var.db_vm_type}"
     TF_DB_PERSISTENT_DISK_SIZE   = "${var.db_persistent_disk_size}"
 

@@ -338,7 +338,6 @@ terraform-vars-gcp-devel: &terraform-vars-gcp-devel
   bootstrap_subnet: '10.0.0.0/24'
   source_admin_networks: ["83.202.25.187/32","35.187.160.72/32"]
   concourse_web_vm_count: 1
-  credhub_uaa_vm_count: 1
   deploy_metrics: "true"
   gcp_key: '((gcp_key))'
 
@@ -351,7 +350,6 @@ terraform-vars-aws-devel: &terraform-vars-aws-devel
   master_dns_domain_name: "aws.pcf.wnetworks.org"
   dns_domain_name: "aws-devel.aws.pcf.wnetworks.org"
   concourse_web_vm_count: 1
-  credhub_uaa_vm_count: 1
   deploy_metrics: "true"
   aws_access_key: ((aws_access_key))
   aws_secret_key: ((aws_secret_key))
@@ -369,5 +367,4 @@ terraform-vars-azure-devel: &terraform-vars-azure-devel
   bootstrap_subnet: "10.0.0.0/24"
   source_admin_networks: ["0.0.0.0/0"]
   concourse_web_vm_count: 1
-  credhub_uaa_vm_count: 1
   deploy_metrics: "true"
