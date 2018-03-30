@@ -62,10 +62,11 @@ resource "aws_security_group_rule" "all_out" {
 }
 
 resource "aws_lb" "ucc_lb" {
-  name            = "${var.env_name}-ucc-lb"
-  internal        = false
-  security_groups = ["${aws_security_group.ucc-lb.id}"]
-  subnets         = ["${aws_subnet.jumpbox.*.id}"]
+  name               = "${var.env_name}-ucc-lb"
+  internal           = false
+  security_groups    = ["${aws_security_group.ucc-lb.id}"]
+  subnets            = ["${aws_subnet.jumpbox.*.id}"]
+  load_balancer_type = "network"
 
   tags {
     Name  = "${var.env_name}-ucc-lb"
