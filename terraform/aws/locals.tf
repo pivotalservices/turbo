@@ -25,7 +25,7 @@ locals {
   metrics_url = "${local.common_flags["metrics"] == "true" ? 
                     format("https://%s:%s", 
                         local.metrics_dns,
-                        join("", ${aws_lb_target_group.metrics.*.port}))
+                        join("", aws_lb_target_group.metrics.*.port))
                     : "" }"
 }
 

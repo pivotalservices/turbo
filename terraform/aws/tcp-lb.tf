@@ -104,9 +104,8 @@ resource "aws_lb_target_group" "credhub" {
   vpc_id   = "${aws_vpc.bootstrap.id}"
 
   health_check {
-    protocol            = "HTTPS"
+    protocol            = "TCP"
     port                = "8844"
-    path                = "/health"
     interval            = 10
     unhealthy_threshold = 3
     healthy_threshold   = 3
