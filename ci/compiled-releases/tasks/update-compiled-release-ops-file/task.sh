@@ -7,6 +7,8 @@ git clone turbo turbo-out
 
 # Get release details
 for i in ./*-compiled-releases; do
+	stemcell_version="$(cat ubuntu-trusty-stemcell/version)"
+
 	pushd $i >/dev/null
 	tar -xzf *.tgz $(tar -tzf *.tgz | grep 'release.MF')
 	release_name=$(grep -E '^name: ' release.MF | awk '{print $2}' | tr -d "\"'")
@@ -26,6 +28,9 @@ for i in ./*-compiled-releases; do
     version: ${release_version}
     url: ${url}
     sha1: ${sha1}
+	stemcell:
+	  os: ubuntu-trusty
+	  version: ${stemcell_version}
 YML
 	if [[ -z $(git config --global user.email) ]]; then
 		git config --global user.email "ci@wnetworks.org"
@@ -40,8 +45,6 @@ YML
 	fi
 
 	popd >/dev/null
-
-	stemcell_version="$(cat ubuntu-trusty-stemcell/version)"
 
 	pushd turbo-out >/dev/null
 	versions_file="deployments/ucc/versions/versions.yml"
