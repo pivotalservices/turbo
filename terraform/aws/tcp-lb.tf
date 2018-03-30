@@ -84,7 +84,7 @@ resource "aws_lb_target_group" "concourse" {
   health_check {
     protocol            = "TCP"
     port                = "443"
-    interval            = 5
+    interval            = 10
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
@@ -118,7 +118,7 @@ resource "aws_lb_target_group" "credhub" {
     port                = "8844"
     path                = "/health"
     timeout             = 4
-    interval            = 5
+    interval            = 10
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
@@ -184,7 +184,7 @@ resource "aws_lb_target_group" "metrics" {
   health_check {
     protocol            = "TCP"
     port                = "3000"
-    interval            = 5
+    interval            = 10
     unhealthy_threshold = 3
     healthy_threshold   = 3
   }
