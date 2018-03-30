@@ -3,6 +3,6 @@
   path: /releases/name=concourse?
   value:
     name: concourse
-    version: '3.9.1-jerome-dev4'
-    url: https://storage.googleapis.com/bosh-release-jwi/concourse-3.9.1-jerome-dev4.tgz
-    sha1: 'df7126dc542bf79c0b12a1442ff33123f4b57e68'
+    version: '3.10.0-patch2'
+    url: https://storage.googleapis.com/bosh-release-jwi/concourse-3.10.0-patch2.tgz
+    sha1: '28a88248f879beb8d52e5b519405e5c2e9fbf75f'
