@@ -11,6 +11,25 @@ locals {
 }
 
 locals {
+  concourse_dns = "${aws_route53_record.concourse.name}.${var.dns_domain_name}"
+  uaa_dns       = "${aws_route53_record.uaa.name}.${var.dns_domain_name}"
+  credhub_dns   = "${aws_route53_record.credhub.name}.${var.dns_domain_name}"
+  metrics_dns   = "${local.common_flags["metrics"] == "true" ? format("%s.%s", join("", aws_route53_record.metrics.*.name), var.dns_domain_name) : "" }"
+}
+
+locals {
+  concourse_url = "https://${local.concourse_dns}:${aws_lb_target_group.concourse.port}"
+  uaa_url       = "https://${local.uaa_dns}:${aws_lb_target_group.uaa.port}"
+  credhub_url   = "https://${local.credhub_dns}:${aws_lb_target_group.credhub.port}"
+
+  metrics_url = "${local.common_flags["metrics"] == "true" ? 
+                    format("https://%s:%s", 
+                        local.metrics_dns,
+                        join("", ${aws_lb_target_group.metrics.*.port}))
+                    : "" }"
+}
+
+locals {
   iaas_env = {
     AWS_SECRET_KEY  = "${var.aws_secret_key}"
     AWS_ACCESS_KEY  = "${var.aws_access_key}"
@@ -65,17 +84,17 @@ locals {
     TF_BOSH_SUBNET_ID            = "${aws_subnet.bosh.0.id}"
 
     TF_METRICS_BACKEND_GROUP   = "${local.common_flags["metrics"] == "true" ? join(" ", aws_lb_target_group.metrics.*.name) : "DUMMY"}"
-    TF_METRICS_SECURITY_GROUPS = "[${aws_security_group.bosh_deployed_vms.name},${aws_security_group.metrics-lb.name}]"
+    TF_METRICS_SECURITY_GROUPS = "${local.common_flags["metrics"] == "true" ? format("[%s,%s]", aws_security_group.bosh_deployed_vms.name, join("", aws_security_group.metrics-lb.*.name)) : "[]"}"
 
     # Credhub UAA
-    TF_CREDHUB_DNS_ENTRY = "${aws_route53_record.credhub.name}.${var.dns_domain_name}"
-    TF_UAA_DNS_ENTRY     = "${aws_route53_record.uaa.name}.${var.dns_domain_name}"
-    TF_UAA_URL           = "https://${aws_route53_record.uaa.name}.${var.dns_domain_name}:${aws_lb_target_group.uaa.port}"
+    TF_CREDHUB_DNS_ENTRY = "${local.credhub_dns}"
+    TF_UAA_DNS_ENTRY     = "${local.uaa_dns}"
+    TF_UAA_URL           = "${local.uaa_url}"
 
     # Concourse
-    TF_CONCOURSE_EXTERNAL_URL = "https://${aws_route53_record.concourse.name}.${var.dns_domain_name}"
+    TF_CONCOURSE_EXTERNAL_URL = "${local.concourse_url}"
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
-    TF_CREDHUB_URL            = "https://${aws_route53_record.credhub.name}.${var.dns_domain_name}:${aws_lb_target_group.credhub.port}"
+    TF_CREDHUB_URL            = "${local.credhub_url}"
 
     # Other
     TF_DB_STATIC_IP      = "${cidrhost(aws_subnet.concourse.0.cidr_block,6)}"
