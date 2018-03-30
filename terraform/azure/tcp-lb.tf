@@ -40,7 +40,7 @@ resource "azurerm_lb_rule" "concourse_web_https" {
   resource_group_name = "${azurerm_resource_group.turbo.name}"
   loadbalancer_id     = "${azurerm_lb.web_lb.id}"
 
-  frontend_ip_configuration_name = "${var.env_name}-concourse-frontend-ip-configuration"
+  frontend_ip_configuration_name = "${var.env_name}-ucc-frontend-ip-configuration"
   protocol                       = "TCP"
   frontend_port                  = 443
   backend_port                   = 443
@@ -105,7 +105,7 @@ resource "azurerm_lb_rule" "credhub_https" {
   resource_group_name = "${azurerm_resource_group.turbo.name}"
   loadbalancer_id     = "${azurerm_lb.web_lb.id}"
 
-  frontend_ip_configuration_name = "${var.env_name}-credhub-frontend-ip-configuration"
+  frontend_ip_configuration_name = "${var.env_name}-ucc-frontend-ip-configuration"
   protocol                       = "TCP"
   frontend_port                  = 8844
   backend_port                   = 8844
@@ -127,7 +127,7 @@ resource "azurerm_lb_rule" "uaa_https" {
   resource_group_name = "${azurerm_resource_group.turbo.name}"
   loadbalancer_id     = "${azurerm_lb.web_lb.id}"
 
-  frontend_ip_configuration_name = "${var.env_name}-uaa-frontend-ip-configuration"
+  frontend_ip_configuration_name = "${var.env_name}-ucc-frontend-ip-configuration"
   protocol                       = "TCP"
   frontend_port                  = 8443
   backend_port                   = 8443
