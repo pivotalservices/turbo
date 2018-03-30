@@ -1,148 +1,17 @@
 ### Credhub
-resource "aws_security_group" "credhub-elb" {
-  name        = "${var.env_name}-inbound-credhub"
-  description = "${var.env_name} Inbound credhub"
+resource "aws_security_group" "ucc-lb" {
+  name        = "${var.env_name}-ucc-lb"
+  description = "${var.env_name} ucc LB"
   vpc_id      = "${aws_vpc.bootstrap.id}"
 
   tags {
-    Name  = "${var.env_name}-Inbound credhub"
-    turbo = "${var.env_name}"
-  }
-}
-
-resource "aws_security_group_rule" "credhub_https_in" {
-  security_group_id = "${aws_security_group.credhub-elb.id}"
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-
-  cidr_blocks = [
-    "${var.source_admin_networks}",
-    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
-    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
-  ]
-}
-
-resource "aws_security_group_rule" "credhub_all_out" {
-  security_group_id = "${aws_security_group.credhub-elb.id}"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-resource "aws_elb" "credhub-elb" {
-  name            = "${var.env_name}-credhub-elb"
-  subnets         = ["${aws_subnet.jumpbox.*.id}"]
-  security_groups = ["${aws_security_group.credhub-elb.id}"]
-  internal        = false
-
-  // The time in seconds that the connection is allowed to be idle
-  idle_timeout = 300
-
-  listener {
-    instance_port     = 8844
-    instance_protocol = "TCP"
-    lb_port           = 443
-    lb_protocol       = "TCP"
-  }
-
-  health_check {
-    target = "HTTPS:8844/health"
-
-    timeout             = 4
-    interval            = 5
-    unhealthy_threshold = 3
-    healthy_threshold   = 3
-  }
-
-  tags {
-    Name  = "${var.env_name}-credhub-elb"
-    turbo = "${var.env_name}"
-  }
-}
-
-### UAA
-resource "aws_security_group" "uaa-elb" {
-  name        = "${var.env_name}-inbound-uaa"
-  description = "${var.env_name} Inbound uaa"
-  vpc_id      = "${aws_vpc.bootstrap.id}"
-
-  tags {
-    Name  = "${var.env_name}-Inbound uaa"
-    turbo = "${var.env_name}"
-  }
-}
-
-resource "aws_security_group_rule" "uaa_https_in" {
-  security_group_id = "${aws_security_group.uaa-elb.id}"
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-
-  cidr_blocks = [
-    "${var.source_admin_networks}",
-    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
-    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
-  ]
-}
-
-resource "aws_security_group_rule" "uaa_all_out" {
-  security_group_id = "${aws_security_group.uaa-elb.id}"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-resource "aws_elb" "uaa-elb" {
-  name            = "${var.env_name}-uaa-elb"
-  subnets         = ["${aws_subnet.jumpbox.*.id}"]
-  security_groups = ["${aws_security_group.uaa-elb.id}"]
-  internal        = false
-
-  // The time in seconds that the connection is allowed to be idle
-  idle_timeout = 300
-
-  listener {
-    instance_port     = 8443
-    instance_protocol = "TCP"
-    lb_port           = 443
-    lb_protocol       = "TCP"
-  }
-
-  health_check {
-    target              = "HTTPS:8443/healthz"
-    timeout             = 4
-    interval            = 5
-    unhealthy_threshold = 3
-    healthy_threshold   = 3
-  }
-
-  tags {
-    Name  = "${var.env_name}-uaa-elb"
-    turbo = "${var.env_name}"
-  }
-}
-
-### Concourse
-resource "aws_security_group" "concourse-elb" {
-  name        = "${var.env_name}-inbound-concourse"
-  description = "${var.env_name} Inbound concourse"
-  vpc_id      = "${aws_vpc.bootstrap.id}"
-
-  tags {
-    Name  = "${var.env_name}-Inbound concourse"
+    Name  = "${var.env_name}-ucc-lb"
     turbo = "${var.env_name}"
   }
 }
 
 resource "aws_security_group_rule" "concourse_https_in" {
-  security_group_id = "${aws_security_group.concourse-elb.id}"
+  security_group_id = "${aws_security_group.ucc-lb.id}"
   type              = "ingress"
   from_port         = 443
   to_port           = 443
@@ -155,8 +24,36 @@ resource "aws_security_group_rule" "concourse_https_in" {
   ]
 }
 
-resource "aws_security_group_rule" "concourse_all_out" {
-  security_group_id = "${aws_security_group.concourse-elb.id}"
+resource "aws_security_group_rule" "credhub_https_in" {
+  security_group_id = "${aws_security_group.ucc-lb.id}"
+  type              = "ingress"
+  from_port         = 8844
+  to_port           = 8844
+  protocol          = "tcp"
+
+  cidr_blocks = [
+    "${var.source_admin_networks}",
+    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
+  ]
+}
+
+resource "aws_security_group_rule" "uaa_https_in" {
+  security_group_id = "${aws_security_group.ucc-lb.id}"
+  type              = "ingress"
+  from_port         = 8443
+  to_port           = 8443
+  protocol          = "tcp"
+
+  cidr_blocks = [
+    "${var.source_admin_networks}",
+    "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
+    "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
+  ]
+}
+
+resource "aws_security_group_rule" "all_out" {
+  security_group_id = "${aws_security_group.ucc-lb.id}"
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -164,24 +61,29 @@ resource "aws_security_group_rule" "concourse_all_out" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_elb" "concourse-elb" {
-  name            = "${var.env_name}-concourse-elb"
-  subnets         = ["${aws_subnet.jumpbox.*.id}"]
-  security_groups = ["${aws_security_group.concourse-elb.id}"]
+resource "aws_lb" "ucc_lb" {
+  name            = "${var.env_name}-ucc-lb"
   internal        = false
+  security_groups = ["${aws_security_group.ucc-lb.id}"]
+  subnets         = ["${aws_subnet.jumpbox.*.id}"]
 
-  // The time in seconds that the connection is allowed to be idle
-  idle_timeout = 300
-
-  listener {
-    instance_port     = 443
-    instance_protocol = "TCP"
-    lb_port           = 443
-    lb_protocol       = "TCP"
+  tags {
+    Name  = "${var.env_name}-ucc-lb"
+    turbo = "${var.env_name}"
   }
+}
+
+# Concourse
+resource "aws_lb_target_group" "concourse" {
+  name     = "${var.env_name}-concourse-tg"
+  port     = 443
+  protocol = "TCP"
+  vpc_id   = "${aws_vpc.bootstrap.id}"
 
   health_check {
-    target              = "TCP:443"
+    protocol = "TCP"
+    port     = "443"
+
     timeout             = 4
     interval            = 5
     unhealthy_threshold = 3
@@ -189,30 +91,132 @@ resource "aws_elb" "concourse-elb" {
   }
 
   tags {
-    Name  = "${var.env_name}-concourse-elb"
+    Name  = "${var.env_name}-concourse-tg"
     turbo = "${var.env_name}"
   }
 }
 
-# metrics (grafana)
-resource "aws_security_group" "metrics-elb" {
-  name        = "${var.env_name}-inbound-metrics"
-  description = "${var.env_name} Inbound metrics"
-  vpc_id      = "${aws_vpc.bootstrap.id}"
+resource "aws_lb_listener" "concourse" {
+  load_balancer_arn = "${aws_lb.ucc_lb.arn}"
+  port              = "443"
+  protocol          = "TCP"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.concourse.arn}"
+    type             = "forward"
+  }
+}
+
+# Credhub
+resource "aws_lb_target_group" "credhub" {
+  name     = "${var.env_name}-credhub-tg"
+  port     = 8844
+  protocol = "TCP"
+  vpc_id   = "${aws_vpc.bootstrap.id}"
+
+  health_check {
+    protocol            = "HTTPS"
+    port                = "8844"
+    path                = "/health"
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
 
   tags {
-    Name  = "${var.env_name}-Inbound metrics"
+    Name  = "${var.env_name}-credhub-tg"
     turbo = "${var.env_name}"
+  }
+}
+
+resource "aws_lb_listener" "credhub" {
+  load_balancer_arn = "${aws_lb.ucc_lb.arn}"
+  port              = "8844"
+  protocol          = "TCP"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.credhub.arn}"
+    type             = "forward"
+  }
+}
+
+# UAA
+resource "aws_lb_target_group" "uaa" {
+  name     = "${var.env_name}-uaa-tg"
+  port     = 8443
+  protocol = "TCP"
+  vpc_id   = "${aws_vpc.bootstrap.id}"
+
+  health_check {
+    protocol            = "HTTPS"
+    port                = "8443"
+    path                = "/healthz"
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
+
+  tags {
+    Name  = "${var.env_name}-uaa-tg"
+    turbo = "${var.env_name}"
+  }
+}
+
+resource "aws_lb_listener" "uaa" {
+  load_balancer_arn = "${aws_lb.ucc_lb.arn}"
+  port              = "8443"
+  protocol          = "TCP"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.uaa.arn}"
+    type             = "forward"
+  }
+}
+
+# Metrics
+resource "aws_lb_target_group" "metrics" {
+  name     = "${var.env_name}-metrics-tg"
+  port     = 3000
+  protocol = "TCP"
+  vpc_id   = "${aws_vpc.bootstrap.id}"
+
+  health_check {
+    protocol            = "TCP"
+    port                = "3000"
+    timeout             = 4
+    interval            = 5
+    unhealthy_threshold = 3
+    healthy_threshold   = 3
+  }
+
+  tags {
+    Name  = "${var.env_name}-metrics-tg"
+    turbo = "${var.env_name}"
+  }
+
+  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
+}
+
+resource "aws_lb_listener" "metrics" {
+  load_balancer_arn = "${aws_lb.ucc_lb.arn}"
+  port              = "3000"
+  protocol          = "TCP"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.metrics.arn}"
+    type             = "forward"
   }
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
 }
 
 resource "aws_security_group_rule" "metrics_https_in" {
-  security_group_id = "${aws_security_group.metrics-elb.id}"
+  security_group_id = "${aws_security_group.ucc-lb.id}"
   type              = "ingress"
-  from_port         = 443
-  to_port           = 443
+  from_port         = 3000
+  to_port           = 3000
   protocol          = "tcp"
 
   cidr_blocks = [
@@ -220,49 +224,6 @@ resource "aws_security_group_rule" "metrics_https_in" {
     "${formatlist("%s/32", aws_eip.bosh_natgw.*.public_ip)}",
     "${formatlist("%s/32", aws_eip.jumpbox.*.public_ip)}",
   ]
-
-  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
-}
-
-resource "aws_security_group_rule" "metrics_all_out" {
-  security_group_id = "${aws_security_group.metrics-elb.id}"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-
-  count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
-}
-
-resource "aws_elb" "metrics-elb" {
-  name            = "${var.env_name}-metrics-elb"
-  subnets         = ["${aws_subnet.jumpbox.*.id}"]
-  security_groups = ["${aws_security_group.metrics-elb.id}"]
-  internal        = false
-
-  // The time in seconds that the connection is allowed to be idle
-  idle_timeout = 300
-
-  listener {
-    instance_port     = 3000
-    instance_protocol = "TCP"
-    lb_port           = 443
-    lb_protocol       = "TCP"
-  }
-
-  health_check {
-    target              = "TCP:3000"
-    timeout             = 4
-    interval            = 5
-    unhealthy_threshold = 3
-    healthy_threshold   = 3
-  }
-
-  tags {
-    Name  = "${var.env_name}-metrics-elb"
-    turbo = "${var.env_name}"
-  }
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
 }

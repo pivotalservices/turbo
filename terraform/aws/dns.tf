@@ -49,8 +49,8 @@ resource "aws_route53_record" "credhub" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.credhub-elb.dns_name}"
-    zone_id                = "${aws_elb.credhub-elb.zone_id}"
+    name                   = "${aws_lb.ucc_lb.dns_name}"
+    zone_id                = "${aws_lb.ucc_lb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -61,8 +61,8 @@ resource "aws_route53_record" "uaa" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.uaa-elb.dns_name}"
-    zone_id                = "${aws_elb.uaa-elb.zone_id}"
+    name                   = "${aws_lb.ucc_lb.dns_name}"
+    zone_id                = "${aws_lb.ucc_lb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -73,8 +73,8 @@ resource "aws_route53_record" "concourse" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.concourse-elb.dns_name}"
-    zone_id                = "${aws_elb.concourse-elb.zone_id}"
+    name                   = "${aws_lb.ucc_lb.dns_name}"
+    zone_id                = "${aws_lb.ucc_lb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -85,8 +85,8 @@ resource "aws_route53_record" "metrics" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.metrics-elb.dns_name}"
-    zone_id                = "${aws_elb.metrics-elb.zone_id}"
+    name                   = "${aws_lb.ucc_lb.dns_name}"
+    zone_id                = "${aws_lb.ucc_lb.zone_id}"
     evaluate_target_health = true
   }
 

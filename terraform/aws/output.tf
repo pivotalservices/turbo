@@ -23,5 +23,5 @@ output "uaa_url" {
 }
 
 output "metrics_url" {
-  value = "${local.common_flags["metrics"] == "true" ? format("https://%s.%s", join("", aws_route53_record.metrics.*.name), var.dns_domain_name) : ""}"
+  value = "${local.common_flags["metrics"] == "true" ? format("https://%s.%s:%s", join("", aws_route53_record.metrics.*.name), var.dns_domain_name, aws_lb_target_group.metrics.*.port) : ""}"
 }

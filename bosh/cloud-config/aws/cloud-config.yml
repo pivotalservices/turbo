@@ -248,7 +248,7 @@ networks:
 vm_extensions:
 - name: web
   cloud_properties:
-    elbs:
+    lb_target_groups:
     - ((concourse_web_backend_group))
     - ((credhub_backend_group))
     - ((uaa_backend_group))

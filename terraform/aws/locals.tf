@@ -53,9 +53,9 @@ locals {
     TF_AZ3_CONCOURSE_NETWORK_RESERVED_IPS = "${length(var.aws_azs) >= 3 ? format("[%s-%s]", cidrhost(element(aws_subnet.concourse.*.cidr_block,2),0), cidrhost(element(aws_subnet.concourse.*.cidr_block,2),4)) : ""}"
     TF_AZ3_CONCOURSE_SUBNET_ID            = "${length(var.aws_azs) >= 3 ? element(aws_subnet.concourse.*.id,2) : ""}"
 
-    TF_CONCOURSE_WEB_BACKEND_GROUP = "${aws_elb.concourse-elb.name}"
-    TF_CREDHUB_BACKEND_GROUP       = "${aws_elb.credhub-elb.name}"
-    TF_UAA_BACKEND_GROUP           = "${aws_elb.uaa-elb.name}"
+    TF_CONCOURSE_WEB_BACKEND_GROUP = "${aws_lb_target_group.concourse.name}"
+    TF_CREDHUB_BACKEND_GROUP       = "${aws_lb_target_group.credhub.name}"
+    TF_UAA_BACKEND_GROUP           = "${aws_lb_target_group.uaa.name}"
 
     TF_BOSH_SUBNET_RANGE         = "${aws_subnet.bosh.0.cidr_block}"
     TF_BOSH_SUBNET_GATEWAY       = "${cidrhost(aws_subnet.bosh.0.cidr_block,1)}"
@@ -63,17 +63,17 @@ locals {
     TF_BOSH_NETWORK_RESERVED_IPS = "[${cidrhost(aws_subnet.bosh.0.cidr_block,0)}-${cidrhost(aws_subnet.bosh.0.cidr_block,6)}]"
     TF_BOSH_SUBNET_ID            = "${aws_subnet.bosh.0.id}"
 
-    TF_METRICS_BACKEND_GROUP = "${local.common_flags["metrics"] == "true" ? join(" ", aws_elb.metrics-elb.*.name) : "DUMMY"}"
+    TF_METRICS_BACKEND_GROUP = "${local.common_flags["metrics"] == "true" ? join(" ", aws_lb_target_group.metrics.*.name) : "DUMMY"}"
 
     # Credhub UAA
     TF_CREDHUB_DNS_ENTRY = "${aws_route53_record.credhub.name}.${var.dns_domain_name}"
     TF_UAA_DNS_ENTRY     = "${aws_route53_record.uaa.name}.${var.dns_domain_name}"
-    TF_UAA_URL           = "https://${aws_route53_record.uaa.name}.${var.dns_domain_name}"
+    TF_UAA_URL           = "https://${aws_route53_record.uaa.name}.${var.dns_domain_name}:${aws_lb_target_group.uaa.port}"
 
     # Concourse
     TF_CONCOURSE_EXTERNAL_URL = "https://${aws_route53_record.concourse.name}.${var.dns_domain_name}"
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
-    TF_CREDHUB_URL            = "https://${aws_route53_record.credhub.name}.${var.dns_domain_name}"
+    TF_CREDHUB_URL            = "https://${aws_route53_record.credhub.name}.${var.dns_domain_name}:${aws_lb_target_group.credhub.port}"
 
     # Other
     TF_DB_STATIC_IP      = "${cidrhost(aws_subnet.concourse.0.cidr_block,6)}"
