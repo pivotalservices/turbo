@@ -21,7 +21,7 @@ DEPLOYMENT_REPO_FOLDER="$DEPLOYMENT_HOME/repo"
 
 clean_exit() {
 	rc=$1
-	rm -rf "$DEPLOYMENT_REPO_FOLDER" "$DEPLOYMENT_HOME/ops.bak" && mv "$DEPLOYMENT_HOME/ops" "$DEPLOYMENT_HOME/ops.bak" && mkdir "$DEPLOYMENT_HOME/ops"
+	#rm -rf "$DEPLOYMENT_REPO_FOLDER" "$DEPLOYMENT_HOME/ops.bak" && mv "$DEPLOYMENT_HOME/ops" "$DEPLOYMENT_HOME/ops.bak" && mkdir "$DEPLOYMENT_HOME/ops"
 	exit $rc
 }
 

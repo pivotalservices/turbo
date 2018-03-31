@@ -2,6 +2,7 @@
 resource "null_resource" "bosh_deployments" {
   provisioner "remote-exec" {
     inline = [
+      "rm -rf ${local.turbo_home}/deployments",
       "mkdir -p ${local.turbo_home}/deployments",
     ]
   }
