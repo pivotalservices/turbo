@@ -138,6 +138,22 @@ resource "azurerm_network_security_rule" "jumpbox-ssh" {
 resource "null_resource" "destroy-all" {
   provisioner "remote-exec" {
     inline = [
+      "rm -rf ${local.turbo_home}/bosh/",
+      "mkdir -p ${local.turbo_home}/bosh/",
+    ]
+
+    when = "destroy"
+  }
+
+  provisioner "file" {
+    source      = "../../bosh/"
+    destination = "${local.turbo_home}/bosh/"
+
+    when = "destroy"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
       "chmod +x ${local.turbo_home}/bosh/scripts/generic/bosh-delete-all.sh",
       "export TF_DEBUG=\"${var.debug}\"",
       "export TURBO_HOME=\"${local.turbo_home}\"",

@@ -28,6 +28,8 @@ resource "google_compute_instance" "jumpbox" {
   machine_type = "${var.jumpbox_server_type}"
   zone         = "${element(var.gcp_zones,0)}"
 
+  allow_stopping_for_update = true
+
   tags = ["${var.env_name}-jumpbox", "${var.env_name}-allow-ssh", "${var.env_name}-internal"]
 
   boot_disk {
@@ -74,6 +76,22 @@ EOF
 }
 
 resource "null_resource" "destroy-all" {
+  provisioner "remote-exec" {
+    inline = [
+      "rm -rf ${local.turbo_home}/bosh/",
+      "mkdir -p ${local.turbo_home}/bosh/",
+    ]
+
+    when = "destroy"
+  }
+
+  provisioner "file" {
+    source      = "../../bosh/"
+    destination = "${local.turbo_home}/bosh/"
+
+    when = "destroy"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "chmod +x ${local.turbo_home}/bosh/scripts/generic/bosh-delete-all.sh",
