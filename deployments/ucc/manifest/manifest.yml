@@ -185,6 +185,7 @@ instance_groups:
     release: credhub
     properties:
       credhub:
+        log_level: warn
         tls: ((/credhub-tls))
         authentication:
           uaa:
