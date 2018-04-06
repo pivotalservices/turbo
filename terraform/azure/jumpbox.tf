@@ -5,6 +5,8 @@ resource "azurerm_managed_disk" "jumpbox_data" {
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
   disk_size_gb         = "10"
+
+  depends_on = ["azurerm_resource_group.turbo"]
 }
 
 resource "azurerm_public_ip" "jumpbox" {
@@ -17,6 +19,8 @@ resource "azurerm_public_ip" "jumpbox" {
   tags {
     turbo = "${var.env_name}"
   }
+
+  depends_on = ["azurerm_resource_group.turbo"]
 }
 
 resource "azurerm_dns_a_record" "jumpbox" {
@@ -42,6 +46,8 @@ resource "azurerm_network_interface" "jumpbox" {
   tags {
     turbo = "${var.env_name}"
   }
+
+  depends_on = ["azurerm_resource_group.turbo"]
 }
 
 resource "azurerm_virtual_machine" "jumpbox" {
@@ -117,6 +123,8 @@ resource "azurerm_network_security_group" "jumpbox" {
   tags {
     turbo = "${var.env_name}"
   }
+
+  depends_on = ["azurerm_resource_group.turbo"]
 }
 
 resource "azurerm_network_security_rule" "jumpbox-ssh" {

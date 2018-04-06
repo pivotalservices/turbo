@@ -6,6 +6,8 @@ resource "azurerm_network_security_group" "bosh_default" {
   tags {
     turbo = "${var.env_name}"
   }
+
+  depends_on = ["azurerm_resource_group.turbo"]
 }
 
 resource "azurerm_network_security_rule" "bosh_vms_all_local" {

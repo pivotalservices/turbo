@@ -65,6 +65,8 @@ resource "azurerm_network_security_group" "web" {
   tags {
     turbo = "${var.env_name}"
   }
+
+  depends_on = ["azurerm_resource_group.turbo"]
 }
 
 resource "azurerm_network_security_rule" "concourse_web_https_in" {
@@ -253,6 +255,8 @@ resource "azurerm_network_security_group" "metrics" {
   tags {
     turbo = "${var.env_name}"
   }
+
+  depends_on = ["azurerm_resource_group.turbo"]
 
   count = "${local.common_flags["metrics"] == "true" ? 1 : 0}"
 }
