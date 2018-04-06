@@ -1,5 +1,7 @@
 # Disclaimer
-:warning: :warning: **CAUTION: Pivotal does not provide support for this tool. If you find anything broken, then please submit PR's.** :warning: :warning:
+:warning: :warning: **CAUTION: Pivotal does not provide support for this tool.** :warning: :warning:  
+:warning: :warning: If you find anything broken, then please submit PR's. :warning: :warning:
+:warning: :warning: This is not production ready :warning: :warning:
 
 # Introduction
 **TuRBO** stands for: TeRafforming BOsh
