@@ -159,7 +159,7 @@ jobs:
       BOSH_BBR_USERNAME: ((bosh_admin.username))
       BOSH_BBR_PASSWORD: ((bosh_admin.password))
       BOSH_CA_CERT: ((bosh_ca_cert.certificate))
-      DEPLOYMENT_NAME: ((env_name))-ucc
+      DEPLOYMENT_NAME: ucc
       JUMPBOX_HOST: ((jumpbox_host))
       JUMPBOX_SSH_KEY: ((jumpbox_ssh_key.private_key))
       JUMPBOX_SSH_USER: ((jumpbox_user))
