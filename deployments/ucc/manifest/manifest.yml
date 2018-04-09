@@ -213,6 +213,8 @@ instance_groups:
 
   - name: bbr-uaadb
     release: uaa
+  - name: bbr-credhubdb
+    release: credhub
   - name: database-backup-restorer
     release: backup-and-restore-sdk
 
