@@ -193,7 +193,7 @@ instance_groups:
             verification_key: ((uaa-jwt.public_key))
             ca_certs:
             - ((/uaa-tls.ca)) 
-        data_storage:
+        data_storage: &credhub_data_storage
           type: postgres
           host: ((db_static_ip))
           port: 5432
@@ -213,6 +213,11 @@ instance_groups:
 
   - name: bbr-uaadb
     release: uaa
+    properties:
+      release_level_backup: true
+      credhub:
+        data_storage:
+          <<: *credhub_data_storage
   - name: bbr-credhubdb
     release: credhub
   - name: database-backup-restorer
