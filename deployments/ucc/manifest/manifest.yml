@@ -213,13 +213,13 @@ instance_groups:
 
   - name: bbr-uaadb
     release: uaa
+  - name: bbr-credhubdb
+    release: credhub
     properties:
       release_level_backup: true
       credhub:
         data_storage:
           <<: *credhub_data_storage
-  - name: bbr-credhubdb
-    release: credhub
   - name: database-backup-restorer
     release: backup-and-restore-sdk
 
