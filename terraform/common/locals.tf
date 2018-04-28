@@ -3,11 +3,7 @@ locals {
 }
 
 locals {
-  deployments_list = [
-    # "credhub-uaa",
-    # "concourse",
-    "ucc",
-  ]
+  deployments_list = "${var.deployment_list}"
 }
 
 locals {

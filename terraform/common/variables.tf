@@ -51,3 +51,9 @@ variable "deploy_metrics" {
   default     = "false"
   description = "if true, deploys grafana, riemann and influxdb to monitor your concourse"
 }
+
+variable "deployment_list" {
+  type        = "list"
+  default     = ["ucc"]
+  description = "List of bosh deployments"
+}
