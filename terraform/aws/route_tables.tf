@@ -28,7 +28,7 @@ resource "aws_route_table" "no_ip" {
   }
 
   tags {
-    Name  = "${var.env_name}-no-ip-route-table-az${count.index}"
+    Name  = "${var.env_name}-no-ip-route-table-az${count.index + 1}"
     turbo = "${var.env_name}"
   }
 

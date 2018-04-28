@@ -4,7 +4,7 @@ resource "aws_subnet" "jumpbox" {
   availability_zone = "${element(var.aws_azs, count.index)}"
 
   tags {
-    Name  = "${var.env_name}-jumpbox-az${count.index}"
+    Name  = "${var.env_name}-jumpbox-az${count.index + 1}"
     turbo = "${var.env_name}"
   }
 
@@ -17,7 +17,7 @@ resource "aws_subnet" "bosh" {
   availability_zone = "${element(var.aws_azs, count.index)}"
 
   tags {
-    Name  = "${var.env_name}-bosh-az${count.index}"
+    Name  = "${var.env_name}-bosh-az${count.index + 1}"
     turbo = "${var.env_name}"
   }
 
@@ -30,7 +30,7 @@ resource "aws_subnet" "concourse" {
   availability_zone = "${element(var.aws_azs, count.index)}"
 
   tags {
-    Name  = "${var.env_name}-concourse-az${count.index}"
+    Name  = "${var.env_name}-concourse-az${count.index + 1}"
     turbo = "${var.env_name}"
   }
 

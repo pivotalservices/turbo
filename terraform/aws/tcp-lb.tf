@@ -53,10 +53,11 @@ resource "aws_security_group_rule" "uaa_https_in" {
 }
 
 resource "aws_lb" "ucc_lb" {
-  name               = "${var.env_name}-ucc-lb"
-  internal           = false
-  subnets            = ["${aws_subnet.jumpbox.*.id}"]
-  load_balancer_type = "network"
+  name                             = "${var.env_name}-ucc-lb"
+  internal                         = false
+  subnets                          = ["${aws_subnet.jumpbox.*.id}"]
+  load_balancer_type               = "network"
+  enable_cross_zone_load_balancing = true
 
   tags {
     Name  = "${var.env_name}-ucc-lb"
