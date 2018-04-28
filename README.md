@@ -4,7 +4,7 @@
 :warning: :warning: This is not production ready :warning: :warning:
 
 # Introduction
-**TuRBO** stands for: TeRafforming BOsh
+**TuRBO** stands for: TeRraforming BOsh
 
 TuRBO will deploy:  
 * A jumpbox
