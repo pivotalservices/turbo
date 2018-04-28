@@ -54,7 +54,7 @@ resource "google_compute_firewall" "credhub" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8443"]
+    ports    = ["8844"]
   }
 
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
@@ -67,7 +67,7 @@ resource "google_compute_firewall" "uaa" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8844"]
+    ports    = ["8443"]
   }
 
   source_ranges = ["${var.source_admin_networks}", "130.211.0.0/22", "35.191.0.0/16", "${google_compute_address.jumpbox.address}/32"]
