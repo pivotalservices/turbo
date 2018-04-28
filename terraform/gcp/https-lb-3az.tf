@@ -28,35 +28,35 @@ resource "google_compute_backend_service" "concourse_web_lb_https_backend_servic
   count = "${length(var.gcp_zones) == 3 ? 1 : 0}"
 }
 
-resource "google_compute_backend_service" "credhub_lb_https_backend_service_3az" {
-  name        = "${var.env_name}-credhub-https-lb-backend-3az"
-  port_name   = "credhub"
-  protocol    = "HTTPS"
-  timeout_sec = 30
-  enable_cdn  = false
+# resource "google_compute_backend_service" "credhub_lb_https_backend_service_3az" {
+#   name        = "${var.env_name}-credhub-https-lb-backend-3az"
+#   port_name   = "credhub"
+#   protocol    = "HTTPS"
+#   timeout_sec = 30
+#   enable_cdn  = false
 
-  backend {
-    group                 = "${google_compute_instance_group.web_lb.0.self_link}"
-    balancing_mode        = "RATE"
-    max_rate_per_instance = "10000"
-  }
+#   backend {
+#     group                 = "${google_compute_instance_group.web_lb.0.self_link}"
+#     balancing_mode        = "RATE"
+#     max_rate_per_instance = "10000"
+#   }
 
-  backend {
-    group                 = "${google_compute_instance_group.web_lb.1.self_link}"
-    balancing_mode        = "RATE"
-    max_rate_per_instance = "10000"
-  }
+#   backend {
+#     group                 = "${google_compute_instance_group.web_lb.1.self_link}"
+#     balancing_mode        = "RATE"
+#     max_rate_per_instance = "10000"
+#   }
 
-  backend {
-    group                 = "${google_compute_instance_group.web_lb.2.self_link}"
-    balancing_mode        = "RATE"
-    max_rate_per_instance = "10000"
-  }
+#   backend {
+#     group                 = "${google_compute_instance_group.web_lb.2.self_link}"
+#     balancing_mode        = "RATE"
+#     max_rate_per_instance = "10000"
+#   }
 
-  health_checks = ["${google_compute_https_health_check.credhub_https_hc.self_link}"]
+#   health_checks = ["${google_compute_https_health_check.credhub_https_hc.self_link}"]
 
-  count = "${length(var.gcp_zones) == 3 ? 1 : 0}"
-}
+#   count = "${length(var.gcp_zones) == 3 ? 1 : 0}"
+# }
 
 resource "google_compute_backend_service" "uaa_lb_https_backend_service_3az" {
   name        = "${var.env_name}-uaa-https-lb-backend-3az"
@@ -123,39 +123,37 @@ resource "google_compute_url_map" "turbo_https_lb_url_map_3az" {
 
   default_service = "${google_compute_backend_service.concourse_web_lb_https_backend_service_3az.self_link}"
 
-  host_rule {
-    hosts        = ["credhub.${var.dns_domain_name}"]
-    path_matcher = "credhub"
-  }
+  # host_rule {
+  #   hosts        = ["credhub.${var.dns_domain_name}"]
+  #   path_matcher = "credhub"
+  # }
 
-  path_matcher {
-    name = "credhub"
 
-    default_service = "${google_compute_backend_service.credhub_lb_https_backend_service_3az.self_link}"
-  }
+  # path_matcher {
+  #   name = "credhub"
+
+
+  #   default_service = "${google_compute_backend_service.credhub_lb_https_backend_service_3az.self_link}"
+  # }
 
   host_rule {
     hosts        = ["uaa.${var.dns_domain_name}"]
     path_matcher = "uaa"
   }
-
   path_matcher {
     name = "uaa"
 
     default_service = "${google_compute_backend_service.uaa_lb_https_backend_service_3az.self_link}"
   }
-
   host_rule {
     hosts        = ["metrics.${var.dns_domain_name}"]
     path_matcher = "metrics"
   }
-
   path_matcher {
     name = "metrics"
 
     default_service = "${google_compute_backend_service.metrics_lb_https_backend_service_3az.self_link}"
   }
-
   count = "${length(var.gcp_zones) == 3 ? 1 : 0}"
 }
 

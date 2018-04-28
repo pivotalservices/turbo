@@ -77,6 +77,7 @@ bosh_update_cloud_config() {
 		--var bosh_network_reserved_ips="$TF_BOSH_NETWORK_RESERVED_IPS" \
 		--var bosh_network_vm_tags="$TF_BOSH_NETWORK_VM_TAGS" \
 		--var web_backend_group="$TF_WEB_BACKEND_GROUP" \
+		--var credhub_target_pool="$TF_CREDHUB_TARGET_POOL" \
 		--var metrics_backend_group="$TF_METRICS_BACKEND_GROUP" \
 		-n || exit 1
 }

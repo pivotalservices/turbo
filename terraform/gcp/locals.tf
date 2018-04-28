@@ -43,6 +43,7 @@ locals {
     TF_BOOTSTRAP_NETWORK_NAME         = "${google_compute_network.bootstrap.name}"
     TF_CONCOURSE_SUBNET_NAME          = "${google_compute_subnetwork.concourse.name}"
     TF_WEB_BACKEND_GROUP              = "${local.web_backend_service_name}"
+    TF_CREDHUB_TARGET_POOL            = "${google_compute_target_pool.credhub_tp.name}"
     TF_CONCOURSE_NETWORK_STATIC_IPS   = "[${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,5)}-${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,8)}]"
     TF_CONCOURSE_NETWORK_RESERVED_IPS = "[${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,0)}-${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,4)}]"
     TF_CONCOURSE_NETWORK_VM_TAGS      = "[${var.env_name}-internal,${var.env_name}-nat]"
@@ -63,7 +64,7 @@ locals {
     TF_CONCOURSE_WEB_IP       = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,5)}"
     TF_CONCOURSE_EXTERNAL_URL = "https://${replace(google_dns_record_set.concourse-lb.name,"/\\.$/","")}"
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
-    TF_CREDHUB_URL            = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
+    TF_CREDHUB_URL            = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}:8844"
 
     TF_METRICS_BACKEND_GROUP = "${local.metrics_backend_service_name}"
 

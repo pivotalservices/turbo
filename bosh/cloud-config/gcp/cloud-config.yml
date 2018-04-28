@@ -235,6 +235,7 @@ vm_extensions:
   cloud_properties:
     backend_service:
       name: ((web_backend_group))
+    target_pool: ((credhub_target_pool))
 - name: metrics
   cloud_properties:
     backend_service:

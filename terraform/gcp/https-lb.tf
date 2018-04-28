@@ -33,16 +33,15 @@ resource "google_compute_instance_group" "web_lb" {
     port = 443
   }
 
-  named_port {
-    name = "credhub"
-    port = 8844
-  }
+  # named_port {
+  #   name = "credhub"
+  #   port = 8844
+  # }
 
   named_port {
     name = "uaa"
     port = 8443
   }
-
   count = "${length(var.gcp_zones)}"
 }
 
@@ -59,15 +58,15 @@ resource "google_compute_https_health_check" "concourse_web_https_hc" {
 }
 
 ### Credhub/UAA
-resource "google_dns_record_set" "credhub-lb" {
-  name = "credhub.${google_dns_managed_zone.bootstrap.dns_name}"
-  type = "A"
-  ttl  = 300
+# resource "google_dns_record_set" "credhub-lb" {
+#   name = "credhub.${google_dns_managed_zone.bootstrap.dns_name}"
+#   type = "A"
+#   ttl  = 300
 
-  managed_zone = "${google_dns_managed_zone.bootstrap.name}"
+#   managed_zone = "${google_dns_managed_zone.bootstrap.name}"
 
-  rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
-}
+#   rrdatas = ["${google_compute_global_address.turbo_lb.address}"]
+# }
 
 resource "google_dns_record_set" "uaa-lb" {
   name = "uaa.${google_dns_managed_zone.bootstrap.dns_name}"
@@ -80,16 +79,16 @@ resource "google_dns_record_set" "uaa-lb" {
 }
 
 # Credhub
-resource "google_compute_https_health_check" "credhub_https_hc" {
-  name = "${var.env_name}-credhub-https-public"
+# resource "google_compute_https_health_check" "credhub_https_hc" {
+#   name = "${var.env_name}-credhub-https-public"
 
-  port                = 8844
-  request_path        = "/health"
-  check_interval_sec  = 5
-  timeout_sec         = 4
-  healthy_threshold   = 3
-  unhealthy_threshold = 3
-}
+#   port                = 8844
+#   request_path        = "/health"
+#   check_interval_sec  = 5
+#   timeout_sec         = 4
+#   healthy_threshold   = 3
+#   unhealthy_threshold = 3
+# }
 
 # UAA
 resource "google_compute_https_health_check" "uaa_https_hc" {
