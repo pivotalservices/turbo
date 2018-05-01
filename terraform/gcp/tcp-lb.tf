@@ -7,11 +7,7 @@ resource "google_dns_record_set" "credhub-lb" {
 
   managed_zone = "${google_dns_managed_zone.bootstrap.name}"
 
-  rrdatas = ["${google_compute_global_address.credhub_lb.address}"]
-}
-
-resource "google_compute_global_address" "credhub_lb" {
-  name = "${var.env_name}-credhub-lb"
+  rrdatas = ["${google_compute_forwarding_rule.credhub_fr.ip_address}"]
 }
 
 resource "google_compute_forwarding_rule" "credhub_fr" {
@@ -19,7 +15,6 @@ resource "google_compute_forwarding_rule" "credhub_fr" {
   target                = "${google_compute_target_pool.credhub_tp.self_link}"
   load_balancing_scheme = "EXTERNAL"
   port_range            = "8844"
-  ip_address            = "${google_compute_global_address.credhub_lb.address}"
 }
 
 resource "google_compute_target_pool" "credhub_tp" {
