@@ -13,7 +13,7 @@ unset CREDHUB_SERVER
 
 echo "Waiting max 120sec for load balancers health checks to be valid..."
 i=0
-while ! curl -k -f "${TF_CREDHUB_URL}/info" >/dev/null 2>&1; do
+while ! curl -m 10 --connect-timeout 9 -k -f "${TF_CREDHUB_URL}/info" >/dev/null 2>&1; do
 	sleep 1
 	i=$(($i + 1))
 	if [ $i -ge 120 ]; then
