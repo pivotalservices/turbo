@@ -7,9 +7,10 @@
       postgres: {from: db}
     properties:
       postgresql:
-        database: *concourse_db_name
+        database: atc
         role:
-          <<: *concourse_db_role
+          name: concourse
+          password: ((postgres_concourse_password))
 
 - type: replace
   path: /instance_groups/name=web/jobs/name=database-backup-restorer?
