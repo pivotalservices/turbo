@@ -1,25 +1,15 @@
-# From: https://gitlab.com/RomRider/bbr-atcdb/
-- type: replace
-  path: /releases/-
-  value:
-    name: bbr-atcdb
-    url: https://storage.googleapis.com/bosh-release-jwi/bbr-atcdb-v1.tgz
-    sha1: '48081a086f3441ab4515586ed725514117d75e34'
-    version: 1
-
 - type: replace
   path: /instance_groups/name=web/jobs/-
   value:
     name: bbr-atcdb
-    release: bbr-atcdb
+    release: concourse
     consumes:
       postgres: {from: db}
     properties:
       postgresql:
-        database: atc
+        database: *concourse_db_name
         role:
-          name: concourse
-          password: ((postgres_concourse_password))
+          <<: *concourse_db_role
 
 - type: replace
   path: /instance_groups/name=web/jobs/name=database-backup-restorer?
