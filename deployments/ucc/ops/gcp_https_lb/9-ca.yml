@@ -9,8 +9,9 @@
   value: |
     ((lb_public_key))
 
-# - type: replace
-#   path: /instance_groups/name=web/jobs/name=atc/properties/credhub/tls/ca_cert
-#   value:
-#     certificate: |
-#       ((lb_ca))
+- type: replace
+  path: /instance_groups/name=web/jobs/name=atc/properties/credhub/tls/ca_cert
+  value:
+    certificate: |
+      ((lb_ca))
+      ((/default_ca.certificate))
