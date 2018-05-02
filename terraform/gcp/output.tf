@@ -11,17 +11,17 @@ output "jumpbox_dns" {
 }
 
 output "concourse_url" {
-  value = "https://${replace(google_dns_record_set.concourse-lb.name,"/\\.$/","")}"
+  value = "${local.concourse_url}"
 }
 
 output "credhub_url" {
-  value = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
+  value = "${local.credhub_url}"
 }
 
 output "uaa_url" {
-  value = "https://${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
+  value = "${local.uaa_url}"
 }
 
 output "metrics_url" {
-  value = "${local.common_flags["metrics"] == "true" ? format("https://%s", replace(join("", google_dns_record_set.metrics-lb.*.name),"/\\.$/","")) : ""}"
+  value = "${local.metrics_url}"
 }

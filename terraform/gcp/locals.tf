@@ -13,6 +13,21 @@ locals {
 }
 
 locals {
+  concourse_dns = "${replace(google_dns_record_set.concourse-lb.name,"/\\.$/","")}"
+  uaa_dns       = "${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
+  credhub_dns   = "${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
+  metrics_dns   = "${local.common_flags["metrics"] == "true" ? replace(join("", google_dns_record_set.metrics-lb.*.name),"/\\.$/","") : "" }"
+}
+
+locals {
+  concourse_url = "https://${local.concourse_dns}"
+  uaa_url       = "https://${local.uaa_dns}"
+  credhub_url   = "https://${local.credhub_dns}:8844"
+
+  metrics_url = "${local.common_flags["metrics"] == "true" ? format("https://%s", local.metrics_dns) : "" }"
+}
+
+locals {
   web_backend_service_name     = "${var.env_name}-concourse-https-lb-backend-${length(var.gcp_zones)}az"
   metrics_backend_service_name = "${var.env_name}-metrics-https-lb-backend-${length(var.gcp_zones)}az"
 }
@@ -56,15 +71,15 @@ locals {
     TF_BOSH_NETWORK_VM_TAGS      = "[${var.env_name}-internal,${var.env_name}-nat]"
 
     #Credhub Deployment
-    TF_CREDHUB_DNS_ENTRY = "${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}"
-    TF_UAA_DNS_ENTRY     = "${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
-    TF_UAA_URL           = "https://${replace(google_dns_record_set.uaa-lb.name,"/\\.$/","")}"
+    TF_CREDHUB_DNS_ENTRY = "${local.credhub_dns}"
+    TF_UAA_DNS_ENTRY     = "${local.uaa_dns}"
+    TF_UAA_URL           = "${local.uaa_url}"
 
     #Concourse Deployment
     TF_CONCOURSE_WEB_IP       = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,5)}"
-    TF_CONCOURSE_EXTERNAL_URL = "https://${replace(google_dns_record_set.concourse-lb.name,"/\\.$/","")}"
+    TF_CONCOURSE_EXTERNAL_URL = "${local.concourse_url}"
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
-    TF_CREDHUB_URL            = "https://${replace(google_dns_record_set.credhub-lb.name,"/\\.$/","")}:8844"
+    TF_CREDHUB_URL            = "${local.credhub_url}"
 
     TF_METRICS_BACKEND_GROUP = "${local.metrics_backend_service_name}"
 
