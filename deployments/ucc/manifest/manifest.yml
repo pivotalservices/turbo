@@ -108,6 +108,13 @@ instance_groups:
     consumes:
       database: {from: db}
     properties:
+      encryption:
+        active_key_label: primary
+        encryption_keys:
+        - label: primary
+          passphrase: ((uaa_encryption_key_primary))
+        - label: secondary
+          passphrase: ((uaa_encryption_key_secondary))
       release_level_backup: true
       login:
         self_service_links_enabled: false
@@ -327,6 +334,14 @@ variables:
   type: password
 - name: concourse_client_password
   type: password
+- name: uaa_encryption_key_primary
+  type: password
+  options:
+    length: 40
+- name: uaa_encryption_key_secondary
+  type: password
+  options:
+    length: 40
 
 
 stemcells:
