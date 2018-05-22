@@ -2,9 +2,9 @@
   path: /releases/name=uaa?
   value:
     name: uaa
-    version: 58.1
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-58.1-ubuntu-trusty-3541.25-20180510-225723-433543777-20180510225738.tgz
-    sha1: 456af7be20872b217744b2d777383a2e1cd977fb
+    version: 59
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-59-ubuntu-trusty-3541.25-20180522-215311-427077456-20180522215325.tgz
+    sha1: f3220de400907693c69226727d2d3ec8f4502ecf
     stemcell:
       os: ubuntu-trusty
       version: 3541.25
