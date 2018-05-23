@@ -3,8 +3,8 @@
   value:
     name: grafana
     version: 13.2.0
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/grafana-13.2.0-ubuntu-trusty-3541.25-20180510-025022-600813757-20180510025025.tgz
-    sha1: 8156643865997d12b53839f87637266659c0e0d7
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/grafana-13.2.0-ubuntu-trusty-3541.26-20180523-011033-537574976-20180523011035.tgz
+    sha1: 927c3b0396401596f5d658071154b3b26e3f00e9
     stemcell:
       os: ubuntu-trusty
-      version: 3541.25
+      version: 3541.26
