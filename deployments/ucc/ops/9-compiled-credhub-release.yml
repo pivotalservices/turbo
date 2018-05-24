@@ -3,8 +3,8 @@
   value:
     name: credhub
     version: 1.9.1
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/credhub-1.9.1-ubuntu-trusty-3541.26-20180522-232517-029532184-20180522232527.tgz
-    sha1: cffe259a8ae8a83a9cc73a615969abe5c2f0b5b9
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/credhub-1.9.1-ubuntu-trusty-3541.30-20180524-183921-27918127-20180524183931.tgz
+    sha1: c312b28f10f3ac08da9cbd784e0092c1f791faa9
     stemcell:
       os: ubuntu-trusty
-      version: 3541.26
+      version: 3541.30
