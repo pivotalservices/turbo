@@ -481,6 +481,7 @@ jobs:
           <<: *on_failure_notify
 
   - name: generate-ops-files
+    serial_groups: [ops-files]
     plan:
     - aggregate:
       - get: turbo-devel
@@ -538,6 +539,7 @@ jobs:
           <<: *on_failure_notify
 
   - name: generate-bosh-ops-files
+    serial_groups: [ops-files]
     plan:
     - aggregate:
       - get: turbo-devel
