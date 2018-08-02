@@ -218,6 +218,26 @@ instance_groups:
           providers: 
           - name: int
             type: internal
+        authorization:
+          acls:
+            enabled: true
+          permissions:
+          - path: /
+            actors:
+            - uaa-user:credhub-admin
+            operations:
+            - read
+            - write
+            - delete
+            - read_acl
+            - write_acl
+          - path: /concourse
+            actors:
+            - uaa-user: concourse_client
+            operations:
+            - read
+            - read_acl
+
 
   - name: bbr-uaadb
     release: uaa
