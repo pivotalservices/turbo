@@ -83,7 +83,6 @@ locals {
 
     TF_METRICS_BACKEND_GROUP = "${local.metrics_backend_service_name}"
 
-    TF_DB_STATIC_IP      = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,6)}"
     TF_METRICS_STATIC_IP = "${cidrhost(google_compute_subnetwork.concourse.ip_cidr_range,7)}"
 
     # IAAS

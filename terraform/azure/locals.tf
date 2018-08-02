@@ -87,7 +87,6 @@ locals {
     TF_DOMAIN_NAME            = "${var.dns_domain_name}"
     TF_CREDHUB_URL            = "${local.credhub_url}"
     # Other
-    TF_DB_STATIC_IP      = "${cidrhost(azurerm_subnet.concourse.0.address_prefix,6)}"
     TF_METRICS_STATIC_IP = "${cidrhost(azurerm_subnet.concourse.0.address_prefix,7)}"
     # IAAS
     TF_LB_CA      = ""

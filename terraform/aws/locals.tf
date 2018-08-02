@@ -97,7 +97,6 @@ locals {
     TF_CREDHUB_URL            = "${local.credhub_url}"
 
     # Other
-    TF_DB_STATIC_IP      = "${cidrhost(aws_subnet.concourse.0.cidr_block,6)}"
     TF_METRICS_STATIC_IP = "${cidrhost(aws_subnet.concourse.0.cidr_block,7)}"
 
     # IAAS
