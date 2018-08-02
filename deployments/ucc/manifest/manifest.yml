@@ -233,7 +233,7 @@ instance_groups:
             - write_acl
           - path: /concourse
             actors:
-            - uaa-user: concourse_client
+            - uaa-user:concourse_client
             operations:
             - read
             - read_acl
