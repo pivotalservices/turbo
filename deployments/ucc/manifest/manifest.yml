@@ -222,7 +222,7 @@ instance_groups:
           acls:
             enabled: true
           permissions:
-          - path: /
+          - path: /*
             actors:
             - uaa-user:credhub-admin
             operations:
@@ -231,7 +231,7 @@ instance_groups:
             - delete
             - read_acl
             - write_acl
-          - path: /concourse
+          - path: /concourse/*
             actors:
             - uaa-user:concourse_client
             operations:
