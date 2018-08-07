@@ -220,7 +220,7 @@ instance_groups:
             type: internal
         authorization:
           acls:
-            enabled: true
+            enabled: false
           permissions:
           - path: /*
             actors:
