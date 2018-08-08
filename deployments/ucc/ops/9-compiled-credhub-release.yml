@@ -2,9 +2,9 @@
   path: /releases/name=credhub?
   value:
     name: credhub
-    version: 2.0.0
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/credhub-2.0.0-ubuntu-trusty-3541.37-20180801-184009-45550427-20180801184021.tgz
-    sha1: 93fa757611dda7bae92ab520d171b983e5c3b4e7
+    version: 2.0.1
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/credhub-2.0.1-ubuntu-trusty-3541.37-20180808-190521-134275812-20180808190535.tgz
+    sha1: 9409ce3dc430c05094eab11aaec0abff382daad4
     stemcell:
       os: ubuntu-trusty
       version: 3541.37
