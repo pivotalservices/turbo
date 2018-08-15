@@ -3,8 +3,8 @@
   value:
     name: uaa
     version: 60.2
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-60.2-ubuntu-trusty-3541.43-20180814-210818-791542695-20180814210837.tgz
-    sha1: be18059f9a30f3314ee7a4f292c4fae188995a7a
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-60.2-ubuntu-trusty-3541.44-20180815-174221-195714122-20180815174239.tgz
+    sha1: eb67bf2d85235643be3a70f8b1bfc944015594d7
     stemcell:
       os: ubuntu-trusty
-      version: 3541.43
+      version: 3541.44
