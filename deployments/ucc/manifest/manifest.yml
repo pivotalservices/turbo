@@ -203,10 +203,12 @@ instance_groups:
             - ((/uaa-tls.ca)) 
         data_storage: &credhub_data_storage
           type: postgres
+          port: 5432
           username: &credhub_db_username credhub
           password: &credhub_db_password ((postgres_credhub_password))
           database: &credhub_db_name credhub
           require_tls: true
+          tls_ca: ((/database-tls.ca))
         encryption:
           keys: 
           - provider_name: int
