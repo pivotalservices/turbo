@@ -2,9 +2,9 @@
   path: /releases/name=garden-runc?
   value:
     name: garden-runc
-    version: 1.16.4
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/garden-runc-1.16.4-ubuntu-trusty-3541.49-20180925-184908-643110018-20180925184922.tgz
-    sha1: 3b255b41261fffd6e854d27bf30dfe2b16cd64ec
+    version: 1.16.5
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/garden-runc-1.16.5-ubuntu-trusty-3541.49-20180928-102304-198412732-20180928102318.tgz
+    sha1: e15ab70f94912cd82593b81146273ef55ca2d6b3
     stemcell:
       os: ubuntu-trusty
       version: 3541.49
