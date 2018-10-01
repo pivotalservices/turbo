@@ -88,18 +88,22 @@ scp -i id_rsa \
 
 ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-i id_rsa \
-	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
-	'bosh -d ucc scp ~/metadata web:/tmp/ ;\
-    bosh -d ucc ssh web "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata" ;'
+	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" <<SSH
+set -e
+bosh -d ucc scp ~/metadata web:/tmp/
+bosh -d ucc ssh web "sudo mv /tmp/metadata /var/vcap/jobs/credhub/bin/bbr/ && sudo chown root:root /var/vcap/jobs/credhub/bin/bbr/metadata"
+SSH
 
 # End Dirty Fix
 echo "${green}Running bbr backup of the deployment${reset}"
 ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-i id_rsa \
-	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
-	'mkdir -p ci-tests && \
-    cd ci-tests && \
-    ~/turbo/bosh/scripts/generic/bbr-backup.sh deployment ucc'
+	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" <<SSH
+set -e
+mkdir -p ci-tests
+cd ci-tests
+~/turbo/bosh/scripts/generic/bbr-backup.sh deployment ucc
+SSH
 
 echo "${green}Waiting 2min for everything to be running again${reset}"
 sleep 120
@@ -111,14 +115,20 @@ echo "${green}Deleting the pipeline and the credhub entry${reset}"
 echo "${green}Running bbr restore of the deployment${reset}"
 ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 	-i id_rsa \
-	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" \
-	'mkdir -p ci-tests && \
-    pushd ci-tests ; \
-    ~/turbo/bosh/scripts/generic/bbr-restore.sh deployment ucc "$(pwd)/$(ls -1t -d ucc* | head -n 1)";\
-    rc=$?;
-    popd; \
-    rm -rf ci-tests metadata;\
-    exit $rc'
+	-o "IdentitiesOnly=true" -o "StrictHostKeyChecking=no" <<'SSH'
+set -e
+mkdir -p ci-tests
+pushd ci-tests
+if ~/turbo/bosh/scripts/generic/bbr-restore.sh deployment ucc "$(pwd)/$(ls -1t -d ucc* | head -n 1)"; then
+  popd
+  rm -rf ci-tests metadata
+  exit 0
+else
+  popd
+  rm -rf ci-tests metadata
+  exit 1
+fi
+SSH
 
 echo "${green}Waiting 2min for everything to be running again${reset}"
 sleep 120
