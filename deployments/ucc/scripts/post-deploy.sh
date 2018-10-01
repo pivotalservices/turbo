@@ -11,12 +11,20 @@ unset CREDHUB_SECRET
 unset CREDHUB_CLIENT
 unset CREDHUB_SERVER
 
-echo "Waiting max 120sec for load balancers health checks to be valid..."
+echo "Credhub: Waiting max 120sec for load balancers health checks to be valid..."
 i=0
 while ! curl -m 10 --connect-timeout 9 -k -f "${TF_CREDHUB_URL}/info" >/dev/null 2>&1; do
 	sleep 1
 	i=$(($i + 1))
 	if [ $i -ge 120 ]; then
+		clean_exit 1
+	fi
+done
+echo "UAA: Waiting max 240sec for load balancers health checks to be valid..."
+while ! curl -m 10 --connect-timeout 9 -k -f "${TF_UAA_URL}/healthz" >/dev/null 2>&1; do
+	sleep 1
+	i=$(($i + 1))
+	if [ $i -ge 240 ]; then
 		clean_exit 1
 	fi
 done
