@@ -119,11 +119,13 @@ ssh "${jumpbox_ssh_user}@${jumpbox_ip}" \
 set -e
 mkdir -p ci-tests
 pushd ci-tests
-if ~/turbo/bosh/scripts/generic/bbr-restore.sh deployment ucc "$(pwd)/$(ls -1t -d ucc* | head -n 1)"; then
+backup_folder="$(pwd)/$(ls -1t -d ucc* | head -n 1)"
+if ~/turbo/bosh/scripts/generic/bbr-restore.sh deployment ucc "${backup_folder}"; then
+  echo "Restoration successful, cleaning up"
   popd
   rm -rf ci-tests metadata
-  exit 0
 else
+  echo "Restoration failed, cleaning up"
   popd
   rm -rf ci-tests metadata
   exit 1
