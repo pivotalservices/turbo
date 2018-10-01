@@ -245,6 +245,9 @@ instance_groups:
     release: credhub
     properties:
       release_level_backup: true
+      credhub:
+        data_storage:
+          <<: *credhub_data_storage
   - name: database-backup-restorer
     release: backup-and-restore-sdk
 
