@@ -180,8 +180,8 @@ instance_groups:
       uaadb:
         db_scheme: postgresql
         port: 5432
-        # This must currently be false unless the CA of the DB is added to the BOSH CA trust store
-        tls_enabled: false 
+        tls_enabled: true
+        skip_ssl_validation: true
         databases:
         - tag: uaa
           name: &uaa_db_name uaa
