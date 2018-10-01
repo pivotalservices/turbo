@@ -24,6 +24,7 @@ instance_groups:
   azs: [z1]
   networks:
   - name: ((network_name))
+    static_ips: ((db_static_ip))
   stemcell: trusty
   vm_type: ((db_vm_type))
   persistent_disk_type: ((db_persistent_disk_size))
@@ -189,8 +190,6 @@ instance_groups:
 
   - name: credhub
     release: credhub
-    consumes:
-      postgres: {from: db}
     properties:
       credhub:
         log_level: warn
@@ -203,6 +202,7 @@ instance_groups:
             - ((/uaa-tls.ca)) 
         data_storage: &credhub_data_storage
           type: postgres
+          host: ((db_static_ip))
           port: 5432
           username: &credhub_db_username credhub
           password: &credhub_db_password ((postgres_credhub_password))
@@ -285,8 +285,9 @@ variables:
   type: certificate
   options: 
     ca: /default_ca
-    common_name: 127.0.0.1
+    common_name: ((db_static_ip))
     alternative_names:
+    - ((db_static_ip))
     - 127.0.0.1
 # Concourse
 - name: postgres_concourse_password

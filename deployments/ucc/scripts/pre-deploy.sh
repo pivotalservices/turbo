@@ -37,6 +37,7 @@ do_deploy() {
 		--var worker_vm_count="$TF_CONCOURSE_WORKER_VM_COUNT" \
 		--var db_vm_type="db-$TF_DB_VM_TYPE" \
 		--var db_persistent_disk_size="${TF_DB_PERSISTENT_DISK_SIZE}G" \
+		--var db_static_ip="$TF_DB_STATIC_IP" \
 		--var domain_name="$TF_DOMAIN_NAME" \
 		--var credhub_url="$TF_CREDHUB_URL" \
 		--var uaa_dns="$TF_UAA_DNS_ENTRY" \
