@@ -28,7 +28,7 @@ locals {
     TF_DB_VM_TYPE                = "${var.db_vm_type}"
     TF_DB_PERSISTENT_DISK_SIZE   = "${var.db_persistent_disk_size}"
 
-    TF_CONCOURSE_ADMIN_PASSWORD = "${bcrypt(random_string.concourse_password.result, 10)}"
+    TF_CONCOURSE_ADMIN_PASSWORD = "${random_string.concourse_password.result}"
     TF_CREDHUB_ADMIN_PASSWORD   = "${random_string.credhub_password.result}"
     TF_UAA_ADMIN_PASSWORD       = "${random_string.uaa_password.result}"
     TF_METRICS_ADMIN_PASSWORD   = "${random_string.metrics_password.result}"
