@@ -2,9 +2,9 @@
   path: /releases/name=influxdb?
   value:
     name: influxdb
-    version: 4
+    version: '4'
     url: https://storage.googleapis.com/bosh-compiled-release-tarballs/influxdb-4-ubuntu-trusty-3541.49-20180925-195531-638957602-20180925195536.tgz
-    sha1: dc212442186ec1d16f4c36e362e65223acba6a32
+    sha1: 'dc212442186ec1d16f4c36e362e65223acba6a32'
     stemcell:
       os: ubuntu-trusty
-      version: 3541.49
+      version: '3541.49'
