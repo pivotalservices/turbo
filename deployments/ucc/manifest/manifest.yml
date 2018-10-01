@@ -80,7 +80,7 @@ instance_groups:
       tls_bind_port: 443
 
       add_local_users:
-      - admin: ((concourse_admin_password))
+      - admin:((concourse_admin_password))
       main_team:
         auth:
           local:
