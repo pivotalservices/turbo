@@ -25,12 +25,12 @@ for i in ./*-compiled-releases; do
   path: /releases/name=${release_name}?
   value:
     name: ${release_name}
-    version: ${release_version}
+    version: '${release_version}'
     url: ${url}
-    sha1: ${sha1}
+    sha1: '${sha1}'
     stemcell:
       os: ubuntu-trusty
-      version: ${stemcell_version}
+      version: '${stemcell_version}'
 YML
 	if [[ -z $(git config --global user.email) ]]; then
 		git config --global user.email "ci@wnetworks.org"
