@@ -78,8 +78,15 @@ instance_groups:
       tls_key: ((/concourse_ssl.private_key))
       bind_port: 80
       tls_bind_port: 443
-      basic_auth_username: admin
-      basic_auth_password: ((concourse_admin_password))
+
+      add_local_users:
+      - admin: ((concourse_admin_password))
+      main_team:
+        auth:
+          local:
+            users:
+            - admin
+
       log_level: debug
 
       token_signing_key: ((token_signing_key))
