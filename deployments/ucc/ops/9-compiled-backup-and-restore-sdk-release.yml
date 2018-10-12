@@ -3,8 +3,8 @@
   value:
     name: backup-and-restore-sdk
     version: '1.10.0'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/backup-and-restore-sdk-1.10.0-ubuntu-trusty-3541.52-20181003-000432-959038595-20181003000501.tgz
-    sha1: '5133fdd8c52e0e6f93d69a1c8aca93d6b01d28c9'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/backup-and-restore-sdk-1.10.0-ubuntu-trusty-3541.54-20181011-233503-242069457-20181011233533.tgz
+    sha1: '59a4bb48da702218c14670e8cec21e0966f73643'
     stemcell:
       os: ubuntu-trusty
-      version: '3541.52'
+      version: '3541.54'
