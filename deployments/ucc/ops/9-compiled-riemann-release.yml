@@ -3,8 +3,8 @@
   value:
     name: riemann
     version: '5'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/riemann-5-ubuntu-trusty-3541.57-20181023-200520-131708389-20181023200538.tgz
-    sha1: 'f61cb1a6a95569d7d28f14b782966d7d382f8e0e'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/riemann-5-ubuntu-trusty-3541.59-20181106-031621-216005759-20181106031641.tgz
+    sha1: '734a07ba7a4a5a1e82143abfc808df163aa9d700'
     stemcell:
       os: ubuntu-trusty
-      version: '3541.57'
+      version: '3541.59'
