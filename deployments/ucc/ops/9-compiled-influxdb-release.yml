@@ -3,8 +3,8 @@
   value:
     name: influxdb
     version: '4'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/influxdb-4-ubuntu-trusty-3541.59-20181106-025414-437338071-20181106025419.tgz
-    sha1: 'ec06293f8a0957ed68bcd2f5ecb8e432bf198201'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/influxdb-4-ubuntu-trusty-3541.60-20181116-014926-184595917-20181116014930.tgz
+    sha1: 'fea1eb7751e6a26213d4aac5f25ebe6449259991'
     stemcell:
       os: ubuntu-trusty
-      version: '3541.59'
+      version: '3541.60'
