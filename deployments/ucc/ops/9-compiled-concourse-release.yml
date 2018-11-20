@@ -3,8 +3,8 @@
   value:
     name: concourse
     version: '4.2.1'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/concourse-4.2.1-ubuntu-trusty-3541.60-20181116-011610-677319084-20181116011703.tgz
-    sha1: '9495e8138c2449a47ad9bd39f7fe4962bc0427e4'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/concourse-4.2.1-ubuntu-trusty-3541.61-20181120-010229-288013012-20181120010313.tgz
+    sha1: '76bda73edc587ef031b90f6b508d7d9d00ee16f8'
     stemcell:
       os: ubuntu-trusty
-      version: '3541.60'
+      version: '3541.61'
