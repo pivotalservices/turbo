@@ -3,8 +3,8 @@
   value:
     name: postgres
     version: '31'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/postgres-31-ubuntu-trusty-3541.60-20181116-004854-712698624-20181116004855.tgz
-    sha1: '91385f77b45ae1283dee7c0d33a44b410dc26d21'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/postgres-31-ubuntu-trusty-3541.61-20181120-003553-229698157-20181120003553.tgz
+    sha1: 'c6e7ccac008a5fcf1cb877d98c31caf919ece560'
     stemcell:
       os: ubuntu-trusty
-      version: '3541.60'
+      version: '3541.61'
