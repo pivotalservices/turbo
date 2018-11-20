@@ -3,8 +3,8 @@
   value:
     name: uaa
     version: '66.0'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-66.0-ubuntu-trusty-3541.60-20181115-224719-856374456-20181115224741.tgz
-    sha1: '30dbd1f1104bde88ce88489caa30db42c3a086bc'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-66.0-ubuntu-trusty-3541.61-20181119-223143-488533774-20181119223201.tgz
+    sha1: 'b05e96cb01040d773ec0ca7410bb659fcd34c980'
     stemcell:
       os: ubuntu-trusty
-      version: '3541.60'
+      version: '3541.61'
