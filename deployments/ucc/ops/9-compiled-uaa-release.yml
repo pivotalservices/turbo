@@ -2,9 +2,9 @@
   path: /releases/name=uaa?
   value:
     name: uaa
-    version: '66.0'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-66.0-ubuntu-trusty-3541.65-20181207-225625-232225224-20181207225653.tgz
-    sha1: '9e07ead89de0f732fc0e87b2c9437b20ac16d607'
+    version: '67.0'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/uaa-67.0-ubuntu-trusty-3541.65-20181210-224916-425821457-20181210224936.tgz
+    sha1: '4e26f549792804768c64e0289b02d7d2cdc7ec20'
     stemcell:
       os: ubuntu-trusty
       version: '3541.65'
