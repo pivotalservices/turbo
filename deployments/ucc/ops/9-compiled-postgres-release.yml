@@ -2,9 +2,9 @@
   path: /releases/name=postgres?
   value:
     name: postgres
-    version: '32'
-    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/postgres-32-ubuntu-trusty-3541.65-20181208-011257-806980536-20181208011258.tgz
-    sha1: 'a4b49fdb6253ba9b2da5ff50a83686011d0e121a'
+    version: '33'
+    url: https://storage.googleapis.com/bosh-compiled-release-tarballs/postgres-33-ubuntu-trusty-3541.65-20181219-180234-958500381-20181219180235.tgz
+    sha1: 'e444d04bf8a124a3065f05cdcaada0371ec55563'
     stemcell:
       os: ubuntu-trusty
       version: '3541.65'
